@@ -234,14 +234,14 @@ h1, h2, h3 {
         <nav style="position: fixed; top: 2rem; width: 100%; display: flex; justify-content: center; gap: 2rem; z-index: 10001;"></nav>
         
 <video autoplay muted loop playsinline crossorigin="anonymous" id="bg-video" 
-    style="position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; object-fit: cover; z-index: -100; pointer-events: none; background: black;">
-    <source src="https://v.ftcdn.net/05/23/94/29/700_F_523942944_v7f77N68C222X8q9pE6A69mK89g1B7Hh_ST.mp4" type="video/mp4">
+    style="position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; object-fit: cover; z-index: 1; pointer-events: none;">
+    <source src="https://v.ftcdn.net/05/17/74/46/700_F_517744641_f7f7N68C222X8q9pE6A69mK89g1B7Hh_ST.mp4" type="video/mp4">
 </video>
-<div id="kinetic-fire-container" style="position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: -101; pointer-events: none; background: black;"></div>
+<div id="kinetic-fire-container" style="position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: 2; pointer-events: none; display: none;"></div>
 
 <section class="hero full-layout" id="hero" style="background: transparent !important;">
-    <div class="hero-content" style="position: relative; z-index: 9999;">
-        <h1 class="reveal">PRODUCTION FIRE</h1>
+    <div class="hero-content" style="position: relative; z-index: 10;">
+        <h1 class="reveal">HD PRODUCTION FIRE</h1>
         <p class="reveal">Testing the realistic fire textures for production.</p>
         <div class="reveal">
             <a href="#" class="btn-primary">Get Started</a>
@@ -251,7 +251,11 @@ h1, h2, h3 {
 <button onclick="diagnoseVisuals()" style="position: fixed; bottom: 1rem; right: 1rem; z-index: 10002; background: rgba(255,255,255,0.1); color: white; border: 1px solid white; padding: 0.5rem; border-radius: 5px; cursor: pointer;">Diagnostic</button>
 <script>
     window.FIRE_BG = "assets/fire_bg.png";
-    window.VIMEO_ID = "189852033";
+    const v = document.getElementById('bg-video');
+    if (v) v.play().catch(() => {
+        console.log("Autoplay blocked: Fallback to Kinetic.");
+        document.getElementById('kinetic-fire-container').style.display = "block";
+    });
 </script>
 
         
