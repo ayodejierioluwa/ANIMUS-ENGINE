@@ -389,6 +389,16 @@ h1, h2, h3 {
         el.addEventListener('mouseenter', () => gsap.to(cursor, { scale: 3, backgroundColor: "var(--accent-primary)", opacity: 0.3 }));
         el.addEventListener('mouseleave', () => gsap.to(cursor, { scale: 1, backgroundColor: "transparent", opacity: 1 }));
     });
+
+    function diagnoseVisuals() {
+        const iframe = document.getElementById('bg-video-iframe');
+        const container = document.getElementById('video-background-container');
+        if (iframe) {
+            alert(`Sentry Diagnostic:\n- Video Container: ${container.offsetWidth}x${container.offsetHeight}\n- Iframe Source: ${iframe.src}\n- Z-Index: ${container.style.zIndex}`);
+        } else {
+            alert("Sentry Diagnostic: NO VIDEO IFRAME FOUND.");
+        }
+    }
 </script>
 
 </body>

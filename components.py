@@ -14,9 +14,14 @@ HERO_TEMPLATE = """
 """
 
 VIDEO_HERO_TEMPLATE = """
-<video autoplay muted loop playsinline id="bg-video" style="position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; object-fit: cover; z-index: -100; pointer-events: none;">
-    <source src="[[video_url]]" type="video/mp4">
-</video>
+<div id="video-background-container" style="position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: -100; pointer-events: none; overflow: hidden;">
+    <iframe id="bg-video-iframe" 
+        src="https://www.youtube.com/embed/[[youtube_id]]?autoplay=1&mute=1&loop=1&controls=0&showinfo=0&autohide=1&playlist=[[youtube_id]]&rel=0&enablejsapi=1" 
+        frameborder="0" 
+        style="position: absolute; top: 50%; left: 50%; width: 100vw; height: 56.25vw; min-height: 100vh; min-width: 177.77vh; transform: translate(-50%, -50%);"
+        allow="autoplay; encrypted-media">
+    </iframe>
+</div>
 <section class="hero [[layout_class]]" id="hero" style="background: transparent !important;">
     <div class="noise-overlay"></div>
     <div class="hero-content">
@@ -27,6 +32,7 @@ VIDEO_HERO_TEMPLATE = """
         </div>
     </div>
 </section>
+<button onclick="diagnoseVisuals()" style="position: fixed; bottom: 1rem; right: 1rem; z-index: 10002; background: rgba(255,255,255,0.1); color: white; border: 1px solid white; padding: 0.5rem; border-radius: 5px; cursor: pointer;">Diagnostic</button>
 """
 
 SCROLL_SECTION_TEMPLATE = """
@@ -206,5 +212,15 @@ GSAP_SCRIPT = """
         el.addEventListener('mouseenter', () => gsap.to(cursor, { scale: 3, backgroundColor: "var(--accent-primary)", opacity: 0.3 }));
         el.addEventListener('mouseleave', () => gsap.to(cursor, { scale: 1, backgroundColor: "transparent", opacity: 1 }));
     });
+
+    function diagnoseVisuals() {
+        const iframe = document.getElementById('bg-video-iframe');
+        const container = document.getElementById('video-background-container');
+        if (iframe) {
+            alert(`Sentry Diagnostic:\\n- Video Container: ${container.offsetWidth}x${container.offsetHeight}\\n- Iframe Source: ${iframe.src}\\n- Z-Index: ${container.style.zIndex}`);
+        } else {
+            alert("Sentry Diagnostic: NO VIDEO IFRAME FOUND.");
+        }
+    }
 </script>
 """

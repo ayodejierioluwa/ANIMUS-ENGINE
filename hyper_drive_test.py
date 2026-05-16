@@ -29,7 +29,7 @@ def run_hyper_drive_test():
                     "use_video": True,
                     "hero_title": "EXPLOSIVE TASTE",
                     "hero_subtitle": "From Electric Mango to Midnight Berries. Find your flow.",
-                    "video_url": "https://assets.mixkit.co/videos/download/mixkit-fire-flames-and-sparks-of-a-bonfire-3162-medium.mp4",
+                    "youtube_id": "Lp6WjSTU80M",
                     "features": [
                         {"title": "Electric Mango", "content": "A surge of tropical intensity."},
                         {"title": "Midnight Berry", "content": "Smooth, dark, and powerful."}
