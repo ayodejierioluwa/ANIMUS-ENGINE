@@ -41,6 +41,20 @@ HERO_TEMPLATE = """
 </section>
 """
 
+IMAGE_HERO_TEMPLATE = """
+<section class="hero [[layout_class]]" id="hero" style="background: url('[[image_url]]') center/cover no-repeat !important; min-height: 100vh; display: flex; align-items: center; justify-content: center; position: relative; overflow: hidden;">
+    <div style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(to bottom, rgba(0,0,0,0.8), var(--bg-color));"></div>
+    <div id="void-canvas" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; opacity: 0.2; mix-blend-mode: screen;"></div>
+    <div class="hero-content" style="position: relative; z-index: 10; text-align: center;">
+        <h1 class="reveal" style="font-size: clamp(3rem, 10vw, 6rem); letter-spacing: -0.04em; line-height: 0.95; font-weight: 700;">[[title]]</h1>
+        <p class="reveal" style="font-size: 1.25rem; opacity: 0.6; margin-top: 2rem; max-width: 650px; margin-left: auto; margin-right: auto; line-height: 1.6; font-weight: 300;">[[subtitle]]</p>
+        <div class="reveal" style="margin-top: 4rem;">
+            <a href="[[cta_link]]" class="btn-primary" style="padding: 1.25rem 3.5rem; font-size: 1rem; border-radius: var(--btn-radius); background: white; color: black; text-decoration: none; font-weight: 700; letter-spacing: 0.1em; transition: all 0.4s cubic-bezier(0.2, 0.8, 0.2, 1); box-shadow: 0 20px 40px rgba(0,0,0,0.4);">[[cta_text]]</a>
+        </div>
+    </div>
+</section>
+"""
+
 VIDEO_HERO_TEMPLATE = """
 <section class="hero [[layout_class]]" id="hero" style="background: var(--bg-color) !important; min-height: 100vh; display: flex; align-items: center; justify-content: center; position: relative; overflow: hidden;">
     <div id="void-canvas" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; opacity: 0.3; filter: blur(var(--void-blur));"></div>
@@ -445,6 +459,29 @@ BASE_HTML = """
         }
         .btn-primary {
             transition: all 0.3s var(--ease-vibe) !important;
+        }
+
+        /* Tactile Layer: Film Grain */
+        .film-grain {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            pointer-events: none;
+            z-index: 99999;
+            opacity: 0.05;
+            background: url('https://grainy-gradients.vercel.app/noise.svg');
+            animation: grain 8s steps(10) infinite;
+        }
+        @keyframes grain {
+            0%, 100% { transform: translate(0, 0); }
+            10% { transform: translate(-5%, -10%); }
+            20% { transform: translate(-15%, 5%); }
+            30% { transform: translate(7%, -25%); }
+            40% { transform: translate(-5%, 25%); }
+            50% { transform: translate(-15%, 10%); }
+            60% { transform: translate(15%, 0%); }
+            70% { transform: translate(0%, 15%); }
+            80% { transform: translate(3%, 35%); }
+            90% { transform: translate(-10%, 10%); }
         }
 
         @keyframes aether-breath {

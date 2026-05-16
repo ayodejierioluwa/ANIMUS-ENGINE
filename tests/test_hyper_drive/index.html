@@ -58,6 +58,29 @@
             transition: all 0.3s var(--ease-vibe) !important;
         }
 
+        /* Tactile Layer: Film Grain */
+        .film-grain {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            pointer-events: none;
+            z-index: 99999;
+            opacity: 0.05;
+            background: url('https://grainy-gradients.vercel.app/noise.svg');
+            animation: grain 8s steps(10) infinite;
+        }
+        @keyframes grain {
+            0%, 100% { transform: translate(0, 0); }
+            10% { transform: translate(-5%, -10%); }
+            20% { transform: translate(-15%, 5%); }
+            30% { transform: translate(7%, -25%); }
+            40% { transform: translate(-5%, 25%); }
+            50% { transform: translate(-15%, 10%); }
+            60% { transform: translate(15%, 0%); }
+            70% { transform: translate(0%, 15%); }
+            80% { transform: translate(3%, 35%); }
+            90% { transform: translate(-10%, 10%); }
+        }
+
         @keyframes aether-breath {
             0%, 100% { transform: translateY(0) scale(1); }
             50% { transform: translateY(-10px) scale(1.01); }
@@ -118,8 +141,9 @@
     .nav-cta a:hover { transform: scale(1.05); box-shadow: 0 10px 20px rgba(0,0,0,0.3); }
 </style>
 
-<section class="hero full-layout" id="hero" style="background: var(--bg-color) !important; min-height: 100vh; display: flex; align-items: center; justify-content: center; position: relative; overflow: hidden;">
-    <div id="void-canvas" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; opacity: 0.3; filter: blur(var(--void-blur));"></div>
+<section class="hero full-layout" id="hero" style="background: url('/Users/macbook/.gemini/antigravity/brain/010e3ac2-392d-469e-af4e-19c079b21dff/neural_core_hero_vison_1778955942947.png') center/cover no-repeat !important; min-height: 100vh; display: flex; align-items: center; justify-content: center; position: relative; overflow: hidden;">
+    <div style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(to bottom, rgba(0,0,0,0.8), var(--bg-color));"></div>
+    <div id="void-canvas" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; opacity: 0.2; mix-blend-mode: screen;"></div>
     <div class="hero-content" style="position: relative; z-index: 10; text-align: center;">
         <h1 class="reveal" style="font-size: clamp(3rem, 10vw, 6rem); letter-spacing: -0.04em; line-height: 0.95; font-weight: 700;">NEURAL OVERRIDE</h1>
         <p class="reveal" style="font-size: 1.25rem; opacity: 0.6; margin-top: 2rem; max-width: 650px; margin-left: auto; margin-right: auto; line-height: 1.6; font-weight: 300;">Surgical precision for the sovereign architect.</p>
@@ -138,7 +162,7 @@
     <div style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(135deg, rgba(255,255,255,0.05) 0%, transparent 100%); pointer-events: none;"></div>
     <div class="icon" style="font-size: 2.5rem; margin-bottom: 2rem; filter: drop-shadow(0 0 15px var(--accent-primary));">⚡</div>
     <h3 style="font-size: 1.75rem; margin-bottom: 1.5rem; color: white; font-weight: 600; letter-spacing: -0.02em;">Neural Latency</h3>
-    <p style="opacity: 0.5; line-height: 1.8; font-size: 1.05rem; font-weight: 300;">0.01ms execution via localized mesh nodes.</p>
+    <p style="opacity: 0.5; line-height: 1.8; font-size: 1.05rem; font-weight: 300;">0.01ms execution.</p>
 </div>
 <style>
     .feature-item:hover {
@@ -157,7 +181,7 @@
     <div style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(135deg, rgba(255,255,255,0.05) 0%, transparent 100%); pointer-events: none;"></div>
     <div class="icon" style="font-size: 2.5rem; margin-bottom: 2rem; filter: drop-shadow(0 0 15px var(--accent-primary));">📈</div>
     <h3 style="font-size: 1.75rem; margin-bottom: 1.5rem; color: white; font-weight: 600; letter-spacing: -0.02em;">Hyper Alpha</h3>
-    <p style="opacity: 0.5; line-height: 1.8; font-size: 1.05rem; font-weight: 300;">Predictive models tuned to the heartbeat of the chain.</p>
+    <p style="opacity: 0.5; line-height: 1.8; font-size: 1.05rem; font-weight: 300;">Predictive models.</p>
 </div>
 <style>
     .feature-item:hover {
