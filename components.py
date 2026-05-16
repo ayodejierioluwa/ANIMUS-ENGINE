@@ -98,7 +98,9 @@ GSAP_SCRIPT = """
         const geometries = {
             "SPHERE": new THREE.IcosahedronGeometry(2, 1),
             "TORUS": new THREE.TorusKnotGeometry(1.5, 0.4, 100, 16),
-            "PLANE": new THREE.PlaneGeometry(5, 5, 32, 32)
+            "PLANE": new THREE.PlaneGeometry(5, 5, 32, 32),
+            "OCTA": new THREE.OctahedronGeometry(2, 0),
+            "RING": new THREE.TorusGeometry(2, 0.5, 16, 100)
         };
         const geoType = "[[geometry_type]]";
         const geometry = geometries[geoType] || geometries["SPHERE"];
@@ -107,15 +109,17 @@ GSAP_SCRIPT = """
             color: "[[accent_primary_hex]]",
             wireframe: true,
             transparent: true,
-            opacity: 0.5
+            opacity: 0.9,
+            emissive: "[[accent_primary_hex]]",
+            emissiveIntensity: 0.6
         });
         const sphere = new THREE.Mesh(geometry, material);
         scene.add(sphere);
 
-        const light = new THREE.PointLight(0xffffff, 1, 100);
+        const light = new THREE.PointLight(0xffffff, 4, 100);
         light.position.set(10, 10, 10);
         scene.add(light);
-        scene.add(new THREE.AmbientLight(0x404040));
+        scene.add(new THREE.AmbientLight(0xffffff, 1.2));
 
         camera.position.z = 5;
 

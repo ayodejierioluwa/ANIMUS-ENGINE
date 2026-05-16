@@ -30,35 +30,55 @@ class AnimusEngine:
             
         return f"Successfully generated {len(generated_files)} pages: {', '.join(generated_files)}"
 
+    def architect_unique_theme(self, data):
+        """Generates a truly unique theme based on the prompt keywords."""
+        prompt = data.get("hero_title", "").lower()
+        
+        # Generative Color Theory
+        if "nature" in prompt or "green" in prompt:
+            bg, accent = "#020804", "#00ff88"
+        elif "crypto" in prompt or "tech" in prompt:
+            bg, accent = "#050505", "#00d4ff"
+        elif "fire" in prompt or "energy" in prompt:
+            bg, accent = "#0a0202", "#ff4d00"
+        else:
+            bg, accent = "#080808", "#ffffff"
+            
+        return {
+            "bg_color": bg, "text_color": "#ffffff", "accent_primary": accent, "accent_secondary": "#ffffff",
+            "glass_bg": "rgba(255, 255, 255, 0.02)", "glass_border": "rgba(255, 255, 255, 0.05)",
+            "font_main": "'Inter', sans-serif", "font_heading": "'Outfit', sans-serif",
+            "hero_gradient": f"linear-gradient(to bottom, {accent}, transparent)"
+        }
     def generate_page(self, page_name, data):
         """Generates a single page of the site."""
         self.project_name = data.get("project_name", self.project_name)
         use_3d = data.get("use_3d", True)
         use_video = data.get("use_video", False)
         
-        # 0. Generate Theme Tokens
-        theme_type = data.get("theme", "DARK_NEON")
-        themes = {
-            "DARK_NEON": {
-                "bg_color": "#050505", "text_color": "#ffffff", "accent_primary": "#00ffcc", "accent_secondary": "#ff00ff",
-                "glass_bg": "rgba(255, 255, 255, 0.03)", "glass_border": "rgba(255, 255, 255, 0.08)",
-                "font_main": "'Inter', sans-serif", "font_heading": "'Outfit', sans-serif",
-                "hero_gradient": "linear-gradient(to bottom, #fff 40%, rgba(255,255,255,0.4))"
-            },
-            "MINIMAL_LIGHT": {
-                "bg_color": "#f8f9fa", "text_color": "#1a1a1a", "accent_primary": "#000000", "accent_secondary": "#6c757d",
-                "glass_bg": "rgba(0, 0, 0, 0.02)", "glass_border": "rgba(0, 0, 0, 0.05)",
-                "font_main": "'Inter', sans-serif", "font_heading": "'Inter', sans-serif",
-                "hero_gradient": "linear-gradient(to bottom, #1a1a1a 40%, rgba(26,26,26,0.5))"
-            },
-            "LUXURY_GOLD": {
-                "bg_color": "#0a0908", "text_color": "#eae0d5", "accent_primary": "#c6ac8f", "accent_secondary": "#5e503f",
-                "glass_bg": "rgba(198, 172, 143, 0.05)", "glass_border": "rgba(198, 172, 143, 0.1)",
-                "font_main": "'Inter', sans-serif", "font_heading": "'Outfit', sans-serif",
-                "hero_gradient": "linear-gradient(to bottom, #c6ac8f 40%, #5e503f)"
+        # 0. Generate Unique Design System (Generative Stylist)
+        theme_type = data.get("theme", "DYNAMIC")
+        
+        if theme_type == "DYNAMIC":
+            # Generate a unique palette based on the prompt
+            tokens = self.architect_unique_theme(data)
+        else:
+            # Fallback to presets
+            themes = {
+                "LIQUID_METAL": {
+                    "bg_color": "#000000", "text_color": "#ffffff", "accent_primary": "#00d4ff", "accent_secondary": "#ff0055",
+                    "glass_bg": "rgba(255, 255, 255, 0.05)", "glass_border": "rgba(255, 255, 255, 0.1)",
+                    "font_main": "'Inter', sans-serif", "font_heading": "'Outfit', sans-serif",
+                    "hero_gradient": "linear-gradient(135deg, #00d4ff, #ff0055)"
+                },
+                "CYBER_NATURE": {
+                    "bg_color": "#020f12", "text_color": "#e0f2f1", "accent_primary": "#00ff88", "accent_secondary": "#00b8d4",
+                    "glass_bg": "rgba(0, 255, 136, 0.03)", "glass_border": "rgba(0, 255, 136, 0.1)",
+                    "font_main": "'Inter', sans-serif", "font_heading": "'Outfit', sans-serif",
+                    "hero_gradient": "linear-gradient(to bottom, #00ff88, #00b8d4)"
+                }
             }
-        }
-        tokens = themes.get(theme_type, themes["DARK_NEON"])
+            tokens = themes.get(theme_type, themes["LIQUID_METAL"])
         tokens["hero_gradient"] = tokens.get("hero_gradient", "linear-gradient(to bottom, #fff, transparent)")
         tokens["video_url"] = data.get("video_url", "https://assets.mixkit.co/videos/preview/mixkit-abstract-form-of-blue-and-purple-ink-in-water-39850-large.mp4")
 
