@@ -15,13 +15,8 @@ HERO_TEMPLATE = """
 
 VIDEO_HERO_TEMPLATE = """
 <input type="checkbox" id="ignite-engine" style="display: none;">
-<div id="video-background-container" style="position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: 1; pointer-events: none; overflow: hidden; background: black url('assets/fire_bg.png') no-repeat center center; background-size: cover; opacity: 0; transition: opacity 2.5s ease;">
-    <iframe id="bg-video-iframe" 
-        src="https://www.youtube.com/embed/Lp6WjSTU80M?enablejsapi=1&autoplay=0&loop=1&controls=0&showinfo=0&rel=0&mute=1&playlist=Lp6WjSTU80M" 
-        frameborder="0" 
-        style="position: absolute; top: 50%; left: 50%; width: 100vw; height: 56.25vw; min-height: 100vh; min-width: 177.77vh; transform: translate(-50%, -50%); pointer-events: none;"
-        allow="autoplay; fullscreen">
-    </iframe>
+<div id="fireplace-base" style="position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: 1; pointer-events: none; background: url('assets/fire_bg.png') no-repeat center center; background-size: cover; opacity: 0; transition: opacity 2s ease;">
+    <div id="ultra-fire-container" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;"></div>
 </div>
 
 <div id="css-sparks" style="position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: 10006; pointer-events: none; opacity: 0;">
@@ -36,7 +31,7 @@ VIDEO_HERO_TEMPLATE = """
 </label>
 
 <style>
-    #ignite-engine:checked ~ #video-background-container { opacity: 1 !important; }
+    #ignite-engine:checked ~ #fireplace-base { opacity: 1 !important; }
     #ignite-engine:checked ~ #ignition-overlay { opacity: 0 !important; visibility: hidden; }
     #ignite-engine:checked ~ .site-wrapper .hero-content { opacity: 1 !important; transform: translateY(0) !important; }
     #ignite-engine:checked ~ #css-sparks { animation: sparkBurst 1s ease-out forwards; }
@@ -66,12 +61,108 @@ VIDEO_HERO_TEMPLATE = """
 <script>
     document.getElementById('ignite-engine').addEventListener('change', (e) => {
         if (e.target.checked) {
-            const iframe = document.getElementById('bg-video-iframe');
-            if (iframe) {
-                iframe.contentWindow.postMessage('{"event":"command","func":"playVideo","args":""}', '*');
-            }
+            initUltraRealFire();
         }
     });
+
+    function initUltraRealFire() {
+        const container = document.getElementById('ultra-fire-container');
+        const scene = new THREE.Scene();
+        const camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000);
+        camera.position.z = 5;
+
+        const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        container.appendChild(renderer.domElement);
+
+        const fireMaterial = new THREE.ShaderMaterial({
+            uniforms: { 
+                time: { value: 0.0 }, 
+                resolution: { value: new THREE.Vector2(window.innerWidth, window.innerHeight) }
+            },
+            vertexShader: `
+                varying vec2 vUv;
+                void main() {
+                    vUv = uv;
+                    gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+                }
+            `,
+            fragmentShader: `
+                uniform float time;
+                uniform vec2 resolution;
+                varying vec2 vUv;
+                float hash(vec2 p) { return fract(sin(dot(p, vec2(12.9898, 78.233))) * 43758.5453); }
+                float noise(vec2 p) {
+                    vec2 i = floor(p); vec2 f = fract(p);
+                    vec2 u = f*f*(3.0-2.0*f);
+                    return mix(mix(hash(i + vec2(0.,0.)), hash(i + vec2(1.,0.)), u.x),
+                               mix(hash(i + vec2(0.,1.)), hash(i + vec2(1.,1.)), u.x), u.y);
+                }
+                float fbm(vec2 p) {
+                    float v = 0.0; float a = 0.5;
+                    for (int i = 0; i < 4; i++) {
+                        v += a * noise(p); p *= 2.0; a *= 0.5;
+                    }
+                    return v;
+                }
+                void main() {
+                    vec2 uv = vUv;
+                    vec2 q = vec2(fbm(uv * 3.0 + vec2(0.0, -time * 0.8)), fbm(uv * 3.0 + vec2(1.0, -time * 0.5)));
+                    float f = fbm(uv * 4.0 + q + vec2(0.0, -time * 1.5));
+                    float mask = smoothstep(0.1, 0.4, uv.x) * smoothstep(0.9, 0.6, uv.x);
+                    mask *= smoothstep(0.0, 0.2, uv.y) * smoothstep(1.0, 0.4, uv.y);
+                    f *= mask * 2.2;
+                    vec3 fireColor = mix(vec3(0.0), vec3(1.0, 0.1, 0.0), smoothstep(0.1, 0.3, f));
+                    fireColor = mix(fireColor, vec3(1.0, 0.5, 0.0), smoothstep(0.3, 0.6, f));
+                    fireColor = mix(fireColor, vec3(1.0, 0.9, 0.4), smoothstep(0.6, 0.8, f));
+                    gl_FragColor = vec4(fireColor, smoothstep(0.0, 0.1, f) * 0.8);
+                }
+            `,
+            transparent: true,
+            blending: THREE.AdditiveBlending
+        });
+
+        const flameGeo = new THREE.PlaneGeometry(6, 4, 32, 32);
+        const flames = new THREE.Mesh(flameGeo, fireMaterial);
+        flames.position.y = -0.5;
+        scene.add(flames);
+
+        const emberCount = 60;
+        const eGeo = new THREE.BufferGeometry();
+        const ePos = new Float32Array(emberCount * 3);
+        const eVel = new Float32Array(emberCount * 3);
+        for(let i=0; i<emberCount*3; i++) {
+            ePos[i] = (Math.random() - 0.5) * 4;
+            eVel[i] = Math.random() * 0.02 + 0.01;
+        }
+        eGeo.setAttribute('position', new THREE.BufferAttribute(ePos, 3));
+        const eMat = new THREE.PointsMaterial({ color: 0xff8800, size: 0.02, transparent: true, opacity: 0.8, blending: THREE.AdditiveBlending });
+        const embers = new THREE.Points(eGeo, eMat);
+        scene.add(embers);
+
+        function animate(t) {
+            requestAnimationFrame(animate);
+            const time = t * 0.001;
+            fireMaterial.uniforms.time.value = time;
+            const pos = eGeo.attributes.position.array;
+            for(let i=0; i<emberCount; i++) {
+                pos[i*3+1] += eVel[i*3+1];
+                pos[i*3] += Math.sin(time + i) * 0.005;
+                if (pos[i*3+1] > 3) {
+                    pos[i*3+1] = -1.5;
+                    pos[i*3] = (Math.random() - 0.5) * 2.5;
+                }
+            }
+            eGeo.attributes.position.needsUpdate = true;
+            renderer.render(scene, camera);
+        }
+        animate(0);
+        window.addEventListener('resize', () => {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        });
+    }
 </script>
 """
 
