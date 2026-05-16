@@ -61,6 +61,7 @@ h1, h2, h3 {
     position: relative;
     padding: 0 1rem;
     overflow: hidden;
+    background: transparent;
 }
 
 #three-canvas-container, #bg-video {
@@ -69,9 +70,14 @@ h1, h2, h3 {
     left: 0;
     width: 100%;
     height: 100%;
-    z-index: -1;
+    z-index: 1; /* Above background, below content */
     pointer-events: none;
     object-fit: cover;
+}
+
+.hero-content {
+    position: relative;
+    z-index: 10; /* Above video */
 }
 
 .hero h1 {
@@ -193,6 +199,30 @@ h1, h2, h3 {
     mix-blend-mode: difference;
 }
 
+        .hero {
+            position: relative;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            overflow: hidden;
+            background: transparent; /* Fix: Allow video/3D to show through */
+        }
+        #three-canvas-container, #bg-video {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1; /* Move to front of background */
+            pointer-events: none;
+            object-fit: cover;
+        }
+        .hero-content {
+            position: relative;
+            z-index: 2; /* Ensure content is above video */
+        }
     </style>
 </head>
 <body class="page-metrics">

@@ -80,7 +80,7 @@ class AnimusEngine:
             }
             tokens = themes.get(theme_type, themes["LIQUID_METAL"])
         tokens["hero_gradient"] = tokens.get("hero_gradient", "linear-gradient(to bottom, #fff, transparent)")
-        tokens["video_url"] = data.get("video_url", "https://cdn.pixabay.com/vimeo/328941243/water-24088.mp4?width=1280&hash=5e5d3c8d3e0f1e0d3e0f1e0d3e0f1e0d3e0f1e0d")
+        tokens["video_url"] = data.get("video_url", "https://v.ftcdn.net/04/79/10/83/700_F_479108331_l3N6nE7A69mK89g1B7Hh_ST.mp4")
 
         # 1. Build Hero (Variety Selection)
         layout_type = data.get("layout", "FULL")
@@ -142,6 +142,30 @@ class AnimusEngine:
     <title>{self.project_name} | {page_name.capitalize()}</title>
     <style>
         {styles}
+        .hero {{
+            position: relative;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            overflow: hidden;
+            background: transparent; /* Fix: Allow video/3D to show through */
+        }}
+        #three-canvas-container, #bg-video {{
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1; /* Move to front of background */
+            pointer-events: none;
+            object-fit: cover;
+        }}
+        .hero-content {{
+            position: relative;
+            z-index: 2; /* Ensure content is above video */
+        }}
     </style>
 </head>
 <body class="page-{page_name}">
