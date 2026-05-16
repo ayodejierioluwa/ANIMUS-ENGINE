@@ -97,6 +97,7 @@ class AnimusEngine:
         tokens["hero_gradient"] = tokens.get("hero_gradient", "linear-gradient(to bottom, #fff, transparent)")
         tokens["video_url"] = data.get("video_url", "https://res.cloudinary.com/demo/video/upload/f_auto:video,q_auto/docs/sea_turtle.mp4")
         tokens["youtube_id"] = data.get("youtube_id", "Lp6WjSTU80M") # Default Cinematic Fire
+        tokens["vimeo_id"] = data.get("vimeo_id", "189852033")
 
         # 1. Build Hero (Variety Selection)
         layout_type = data.get("layout", "FULL")

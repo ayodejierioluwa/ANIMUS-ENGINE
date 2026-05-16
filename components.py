@@ -14,9 +14,13 @@ HERO_TEMPLATE = """
 """
 
 VIDEO_HERO_TEMPLATE = """
-<video autoplay muted loop playsinline id="bg-video" style="position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; object-fit: cover; z-index: -100; pointer-events: none;">
-    <source src="[[video_url]]" type="video/mp4">
-</video>
+<div id="vimeo-background-container" style="position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: -100; pointer-events: none; overflow: hidden; background: black;">
+    <iframe src="https://player.vimeo.com/video/[[vimeo_id]]?background=1&autoplay=1&loop=1&byline=0&title=0&muted=1" 
+        frameborder="0" 
+        style="position: absolute; top: 50%; left: 50%; width: 100vw; height: 56.25vw; min-height: 100vh; min-width: 177.77vh; transform: translate(-50%, -50%);"
+        allow="autoplay; fullscreen">
+    </iframe>
+</div>
 <section class="hero [[layout_class]]" id="hero" style="background: transparent !important;">
     <div class="noise-overlay"></div>
     <div class="hero-content">
@@ -27,6 +31,7 @@ VIDEO_HERO_TEMPLATE = """
         </div>
     </div>
 </section>
+<button onclick="diagnoseVisuals()" style="position: fixed; bottom: 1rem; right: 1rem; z-index: 10002; background: rgba(255,255,255,0.1); color: white; border: 1px solid white; padding: 0.5rem; border-radius: 5px; cursor: pointer;">Diagnostic</button>
 """
 
 SHADER_HERO_TEMPLATE = """
@@ -41,6 +46,7 @@ SHADER_HERO_TEMPLATE = """
         </div>
     </div>
 </section>
+<button onclick="diagnoseVisuals()" style="position: fixed; bottom: 1rem; right: 1rem; z-index: 10002; background: rgba(255,255,255,0.1); color: white; border: 1px solid white; padding: 0.5rem; border-radius: 5px; cursor: pointer;">Diagnostic</button>
 """
 
 SCROLL_SECTION_TEMPLATE = """
@@ -270,10 +276,13 @@ GSAP_SCRIPT = """
     function diagnoseVisuals() {
         const video = document.getElementById('bg-video');
         const shader = document.getElementById('shader-background-container');
-        if (shader) {
-            alert(`Sentry Diagnostic:\\n- Shader Container: ${shader.offsetWidth}x${shader.offsetHeight}\\n- Z-Index: ${shader.style.zIndex}`);
+        const vimeo = document.getElementById('vimeo-background-container');
+        if (vimeo) {
+            alert(`Sentry Diagnostic:\\n- Vimeo Active: ${vimeo.offsetWidth}x${vimeo.offsetHeight}\\n- Z-Index: ${vimeo.style.zIndex}`);
+        } else if (shader) {
+            alert(`Sentry Diagnostic:\\n- Shader Active: ${shader.offsetWidth}x${shader.offsetHeight}\\n- Z-Index: ${shader.style.zIndex}`);
         } else if (video) {
-            alert(`Sentry Diagnostic:\\n- Video State: ${video.readyState}\\n- Video Source: ${video.currentSrc}\\n- Z-Index: ${video.style.zIndex}`);
+            alert(`Sentry Diagnostic:\\n- Video State: ${video.readyState}\\n- Z-Index: ${video.style.zIndex}`);
         } else {
             alert("Sentry Diagnostic: NO BACKGROUND ELEMENT FOUND.");
         }

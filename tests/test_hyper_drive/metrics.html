@@ -447,10 +447,13 @@ h1, h2, h3 {
     function diagnoseVisuals() {
         const video = document.getElementById('bg-video');
         const shader = document.getElementById('shader-background-container');
-        if (shader) {
-            alert(`Sentry Diagnostic:\n- Shader Container: ${shader.offsetWidth}x${shader.offsetHeight}\n- Z-Index: ${shader.style.zIndex}`);
+        const vimeo = document.getElementById('vimeo-background-container');
+        if (vimeo) {
+            alert(`Sentry Diagnostic:\n- Vimeo Active: ${vimeo.offsetWidth}x${vimeo.offsetHeight}\n- Z-Index: ${vimeo.style.zIndex}`);
+        } else if (shader) {
+            alert(`Sentry Diagnostic:\n- Shader Active: ${shader.offsetWidth}x${shader.offsetHeight}\n- Z-Index: ${shader.style.zIndex}`);
         } else if (video) {
-            alert(`Sentry Diagnostic:\n- Video State: ${video.readyState}\n- Video Source: ${video.currentSrc}\n- Z-Index: ${video.style.zIndex}`);
+            alert(`Sentry Diagnostic:\n- Video State: ${video.readyState}\n- Z-Index: ${video.style.zIndex}`);
         } else {
             alert("Sentry Diagnostic: NO BACKGROUND ELEMENT FOUND.");
         }
