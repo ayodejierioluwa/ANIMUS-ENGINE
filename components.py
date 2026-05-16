@@ -14,23 +14,16 @@ HERO_TEMPLATE = """
 """
 
 VIDEO_HERO_TEMPLATE = """
-<div id="video-background-container" style="position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: 1; pointer-events: none; overflow: hidden; background: black;">
-    <iframe id="bg-video-iframe" 
-        src="https://player.vimeo.com/video/[[vimeo_id]]?background=1&autoplay=0&loop=1&byline=0&title=0&muted=1" 
-        frameborder="0" 
-        style="position: absolute; top: 50%; left: 50%; width: 100vw; height: 56.25vw; min-height: 100vh; min-width: 177.77vh; transform: translate(-50%, -50%);"
-        allow="autoplay; fullscreen">
-    </iframe>
-</div>
-<div id="ignition-overlay" style="position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: 10005; background: rgba(0,0,0,0.6); display: flex; align-items: center; justify-content: center; cursor: pointer; backdrop-filter: blur(10px); transition: opacity 1s ease;">
+<div id="kinetic-fire-container" style="position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: 1; pointer-events: none; background: black;"></div>
+<div id="ignition-overlay" style="position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: 10005; background: black; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: opacity 1.5s ease-out;">
     <div style="text-align: center;">
-        <h2 style="color: white; font-size: 1.5rem; letter-spacing: 0.5rem; margin-bottom: 1rem;">EXPERIENCE THE FIRE</h2>
-        <p style="color: rgba(255,255,255,0.5); font-size: 0.8rem;">TAP TO IGNITE THE ENGINE</p>
+        <h2 style="color: white; font-size: 1.2rem; letter-spacing: 0.8rem; margin-bottom: 1rem; font-weight: 200;">STRIKE TO IGNITE</h2>
+        <div style="width: 40px; height: 1px; background: white; margin: 0 auto; opacity: 0.3;"></div>
     </div>
 </div>
 
 <section class="hero [[layout_class]]" id="hero" style="background: transparent !important;">
-    <div class="hero-content" style="position: relative; z-index: 10;">
+    <div class="hero-content" style="position: relative; z-index: 10; opacity: 0;">
         <h1 class="reveal">[[title]]</h1>
         <p class="reveal">[[subtitle]]</p>
         <div class="reveal">
@@ -39,19 +32,8 @@ VIDEO_HERO_TEMPLATE = """
     </div>
 </section>
 <button onclick="diagnoseVisuals()" style="position: fixed; bottom: 1rem; right: 1rem; z-index: 10002; background: rgba(255,255,255,0.1); color: white; border: 1px solid white; padding: 0.5rem; border-radius: 5px; cursor: pointer;">Diagnostic</button>
-<script src="https://player.vimeo.com/api/player.js"></script>
 <script>
     window.FIRE_BG = "assets/fire_bg.png";
-    const iframe = document.getElementById('bg-video-iframe');
-    const player = new Vimeo.Player(iframe);
-    const overlay = document.getElementById('ignition-overlay');
-    
-    overlay.addEventListener('click', () => {
-        player.play().then(() => {
-            overlay.style.opacity = '0';
-            setTimeout(() => overlay.style.display = 'none', 1000);
-        }).catch(e => console.log("Ignition error:", e));
-    });
 </script>
 """
 
@@ -326,29 +308,32 @@ GSAP_SCRIPT = """
         });
     }
 
-    // AETHER_IGNIS_KINETIC_ULTRA (The "Indestructible" Realism Engine)
-    const kineticFire = document.getElementById('kinetic-fire-container');
-    if (kineticFire && window.FIRE_BG) {
-        const kf_scene = new THREE.Scene();
-        const kf_camera = new THREE.OrthographicCamera(-1, 1, 1, -1, 0, 1);
-        const kf_renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
-        kf_renderer.setSize(window.innerWidth, window.innerHeight);
-        kineticFire.appendChild(kf_renderer.domElement);
+    // AETHER_IGNIS_ULTRA_IGNITION (The "Match-Strike" Experience)
+    const fireContainer = document.getElementById('kinetic-fire-container');
+    const overlay = document.getElementById('ignition-overlay');
+    
+    if (fireContainer && overlay && window.FIRE_BG) {
+        const scene = new THREE.Scene();
+        const camera = new THREE.OrthographicCamera(-1, 1, 1, -1, 0, 1);
+        const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        fireContainer.appendChild(renderer.domElement);
 
         const loader = new THREE.TextureLoader();
         loader.load(window.FIRE_BG, (texture) => {
             const material = new THREE.ShaderMaterial({
                 uniforms: { 
-                    time: { value: 1.0 }, 
+                    time: { value: 0.0 }, 
+                    opacity: { value: 0.0 },
                     uTexture: { value: texture },
                     resolution: { value: new THREE.Vector2(window.innerWidth, window.innerHeight) }
                 },
                 vertexShader: `void main() { gl_Position = vec4(position, 1.0); }`,
                 fragmentShader: `
                     uniform float time;
+                    uniform float opacity;
                     uniform sampler2D uTexture;
                     uniform vec2 resolution;
-                    
                     float hash(vec2 p) { return fract(sin(dot(p, vec2(12.9898, 78.233))) * 43758.5453); }
                     float noise(vec2 p) {
                         vec2 i = floor(p); vec2 f = fract(p);
@@ -356,104 +341,77 @@ GSAP_SCRIPT = """
                         return mix(mix(hash(i + vec2(0.,0.)), hash(i + vec2(1.,0.)), u.x),
                                    mix(hash(i + vec2(0.,1.)), hash(i + vec2(1.,1.)), u.x), u.y);
                     }
-
                     void main() {
                         vec2 uv = gl_FragCoord.xy / resolution.xy;
-                        
-                        // Intelligent Heat Map (Targets the flames)
-                        vec4 baseColor = texture2D(uTexture, uv);
-                        float isFire = smoothstep(0.3, 0.8, length(baseColor.rgb));
-                        
-                        // Multi-Layer Motion
-                        float n1 = noise(uv * 8.0 + time * 1.2);
-                        float n2 = noise(uv * 16.0 - time * 0.8);
-                        float distortion = (n1 + n2 * 0.5) * 0.012 * isFire;
-                        
-                        vec2 distortedUV = uv + vec2(distortion * 0.3, distortion - time * 0.015 * isFire);
-                        vec4 finalColor = texture2D(uTexture, distortedUV);
-                        
-                        // Subtle flicker & Glow
-                        finalColor.rgb *= 0.96 + 0.08 * noise(vec2(time * 3.0));
-                        finalColor.rgb += vec3(0.1, 0.05, 0.0) * isFire * noise(uv * 10.0 + time);
-                        
-                        gl_FragColor = finalColor;
+                        vec4 base = texture2D(uTexture, uv);
+                        float isFire = smoothstep(0.3, 0.8, length(base.rgb));
+                        float distortion = noise(uv * 12.0 + time * 1.2) * 0.015 * isFire;
+                        vec4 final = texture2D(uTexture, uv + vec2(distortion, distortion - time * 0.02 * isFire));
+                        final.rgb *= 0.95 + 0.1 * noise(vec2(time * 3.0));
+                        gl_FragColor = vec4(final.rgb, opacity);
                     }
-                `
+                `,
+                transparent: true
             });
-            kf_scene.add(new THREE.Mesh(new THREE.PlaneGeometry(2, 2), material));
+            scene.add(new THREE.Mesh(new THREE.PlaneGeometry(2, 2), material));
 
-            // REALISTIC RISING EMBERS
-            const emberCount = 35;
-            const eGeometry = new THREE.BufferGeometry();
-            const ePositions = new Float32Array(emberCount * 3);
-            const eVelocities = new Float32Array(emberCount * 3);
-            for(let i=0; i<emberCount*3; i++) {
-                ePositions[i] = (Math.random() - 0.5) * 1.5;
-                eVelocities[i] = Math.random() * 0.015 + 0.005;
-            }
-            eGeometry.setAttribute('position', new THREE.BufferAttribute(ePositions, 3));
-            const eMaterial = new THREE.PointsMaterial({ color: 0xff6600, size: 0.012, transparent: true, opacity: 0.7, blending: THREE.AdditiveBlending });
-            const embers = new THREE.Points(eGeometry, eMaterial);
-            kf_scene.add(embers);
+            // Match-Strike Spark System
+            const sparkCount = 150;
+            const sGeometry = new THREE.BufferGeometry();
+            const sPos = new Float32Array(sparkCount * 3);
+            const sVel = new Float32Array(sparkCount * 3);
+            for(let i=0; i<sparkCount*3; i++) { sPos[i] = 0; sVel[i] = 0; }
+            sGeometry.setAttribute('position', new THREE.BufferAttribute(sPos, 3));
+            const sMaterial = new THREE.PointsMaterial({ color: 0xffaa00, size: 0.02, transparent: true, opacity: 0, blending: THREE.AdditiveBlending });
+            const sparks = new THREE.Points(sGeometry, sMaterial);
+            scene.add(sparks);
 
-            function kf_animate(t) {
-                requestAnimationFrame(kf_animate);
+            let ignited = false;
+            overlay.addEventListener('click', () => {
+                if (ignited) return;
+                ignited = true;
+                
+                overlay.style.opacity = '0';
+                setTimeout(() => overlay.style.display = 'none', 1500);
+
+                gsap.to(material.uniforms.opacity, { value: 1, duration: 2.5, ease: "power2.inOut" });
+                gsap.to(".hero-content", { opacity: 1, duration: 2, delay: 0.8 });
+                
+                // Spark Explosion
+                sMaterial.opacity = 1;
+                const vel = sGeometry.attributes.position.array;
+                for(let i=0; i<sparkCount; i++) {
+                    const angle = Math.random() * Math.PI * 2;
+                    const speed = Math.random() * 0.08 + 0.02;
+                    sVel[i*3] = Math.cos(angle) * speed;
+                    sVel[i*3+1] = Math.sin(angle) * speed;
+                }
+                gsap.to(sMaterial, { opacity: 0, duration: 2, delay: 0.5 });
+                
+                // Reveal other elements
+                gsap.to(".reveal, section, .card", { opacity: 1, y: 0, duration: 1.5, stagger: 0.1, ease: "power4.out", delay: 1 });
+            });
+
+            function animate(t) {
+                requestAnimationFrame(animate);
                 const time = t * 0.001;
                 material.uniforms.time.value = time;
                 
-                const pos = eGeometry.attributes.position.array;
-                for(let i=0; i<emberCount; i++) {
-                    pos[i*3+1] += eVelocities[i*3+1];
-                    pos[i*3] += Math.sin(time + i) * 0.0015;
-                    if(pos[i*3+1] > 1) {
-                        pos[i*3+1] = -0.5;
-                        pos[i*3] = (Math.random() - 0.5) * 1.2;
+                if (ignited) {
+                    const pos = sGeometry.attributes.position.array;
+                    for(let i=0; i<sparkCount; i++) {
+                        pos[i*3] += sVel[i*3];
+                        pos[i*3+1] += sVel[i*3+1];
+                        sVel[i*3+1] -= 0.002; // Gravity
                     }
+                    sGeometry.attributes.position.needsUpdate = true;
                 }
-                eGeometry.attributes.position.needsUpdate = true;
-                kf_renderer.render(kf_scene, kf_camera);
+                renderer.render(scene, camera);
             }
-            kf_animate(0);
+            animate(0);
         });
-        window.addEventListener('resize', () => kf_renderer.setSize(window.innerWidth, window.innerHeight));
+        window.addEventListener('resize', () => renderer.setSize(window.innerWidth, window.innerHeight));
     }
-
-    // Initial Reveal Animations
-    gsap.to(".reveal", {
-        opacity: 1,
-        y: 0,
-        duration: 1.5,
-        stagger: 0.15,
-        ease: "expo.out",
-        delay: 0.2
-    });
-
-    // Stunning Card Entrances
-    gsap.utils.toArray(".card").forEach((card, i) => {
-        gsap.from(card, {
-            scrollTrigger: {
-                trigger: card,
-                start: "top 95%",
-                toggleActions: "play none none none"
-            },
-            opacity: 0,
-            scale: 0.8,
-            rotationY: 15,
-            duration: 1.2,
-            delay: i * 0.1,
-            ease: "back.out(1.7)"
-        });
-    });
-
-    // Robust Scroll Reveal (Final Fix for disappearing bug)
-    gsap.utils.toArray(".reveal, section, .card").forEach(el => {
-        gsap.set(el, { opacity: 0, y: 30 }); // Ensure initial state
-        ScrollTrigger.create({
-            trigger: el,
-            start: "top 95%",
-            onEnter: () => gsap.to(el, { opacity: 1, y: 0, duration: 1.2, ease: "power4.out" })
-        });
-    });
 
     // Magnetic Cursor Logic (WOW Factor)
     const cursor = document.createElement('div');
