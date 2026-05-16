@@ -14,9 +14,18 @@ HERO_TEMPLATE = """
 """
 
 VIDEO_HERO_TEMPLATE = """
-<div id="kinetic-fire-container" style="position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: 1; pointer-events: none; background: black;"></div>
+<div id="video-background-container" style="position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: -100; pointer-events: none; overflow: hidden; background: black;">
+    <iframe id="bg-video-iframe" 
+        src="https://player.vimeo.com/video/[[vimeo_id]]?background=1&autoplay=1&loop=1&byline=0&title=0&muted=1" 
+        frameborder="0" 
+        style="position: absolute; top: 50%; left: 50%; width: 100vw; height: 56.25vw; min-height: 100vh; min-width: 177.77vh; transform: translate(-50%, -50%);"
+        allow="autoplay; fullscreen">
+    </iframe>
+</div>
+<div id="kinetic-fire-container" style="position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: -101; pointer-events: none; background: black;"></div>
+
 <section class="hero [[layout_class]]" id="hero" style="background: transparent !important;">
-    <div class="hero-content">
+    <div class="hero-content" style="position: relative; z-index: 9999;">
         <h1 class="reveal">[[title]]</h1>
         <p class="reveal">[[subtitle]]</p>
         <div class="reveal">
@@ -27,6 +36,7 @@ VIDEO_HERO_TEMPLATE = """
 <button onclick="diagnoseVisuals()" style="position: fixed; bottom: 1rem; right: 1rem; z-index: 10002; background: rgba(255,255,255,0.1); color: white; border: 1px solid white; padding: 0.5rem; border-radius: 5px; cursor: pointer;">Diagnostic</button>
 <script>
     window.FIRE_BG = "assets/fire_bg.png";
+    window.VIMEO_ID = "[[vimeo_id]]";
 </script>
 """
 
