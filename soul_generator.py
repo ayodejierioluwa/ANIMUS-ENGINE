@@ -3,7 +3,7 @@ import json
 class AnimusSoul:
     """
     The 'Soul' of the Animus Engine. 
-    Now equipped with 'Breathing Physics' for Organic Vibes.
+    Now equipped with the 'Neural Sitemap' engine.
     """
     def __init__(self, mission_prompt):
         self.mission = mission_prompt
@@ -13,10 +13,14 @@ class AnimusSoul:
         # 1. Calculate Atmospheric DNA
         tokens = self._calculate_atmospheric_dna()
         
-        # 2. Generate Content
+        # 2. Map the Neural Sitemap
+        sitemap = self._generate_sitemap()
+        
+        # 3. Generate Core Identity
         m = self.mission.lower()
         if any(x in m for x in ["crypto", "tech", "neural", "precision", "surgical"]):
-            content = {
+            identity = {
+                "project_name": "NEURAL_CORE",
                 "hero": { "title": "NEURAL OVERRIDE", "subtitle": "Precision intelligence for the sovereign architect.", "cta": "IGNITE BRIDGE" },
                 "features": [
                     {"icon": "⚡", "title": "Neural Latency", "description": "0.01ms execution via localized mesh nodes."},
@@ -25,7 +29,8 @@ class AnimusSoul:
                 ]
             }
         elif any(x in m for x in ["nature", "soft", "organic", "wellness"]):
-            content = {
+            identity = {
+                "project_name": "AETHER_FLOW",
                 "hero": { "title": "AETHER FLOW", "subtitle": "Breathe into the digital sanctuary of the future.", "cta": "BEGIN ASCENSION" },
                 "features": [
                     {"icon": "🌿", "title": "Organic Growth", "description": "Systems that evolve like a living forest."},
@@ -34,7 +39,8 @@ class AnimusSoul:
                 ]
             }
         else:
-            content = {
+            identity = {
+                "project_name": "ANIMUS_GEN",
                 "hero": { "title": "BEYOND CODE", "subtitle": "Engineering digital luxury that transcends the ordinary.", "cta": "START BUILDING" },
                 "features": [
                     {"icon": "🎨", "title": "Visual Soul", "description": "High-fidelity aesthetics that redefine digital luxury."},
@@ -43,8 +49,40 @@ class AnimusSoul:
                 ]
             }
             
-        content["tokens"] = tokens
-        return content
+        identity["tokens"] = tokens
+        identity["sitemap"] = sitemap
+        return identity
+
+    def _generate_sitemap(self):
+        """
+        The 'Neural Sitemap' Engine.
+        Decides which pages a project needs based on the mission.
+        """
+        m = self.mission.lower()
+        sitemap = [
+            {"name": "Home", "file": "index.html"},
+        ]
+        
+        if any(x in m for x in ["crypto", "tech"]):
+            sitemap += [
+                {"name": "Terminal", "file": "terminal.html"},
+                {"name": "Security", "file": "security.html"},
+                {"name": "Connect", "file": "connect.html"}
+            ]
+        elif any(x in m for x in ["nature", "wellness", "organic"]):
+            sitemap += [
+                {"name": "Sanctuary", "file": "sanctuary.html"},
+                {"name": "Essence", "file": "essence.html"},
+                {"name": "Rituals", "file": "rituals.html"}
+            ]
+        else:
+            sitemap += [
+                {"name": "Work", "file": "work.html"},
+                {"name": "About", "file": "about.html"},
+                {"name": "Contact", "file": "contact.html"}
+            ]
+            
+        return sitemap
 
     def _calculate_atmospheric_dna(self):
         m = self.mission.lower()

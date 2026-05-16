@@ -1,5 +1,25 @@
 # AETHER_ANIMUS Component Library
 
+NAV_BAR_TEMPLATE = """
+<nav style="position: fixed; top: 2rem; left: 50%; transform: translateX(-50%); width: auto; min-width: 400px; z-index: 10000; background: var(--glass-bg); border: 1px solid var(--glass-border); backdrop-filter: blur(var(--glass-blur)); border-radius: 100px; padding: 0.75rem 2rem; display: flex; align-items: center; justify-content: space-between; gap: 3rem; transition: all 0.5s var(--ease-vibe);">
+    <div class="logo" style="font-family: var(--font-heading); font-weight: 700; letter-spacing: 0.1em; font-size: 0.9rem; color: var(--accent-primary);">[[project_name]]</div>
+    <div class="nav-links" style="display: flex; gap: 2rem; align-items: center;">
+        [[nav_links]]
+    </div>
+    <div class="nav-cta">
+        <a href="#" style="background: white; color: black; padding: 0.5rem 1.5rem; border-radius: 50px; text-decoration: none; font-size: 0.8rem; font-weight: 700; letter-spacing: 0.05em; transition: transform 0.3s var(--ease-vibe);">[[cta_text]]</a>
+    </div>
+</nav>
+"""
+
+NAV_LINK_TEMPLATE = """
+<a href="[[link]]" style="text-decoration: none; color: white; font-size: 0.8rem; font-weight: 400; opacity: 0.5; letter-spacing: 0.05em; transition: all 0.3s var(--ease-vibe); font-family: var(--font-body);">[[name]]</a>
+<style>
+    .nav-links a:hover { opacity: 1; transform: translateY(-2px); color: var(--accent-primary); }
+    .nav-cta a:hover { transform: scale(1.05); box-shadow: 0 10px 20px rgba(0,0,0,0.3); }
+</style>
+"""
+
 HERO_TEMPLATE = """
 <section class="hero" id="hero">
     <div class="mesh-gradient"></div>
