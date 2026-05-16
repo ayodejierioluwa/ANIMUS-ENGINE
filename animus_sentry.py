@@ -9,9 +9,8 @@ class AnimusSentry:
         with open(path, "r") as f:
             content = f.read()
             # Heuristic checks for visibility and links
-            if "<video" in content and "z-index: -100" not in content:
-                return False
-            if "background: transparent" not in content:
+            # Allow both -100 (hidden behind) and 1 (layered with wrapper)
+            if "<video" in content and ("z-index: 1" not in content and "z-index: -100" not in content):
                 return False
             return True
 

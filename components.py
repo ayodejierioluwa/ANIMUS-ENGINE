@@ -14,20 +14,43 @@ HERO_TEMPLATE = """
 """
 
 VIDEO_HERO_TEMPLATE = """
+<input type="checkbox" id="ignite-engine" style="display: none;">
 <video autoplay muted loop playsinline crossorigin="anonymous" id="bg-video" 
     style="position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; object-fit: cover; z-index: 1; pointer-events: none; opacity: 0; transition: opacity 2s ease;">
     <source src="[[video_url]]" type="video/mp4">
 </video>
-<div id="spark-canvas-container" style="position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: 10006; pointer-events: none;"></div>
-<div id="ignition-overlay" style="position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: 20000; background: black; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: opacity 1.5s ease-out;">
+
+<div id="css-sparks" style="position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: 10006; pointer-events: none; opacity: 0;">
+    <div class="spark" style="left: 50%; top: 50%; width: 10px; height: 10px; background: orange; border-radius: 50%; position: absolute; filter: blur(2px);"></div>
+</div>
+
+<label for="ignite-engine" id="ignition-overlay" style="position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: 20000; background: black; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: opacity 1.5s ease-out, visibility 1.5s;">
     <div style="text-align: center;">
         <h2 style="color: white; font-size: 1.2rem; letter-spacing: 0.8rem; margin-bottom: 1rem; font-weight: 200;">STRIKE TO IGNITE</h2>
         <div style="width: 40px; height: 1px; background: white; margin: 0 auto; opacity: 0.3;"></div>
     </div>
-</div>
+</label>
+
+<style>
+    #ignite-engine:checked ~ #bg-video { opacity: 1 !important; }
+    #ignite-engine:checked ~ #ignition-overlay { opacity: 0 !important; visibility: hidden; }
+    #ignite-engine:checked ~ .site-wrapper .hero-content { opacity: 1 !important; transform: translateY(0) !important; }
+    #ignite-engine:checked ~ #css-sparks { animation: sparkBurst 1s ease-out forwards; }
+    
+    @keyframes sparkBurst {
+        0% { opacity: 1; transform: scale(0); }
+        100% { opacity: 0; transform: scale(5); }
+    }
+    
+    .hero-content { 
+        transition: opacity 2s ease 0.8s, transform 2s ease 0.8s !important; 
+        transform: translateY(20px);
+        opacity: 0;
+    }
+</style>
 
 <section class="hero [[layout_class]]" id="hero" style="background: transparent !important;">
-    <div class="hero-content" style="position: relative; z-index: 10000; opacity: 0;">
+    <div class="hero-content" style="position: relative; z-index: 10000;">
         <h1 class="reveal">[[title]]</h1>
         <p class="reveal">[[subtitle]]</p>
         <div class="reveal">
@@ -37,67 +60,10 @@ VIDEO_HERO_TEMPLATE = """
 </section>
 <button onclick="diagnoseVisuals()" style="position: fixed; bottom: 1rem; right: 1rem; z-index: 10002; background: rgba(255,255,255,0.1); color: white; border: 1px solid white; padding: 0.5rem; border-radius: 5px; cursor: pointer;">Diagnostic</button>
 <script>
-    const video = document.getElementById('bg-video');
-    const overlay = document.getElementById('ignition-overlay');
-    const sparkContainer = document.getElementById('spark-canvas-container');
-    
-    let ignited = false;
-    overlay.addEventListener('click', () => {
-        if (ignited) return;
-        ignited = true;
-        
-        // 1. Spark Burst Animation
-        initSparkBurst();
-        
-        // 2. Play Video
-        video.play().then(() => {
-            overlay.style.opacity = '0';
-            video.style.opacity = '1';
-            setTimeout(() => overlay.style.display = 'none', 1500);
-            gsap.to(".hero-content", { opacity: 1, duration: 2, delay: 0.8 });
-        }).catch(e => {
-            console.log("Ignition error:", e);
-            overlay.style.display = 'none'; // Safe fallback
-        });
+    // Hybrid support for older browsers
+    document.getElementById('ignite-engine').addEventListener('change', () => {
+        document.getElementById('bg-video').play();
     });
-
-    function initSparkBurst() {
-        const scene = new THREE.Scene();
-        const camera = new THREE.OrthographicCamera(-1, 1, 1, -1, 0, 1);
-        const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
-        renderer.setSize(window.innerWidth, window.innerHeight);
-        sparkContainer.appendChild(renderer.domElement);
-
-        const sparkCount = 100;
-        const geometry = new THREE.BufferGeometry();
-        const pos = new Float32Array(sparkCount * 3);
-        const vel = new Float32Array(sparkCount * 3);
-        for(let i=0; i<sparkCount; i++) {
-            const angle = Math.random() * Math.PI * 2;
-            const speed = Math.random() * 0.1 + 0.05;
-            vel[i*3] = Math.cos(angle) * speed;
-            vel[i*3+1] = Math.sin(angle) * speed;
-        }
-        geometry.setAttribute('position', new THREE.BufferAttribute(pos, 3));
-        const material = new THREE.PointsMaterial({ color: 0xffaa00, size: 0.02, transparent: true, blending: THREE.AdditiveBlending });
-        const sparks = new THREE.Points(geometry, material);
-        scene.add(sparks);
-
-        gsap.to(material, { opacity: 0, duration: 1.5 });
-
-        function animate() {
-            requestAnimationFrame(animate);
-            const positions = geometry.attributes.position.array;
-            for(let i=0; i<sparkCount; i++) {
-                positions[i*3] += vel[i*3];
-                positions[i*3+1] += vel[i*3+1];
-                vel[i*3+1] -= 0.003; // Gravity
-            }
-            geometry.attributes.position.needsUpdate = true;
-            renderer.render(scene, camera);
-        }
-        animate();
-    }
 </script>
 """
 
