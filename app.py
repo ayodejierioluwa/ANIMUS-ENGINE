@@ -91,6 +91,8 @@ DASHBOARD_HTML = """
         <div id="results">
             <p>PROJECT_SYNTHESIZED: <a id="view-link" href="#" target="_blank">OPEN_LIVE_DEPLOYMENT</a></p>
         </div>
+
+        <div class="signature" style="position: absolute; bottom: 2rem; right: 2rem; font-size: 0.7rem; letter-spacing: 0.3em; opacity: 0.4; color: var(--accent); text-shadow: 0 0 10px var(--accent);">SIGNED_BY_XXII</div>
     </div>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
