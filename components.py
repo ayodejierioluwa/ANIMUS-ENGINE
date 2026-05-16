@@ -14,13 +14,7 @@ HERO_TEMPLATE = """
 """
 
 VIDEO_HERO_TEMPLATE = """
-<div id="vimeo-background-container" style="position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: -100; pointer-events: none; overflow: hidden; background: black;">
-    <iframe src="https://player.vimeo.com/video/[[vimeo_id]]?background=1&autoplay=1&loop=1&byline=0&title=0&muted=1" 
-        frameborder="0" 
-        style="position: absolute; top: 50%; left: 50%; width: 100vw; height: 56.25vw; min-height: 100vh; min-width: 177.77vh; transform: translate(-50%, -50%);"
-        allow="autoplay; fullscreen">
-    </iframe>
-</div>
+<div id="realistic-fire-container" style="position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: -100; pointer-events: none;"></div>
 <section class="hero [[layout_class]]" id="hero" style="background: transparent !important;">
     <div class="noise-overlay"></div>
     <div class="hero-content">
@@ -217,6 +211,52 @@ GSAP_SCRIPT = """
         });
     }
 
+    // Realistic Fireplace Shader (The "WOWER" Wood Burning Fix)
+    const realisticFire = document.getElementById('realistic-fire-container');
+    if (realisticFire) {
+        const rf_scene = new THREE.Scene();
+        const rf_camera = new THREE.OrthographicCamera(-1, 1, 1, -1, 0, 1);
+        const rf_renderer = new THREE.WebGLRenderer({ antialias: true });
+        rf_renderer.setSize(window.innerWidth, window.innerHeight);
+        realisticFire.appendChild(rf_renderer.domElement);
+
+        const rf_material = new THREE.ShaderMaterial({
+            uniforms: { time: { value: 1.0 }, resolution: { value: new THREE.Vector2(window.innerWidth, window.innerHeight) } },
+            vertexShader: `void main() { gl_Position = vec4(position, 1.0); }`,
+            fragmentShader: `
+                uniform float time;
+                uniform vec2 resolution;
+                float hash(vec2 p) { return fract(sin(dot(p, vec2(127.1, 311.7))) * 43758.5453); }
+                float noise(vec2 p) {
+                    vec2 i = floor(p); vec2 f = fract(p);
+                    vec2 u = f*f*(3.0-2.0*f);
+                    return mix(mix(hash(i + vec2(0.,0.)), hash(i + vec2(1.,0.)), u.x),
+                               mix(hash(i + vec2(0.,1.)), hash(i + vec2(1.,1.)), u.x), u.y);
+                }
+                void main() {
+                    vec2 uv = gl_FragCoord.xy / resolution.xy;
+                    float wood = smoothstep(0.4, 0.45, uv.y + noise(uv * 10.0) * 0.05);
+                    vec3 col = mix(vec3(0.15, 0.08, 0.04), vec3(0.0), wood); 
+                    float fire = noise(uv * 3.0 - vec2(0.0, time * 0.4));
+                    fire *= (1.0 - uv.y) * 2.5;
+                    vec3 flame = mix(vec3(0.9, 0.2, 0.0), vec3(1.0, 0.7, 0.1), fire);
+                    gl_FragColor = vec4(max(col, flame * fire * (1.0 - wood)), 1.0);
+                }
+            `
+        });
+        rf_scene.add(new THREE.Mesh(new THREE.PlaneGeometry(2, 2), rf_material));
+        function rf_animate(t) {
+            requestAnimationFrame(rf_animate);
+            rf_material.uniforms.time.value = t * 0.001;
+            rf_renderer.render(rf_scene, rf_camera);
+        }
+        rf_animate(0);
+        window.addEventListener('resize', () => {
+            rf_renderer.setSize(window.innerWidth, window.innerHeight);
+            rf_material.uniforms.resolution.value.set(window.innerWidth, window.innerHeight);
+        });
+    }
+
     // Initial Reveal Animations
     gsap.to(".reveal", {
         opacity: 1,
@@ -276,13 +316,11 @@ GSAP_SCRIPT = """
     function diagnoseVisuals() {
         const video = document.getElementById('bg-video');
         const shader = document.getElementById('shader-background-container');
-        const vimeo = document.getElementById('vimeo-background-container');
-        if (vimeo) {
-            alert(`Sentry Diagnostic:\\n- Vimeo Active: ${vimeo.offsetWidth}x${vimeo.offsetHeight}\\n- Z-Index: ${vimeo.style.zIndex}`);
+        const realistic = document.getElementById('realistic-fire-container');
+        if (realistic) {
+            alert(`Sentry Diagnostic:\\n- Realistic Shader Active: ${realistic.offsetWidth}x${realistic.offsetHeight}\\n- Z-Index: ${realistic.style.zIndex}`);
         } else if (shader) {
-            alert(`Sentry Diagnostic:\\n- Shader Active: ${shader.offsetWidth}x${shader.offsetHeight}\\n- Z-Index: ${shader.style.zIndex}`);
-        } else if (video) {
-            alert(`Sentry Diagnostic:\\n- Video State: ${video.readyState}\\n- Z-Index: ${video.style.zIndex}`);
+            alert(`Sentry Diagnostic:\\n- Abstract Shader Active: ${shader.offsetWidth}x${shader.offsetHeight}\\n- Z-Index: ${shader.style.zIndex}`);
         } else {
             alert("Sentry Diagnostic: NO BACKGROUND ELEMENT FOUND.");
         }
