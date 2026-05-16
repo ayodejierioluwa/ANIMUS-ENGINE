@@ -73,16 +73,18 @@ class AnimusEngine:
         # 5. Build Footer
         footer_html = FOOTER_TEMPLATE.replace("{project_name}", self.project_name)
         
-        # 6. Final Assembly
+        # 6. Final Assembly (With Vibe Shift Integration)
         body_content = hero_html + grid_html + footer_html
         
         full_page = BASE_HTML.replace("[[title]]", f"{soul_data['hero']['title']} | Animus Engine")
         full_page = full_page.replace("[[body]]", body_content)
         
-        # Theme Injection
+        # Vibe Shift Injection: Mapping Soul Tokens to CSS Variables
+        for key, value in soul_data["tokens"].items():
+            full_page = full_page.replace(f"[[{key}]]", value)
+            
+        # Theme Injection (Legacy & Color)
         for key, value in tokens.items():
-            full_page = full_page.replace(f"--{key.replace('_','-')}: [[placeholder]]", f"--{key.replace('_','-')}: {value}")
-            # Fallback for root variables
             full_page = full_page.replace(f"[[{key}]]", value)
 
         file_path = f"{self.output_dir}/{page_name}.html"

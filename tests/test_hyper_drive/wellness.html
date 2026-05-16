@@ -1,0 +1,363 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BEYOND CODE | Animus Engine</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&family=Outfit:wght@200;400;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-color: #050505;
+            --text-color: #ffffff;
+            --accent-primary: #00d4ff;
+            --glass-bg: rgba(255, 255, 255, 0.03);
+            --glass-border: rgba(255, 255, 255, 0.1);
+            --glass-blur: 40px;
+            --grid-radius: 60px;
+            --btn-radius: 80px;
+            --void-blur: 100px;
+        }
+        * { margin: 0; padding: 0; box-box: border-box; }
+        body { 
+            background-color: var(--bg-color); 
+            color: var(--text-color); 
+            font-family: 'Inter', sans-serif;
+            overflow-x: hidden;
+        }
+        h1, h2, h3 { font-family: 'Outfit', sans-serif; }
+        .site-wrapper { position: relative; z-index: 10; }
+        
+        .custom-cursor {
+            position: fixed;
+            width: 20px;
+            height: 20px;
+            background: transparent;
+            border: 1px solid var(--accent-primary);
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 99999;
+            transform: translate(-50%, -50%);
+        }
+    </style>
+</head>
+<body>
+    <div class="custom-cursor"></div>
+    <div class="site-wrapper">
+        
+<section class="hero full-layout" id="hero" style="background: var(--bg-color) !important; min-height: 100vh; display: flex; align-items: center; justify-content: center; position: relative; overflow: hidden;">
+    <div id="void-canvas" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; opacity: 0.3; filter: blur(var(--void-blur));"></div>
+    <div class="hero-content" style="position: relative; z-index: 10; text-align: center;">
+        <h1 class="reveal" style="font-size: clamp(3rem, 10vw, 6rem); letter-spacing: -0.04em; line-height: 0.95; font-weight: 700;">BEYOND CODE</h1>
+        <p class="reveal" style="font-size: 1.25rem; opacity: 0.6; margin-top: 2rem; max-width: 650px; margin-left: auto; margin-right: auto; line-height: 1.6; font-weight: 300;">Engineering digital experiences that transcend the ordinary.</p>
+        <div class="reveal" style="margin-top: 4rem;">
+            <a href="#" class="btn-primary" style="padding: 1.25rem 3.5rem; font-size: 1rem; border-radius: var(--btn-radius); background: white; color: black; text-decoration: none; font-weight: 700; letter-spacing: 0.1em; transition: all 0.4s cubic-bezier(0.2, 0.8, 0.2, 1); box-shadow: 0 20px 40px rgba(0,0,0,0.4);">START BUILDING</a>
+        </div>
+    </div>
+</section>
+
+<section class="features" style="padding: 12rem 2rem; background: var(--bg-color); position: relative;">
+    <div style="position: absolute; top: 0; left: 50%; transform: translateX(-50%); width: 100%; height: 1px; background: linear-gradient(90deg, transparent, var(--glass-border), transparent);"></div>
+    <div class="container" style="max-width: 1300px; margin: 0 auto;">
+        <div class="grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); gap: 3rem;">
+            
+<div class="feature-item" style="background: var(--glass-bg); border: 1px solid var(--glass-border); padding: 4rem; border-radius: var(--grid-radius); backdrop-filter: blur(var(--glass-blur)); transition: all 0.5s cubic-bezier(0.2, 0.8, 0.2, 1); position: relative; overflow: hidden;">
+    <div style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(135deg, rgba(255,255,255,0.05) 0%, transparent 100%); pointer-events: none;"></div>
+    <div class="icon" style="font-size: 2.5rem; margin-bottom: 2rem; filter: drop-shadow(0 0 15px var(--accent-primary));">🎨</div>
+    <h3 style="font-size: 1.75rem; margin-bottom: 1.5rem; color: white; font-weight: 600; letter-spacing: -0.02em;">Visual Excellence</h3>
+    <p style="opacity: 0.5; line-height: 1.8; font-size: 1.05rem; font-weight: 300;">High-fidelity aesthetics that redefine digital luxury.</p>
+</div>
+<style>
+    .feature-item:hover {
+        transform: translateY(-15px) scale(1.02);
+        border-color: var(--accent-primary);
+        background: rgba(255,255,255,0.06);
+        box-shadow: 0 30px 60px rgba(0,0,0,0.5);
+    }
+    .btn-primary:hover {
+        transform: scale(1.05);
+        box-shadow: 0 0 30px var(--accent-primary);
+    }
+</style>
+
+<div class="feature-item" style="background: var(--glass-bg); border: 1px solid var(--glass-border); padding: 4rem; border-radius: var(--grid-radius); backdrop-filter: blur(var(--glass-blur)); transition: all 0.5s cubic-bezier(0.2, 0.8, 0.2, 1); position: relative; overflow: hidden;">
+    <div style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(135deg, rgba(255,255,255,0.05) 0%, transparent 100%); pointer-events: none;"></div>
+    <div class="icon" style="font-size: 2.5rem; margin-bottom: 2rem; filter: drop-shadow(0 0 15px var(--accent-primary));">⚙️</div>
+    <h3 style="font-size: 1.75rem; margin-bottom: 1.5rem; color: white; font-weight: 600; letter-spacing: -0.02em;">Autonomous Logic</h3>
+    <p style="opacity: 0.5; line-height: 1.8; font-size: 1.05rem; font-weight: 300;">Self-healing systems that evolve with your user base.</p>
+</div>
+<style>
+    .feature-item:hover {
+        transform: translateY(-15px) scale(1.02);
+        border-color: var(--accent-primary);
+        background: rgba(255,255,255,0.06);
+        box-shadow: 0 30px 60px rgba(0,0,0,0.5);
+    }
+    .btn-primary:hover {
+        transform: scale(1.05);
+        box-shadow: 0 0 30px var(--accent-primary);
+    }
+</style>
+
+<div class="feature-item" style="background: var(--glass-bg); border: 1px solid var(--glass-border); padding: 4rem; border-radius: var(--grid-radius); backdrop-filter: blur(var(--glass-blur)); transition: all 0.5s cubic-bezier(0.2, 0.8, 0.2, 1); position: relative; overflow: hidden;">
+    <div style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(135deg, rgba(255,255,255,0.05) 0%, transparent 100%); pointer-events: none;"></div>
+    <div class="icon" style="font-size: 2.5rem; margin-bottom: 2rem; filter: drop-shadow(0 0 15px var(--accent-primary));">🌐</div>
+    <h3 style="font-size: 1.75rem; margin-bottom: 1.5rem; color: white; font-weight: 600; letter-spacing: -0.02em;">Global Scale</h3>
+    <p style="opacity: 0.5; line-height: 1.8; font-size: 1.05rem; font-weight: 300;">Infrastructure designed for infinite expansion.</p>
+</div>
+<style>
+    .feature-item:hover {
+        transform: translateY(-15px) scale(1.02);
+        border-color: var(--accent-primary);
+        background: rgba(255,255,255,0.06);
+        box-shadow: 0 30px 60px rgba(0,0,0,0.5);
+    }
+    .btn-primary:hover {
+        transform: scale(1.05);
+        box-shadow: 0 0 30px var(--accent-primary);
+    }
+</style>
+
+        </div>
+    </div>
+</section>
+
+<footer style="padding: 4rem 2rem; text-align: center; color: rgba(255,255,255,0.4); border-top: 1px solid var(--glass-border);">
+    <p>&copy; 2026 AETHER_ANIMUS | Built for Aether Project</p>
+</footer>
+
+    </div>
+    
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/0.160.0/three.min.js"></script>
+
+<script>
+    gsap.registerPlugin(ScrollTrigger);
+
+    // Three.js Scene Setup
+    const container = document.getElementById('three-canvas-container');
+    if (container) {
+        const scene = new THREE.Scene();
+        const camera = new THREE.PerspectiveCamera(75, container.clientWidth / container.clientHeight, 0.1, 1000);
+        const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
+        renderer.setSize(container.clientWidth, container.clientHeight);
+        container.appendChild(renderer.domElement);
+
+        // Dynamic Geometry Selection (WOW Factor)
+        const geometries = {
+            "SPHERE": new THREE.IcosahedronGeometry(2, 1),
+            "TORUS": new THREE.TorusKnotGeometry(1.5, 0.4, 100, 16),
+            "PLANE": new THREE.PlaneGeometry(5, 5, 32, 32),
+            "OCTA": new THREE.OctahedronGeometry(2, 0),
+            "RING": new THREE.TorusGeometry(2, 0.5, 16, 100)
+        };
+        const geoType = "[[geometry_type]]";
+        const geometry = geometries[geoType] || geometries["SPHERE"];
+        
+        const material = new THREE.MeshPhongMaterial({
+            color: "[[accent_primary_hex]]",
+            wireframe: true,
+            transparent: true,
+            opacity: 0.9,
+            emissive: "[[accent_primary_hex]]",
+            emissiveIntensity: 0.6
+        });
+        const sphere = new THREE.Mesh(geometry, material);
+        scene.add(sphere);
+
+        const light = new THREE.PointLight(0xffffff, 4, 100);
+        light.position.set(10, 10, 10);
+        scene.add(light);
+        scene.add(new THREE.AmbientLight(0xffffff, 1.2));
+
+        camera.position.z = 5;
+
+        function animate() {
+            requestAnimationFrame(animate);
+            sphere.rotation.x += 0.005;
+            sphere.rotation.y += 0.005;
+            renderer.render(scene, camera);
+        }
+        animate();
+
+        // Mouse Interactivity for Three.js
+        window.addEventListener('mousemove', (e) => {
+            const x = (e.clientX / window.innerWidth - 0.5) * 2;
+            const y = (e.clientY / window.innerHeight - 0.5) * 2;
+            gsap.to(sphere.rotation, { y: x, x: -y, duration: 2 });
+        });
+
+        // Scroll Parallax for Three.js
+        gsap.to(sphere.position, {
+            scrollTrigger: {
+                trigger: "body",
+                start: "top top",
+                end: "bottom bottom",
+                scrub: 1
+            },
+            z: -5,
+            y: 2
+        });
+    }
+
+    // Minimal aesthetic movement for the 'Void' background
+    const voidCont = document.getElementById('void-canvas');
+    if (voidCont) {
+        const canvas = document.createElement('canvas');
+        const ctx = canvas.getContext('2d');
+        voidCont.appendChild(canvas);
+        function resize() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+        window.addEventListener('resize', resize);
+        resize();
+        function animate() {
+            ctx.clearRect(0,0,canvas.width, canvas.height);
+            ctx.fillStyle = 'rgba(255,255,255,0.05)';
+            for(let i=0; i<40; i++) {
+                ctx.beginPath();
+                ctx.arc(Math.sin(Date.now()*0.0002 + i)*canvas.width, Math.cos(Date.now()*0.0001 + i)*canvas.height, 1, 0, Math.PI*2);
+                ctx.fill();
+            }
+            requestAnimationFrame(animate);
+        }
+        animate();
+    }
+
+    // Liquid Fire Shader (DEPRECATED - MOVED TO GENERIC SHADER)
+
+    // AETHER_IGNIS_ULTIMA (The Mesmerising Realistic Fix)
+    const realisticFire = document.getElementById('realistic-fire-container');
+    if (realisticFire) {
+        const rf_scene = new THREE.Scene();
+        const rf_camera = new THREE.OrthographicCamera(-1, 1, 1, -1, 0, 1);
+        const rf_renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+        rf_renderer.setPixelRatio(window.devicePixelRatio);
+        rf_renderer.setSize(window.innerWidth, window.innerHeight);
+        realisticFire.appendChild(rf_renderer.domElement);
+
+        const rf_material = new THREE.ShaderMaterial({
+            uniforms: { 
+                time: { value: 1.0 }, 
+                resolution: { value: new THREE.Vector2(window.innerWidth, window.innerHeight) },
+                mouse: { value: new THREE.Vector2(0.5, 0.5) }
+            },
+            vertexShader: `void main() { gl_Position = vec4(position, 1.0); }`,
+            fragmentShader: `
+                uniform float time;
+                uniform vec2 resolution;
+                uniform vec2 mouse;
+                
+                vec3 firePalette(float t) {
+                    vec3 a = vec3(0.5, 0.5, 0.5);
+                    vec3 b = vec3(0.5, 0.5, 0.5);
+                    vec3 c = vec3(1.0, 1.0, 1.0);
+                    vec3 d = vec3(0.00, 0.10, 0.20);
+                    return a + b * cos(6.28318 * (c * t + d));
+                }
+
+                float hash(vec2 p) { return fract(sin(dot(p, vec2(12.9898, 78.233))) * 43758.5453); }
+                float noise(vec2 p) {
+                    vec2 i = floor(p); vec2 f = fract(p);
+                    vec2 u = f*f*(3.0-2.0*f);
+                    return mix(mix(hash(i + vec2(0.,0.)), hash(i + vec2(1.,0.)), u.x),
+                               mix(hash(i + vec2(0.,1.)), hash(i + vec2(1.,1.)), u.x), u.y);
+                }
+
+                void main() {
+                    vec2 uv = gl_FragCoord.xy / resolution.xy;
+                    vec2 q = uv;
+                    q.y -= time * 0.6; // Faster, more energetic
+                    
+                    float T3 = 1.6 * noise(q * 3.0);
+                    float T2 = 1.2 * noise(q * 6.0 + T3);
+                    float T1 = 0.8 * noise(q * 12.0 + T2);
+                    float f = T1 + T2 + T3;
+                    
+                    f *= (1.0 - uv.y) * 3.0; // Sharper taper
+                    f = clamp(f, 0.0, 1.0);
+                    
+                    // RAZOR SHARP STEPS (No more blur)
+                    vec3 fireColor = mix(vec3(0.0), vec3(1.0, 0.2, 0.0), smoothstep(0.2, 0.25, f));
+                    fireColor = mix(fireColor, vec3(1.0, 0.6, 0.0), smoothstep(0.4, 0.45, f));
+                    fireColor = mix(fireColor, vec3(1.0, 1.0, 0.5), smoothstep(0.7, 0.72, f));
+                    
+                    // High Contrast Bloom
+                    fireColor *= 1.5;
+                    
+                    // Mouse Distortion (Crystal Clear)
+                    float dist = distance(uv, mouse);
+                    if (dist < 0.2) {
+                        fireColor *= 1.2;
+                    }
+                    
+                    gl_FragColor = vec4(fireColor, 1.0);
+                }
+            `
+        });
+        rf_scene.add(new THREE.Mesh(new THREE.PlaneGeometry(2, 2), rf_material));
+        
+        window.addEventListener('mousemove', (e) => {
+            rf_material.uniforms.mouse.value.x = e.clientX / window.innerWidth;
+            rf_material.uniforms.mouse.value.y = 1.0 - (e.clientY / window.innerHeight);
+        });
+
+        function rf_animate(t) {
+            requestAnimationFrame(rf_animate);
+            rf_material.uniforms.time.value = t * 0.001;
+            rf_renderer.render(rf_scene, rf_camera);
+        }
+        rf_animate(0);
+        window.addEventListener('resize', () => {
+            rf_renderer.setSize(window.innerWidth, window.innerHeight);
+            rf_material.uniforms.resolution.value.set(window.innerWidth, window.innerHeight);
+        });
+    }
+
+    // Indestructible Visual Fix Diagnostic
+    function diagnoseVisuals() {
+        const grid = document.querySelector('.features');
+        if (grid) {
+            alert(`Animus Diagnostic:\n- Grid Active: ${grid.offsetWidth}x${grid.offsetHeight}\n- Soul Identity: Active`);
+        }
+    }
+
+    // Magnetic Cursor Logic (WOW Factor)
+    const cursor = document.createElement('div');
+    cursor.className = 'custom-cursor';
+    document.body.appendChild(cursor);
+
+    window.addEventListener('mousemove', (e) => {
+        gsap.to(cursor, {
+            x: e.clientX,
+            y: e.clientY,
+            duration: 0.6,
+            ease: "power2.out"
+        });
+    });
+
+    document.querySelectorAll('.btn-primary, .card').forEach(el => {
+        el.addEventListener('mouseenter', () => gsap.to(cursor, { scale: 3, backgroundColor: "var(--accent-primary)", opacity: 0.3 }));
+        el.addEventListener('mouseleave', () => gsap.to(cursor, { scale: 1, backgroundColor: "transparent", opacity: 1 }));
+    });
+
+    function diagnoseVisuals() {
+        const video = document.getElementById('bg-video');
+        const shader = document.getElementById('shader-background-container');
+        const realistic = document.getElementById('realistic-fire-container');
+        if (realistic) {
+            alert(`Sentry Diagnostic:\n- Realistic Shader Active: ${realistic.offsetWidth}x${realistic.offsetHeight}\n- Z-Index: ${realistic.style.zIndex}`);
+        } else if (shader) {
+            alert(`Sentry Diagnostic:\n- Abstract Shader Active: ${shader.offsetWidth}x${shader.offsetHeight}\n- Z-Index: ${shader.style.zIndex}`);
+        } else {
+            alert("Sentry Diagnostic: NO BACKGROUND ELEMENT FOUND.");
+        }
+    }
+</script>
+
+</body>
+</html>

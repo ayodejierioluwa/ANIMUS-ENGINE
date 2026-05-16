@@ -14,45 +14,23 @@ HERO_TEMPLATE = """
 """
 
 VIDEO_HERO_TEMPLATE = """
-<section class="hero [[layout_class]]" id="hero" style="background: linear-gradient(135deg, #0f0f0f 0%, #1a1a1a 100%) !important; min-height: 100vh; display: flex; align-items: center; justify-content: center; position: relative; overflow: hidden;">
-    <div id="void-canvas" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; opacity: 0.4;"></div>
+<section class="hero [[layout_class]]" id="hero" style="background: var(--bg-color) !important; min-height: 100vh; display: flex; align-items: center; justify-content: center; position: relative; overflow: hidden;">
+    <div id="void-canvas" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; opacity: 0.3; filter: blur(var(--void-blur));"></div>
     <div class="hero-content" style="position: relative; z-index: 10; text-align: center;">
-        <h1 class="reveal" style="font-size: 5rem; letter-spacing: -0.02em; line-height: 1.1;">[[title]]</h1>
-        <p class="reveal" style="font-size: 1.5rem; opacity: 0.7; margin-top: 1.5rem; max-width: 600px; margin-left: auto; margin-right: auto;">[[subtitle]]</p>
-        <div class="reveal" style="margin-top: 3rem;">
-            <a href="[[cta_link]]" class="btn-primary" style="padding: 1.2rem 3rem; font-size: 1.1rem; border-radius: 50px; background: white; color: black; text-decoration: none; font-weight: 600; transition: transform 0.3s ease;">[[cta_text]]</a>
+        <h1 class="reveal" style="font-size: clamp(3rem, 10vw, 6rem); letter-spacing: -0.04em; line-height: 0.95; font-weight: 700;">[[title]]</h1>
+        <p class="reveal" style="font-size: 1.25rem; opacity: 0.6; margin-top: 2rem; max-width: 650px; margin-left: auto; margin-right: auto; line-height: 1.6; font-weight: 300;">[[subtitle]]</p>
+        <div class="reveal" style="margin-top: 4rem;">
+            <a href="[[cta_link]]" class="btn-primary" style="padding: 1.25rem 3.5rem; font-size: 1rem; border-radius: var(--btn-radius); background: white; color: black; text-decoration: none; font-weight: 700; letter-spacing: 0.1em; transition: all 0.4s cubic-bezier(0.2, 0.8, 0.2, 1); box-shadow: 0 20px 40px rgba(0,0,0,0.4);">[[cta_text]]</a>
         </div>
     </div>
 </section>
-<script>
-    // Minimal aesthetic movement for the 'Void' background
-    const canvas = document.createElement('canvas');
-    const ctx = canvas.getContext('2d');
-    document.getElementById('void-canvas').appendChild(canvas);
-    function resize() {
-        canvas.width = window.innerWidth;
-        canvas.height = window.innerHeight;
-    }
-    window.addEventListener('resize', resize);
-    resize();
-    function animate() {
-        ctx.clearRect(0,0,canvas.width, canvas.height);
-        ctx.fillStyle = 'rgba(255,255,255,0.05)';
-        for(let i=0; i<20; i++) {
-            ctx.beginPath();
-            ctx.arc(Math.sin(Date.now()*0.001 + i)*canvas.width, Math.cos(Date.now()*0.0005 + i)*canvas.height, 2, 0, Math.PI*2);
-            ctx.fill();
-        }
-        requestAnimationFrame(animate);
-    }
-    animate();
-</script>
 """
 
 FEATURE_GRID_TEMPLATE = """
-<section class="features" style="padding: 8rem 2rem; background: #0a0a0a;">
-    <div class="container" style="max-width: 1200px; margin: 0 auto;">
-        <div class="grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2rem;">
+<section class="features" style="padding: 12rem 2rem; background: var(--bg-color); position: relative;">
+    <div style="position: absolute; top: 0; left: 50%; transform: translateX(-50%); width: 100%; height: 1px; background: linear-gradient(90deg, transparent, var(--glass-border), transparent);"></div>
+    <div class="container" style="max-width: 1300px; margin: 0 auto;">
+        <div class="grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); gap: 3rem;">
             [[features]]
         </div>
     </div>
@@ -60,16 +38,22 @@ FEATURE_GRID_TEMPLATE = """
 """
 
 FEATURE_ITEM_TEMPLATE = """
-<div class="feature-item" style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.1); padding: 3rem; border-radius: 24px; backdrop-filter: blur(10px); transition: transform 0.4s cubic-bezier(0.2, 0.8, 0.2, 1), border-color 0.4s ease;">
-    <div class="icon" style="font-size: 2rem; margin-bottom: 1.5rem;">[[icon]]</div>
-    <h3 style="font-size: 1.5rem; margin-bottom: 1rem; color: white;">[[title]]</h3>
-    <p style="opacity: 0.6; line-height: 1.6;">[[description]]</p>
+<div class="feature-item" style="background: var(--glass-bg); border: 1px solid var(--glass-border); padding: 4rem; border-radius: var(--grid-radius); backdrop-filter: blur(var(--glass-blur)); transition: all 0.5s cubic-bezier(0.2, 0.8, 0.2, 1); position: relative; overflow: hidden;">
+    <div style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(135deg, rgba(255,255,255,0.05) 0%, transparent 100%); pointer-events: none;"></div>
+    <div class="icon" style="font-size: 2.5rem; margin-bottom: 2rem; filter: drop-shadow(0 0 15px var(--accent-primary));">[[icon]]</div>
+    <h3 style="font-size: 1.75rem; margin-bottom: 1.5rem; color: white; font-weight: 600; letter-spacing: -0.02em;">[[title]]</h3>
+    <p style="opacity: 0.5; line-height: 1.8; font-size: 1.05rem; font-weight: 300;">[[description]]</p>
 </div>
 <style>
     .feature-item:hover {
-        transform: translateY(-10px);
-        border-color: rgba(255,255,255,0.3);
-        background: rgba(255,255,255,0.05);
+        transform: translateY(-15px) scale(1.02);
+        border-color: var(--accent-primary);
+        background: rgba(255,255,255,0.06);
+        box-shadow: 0 30px 60px rgba(0,0,0,0.5);
+    }
+    .btn-primary:hover {
+        transform: scale(1.05);
+        box-shadow: 0 0 30px var(--accent-primary);
     }
 </style>
 """
@@ -211,51 +195,32 @@ GSAP_SCRIPT = """
         });
     }
 
-    // Liquid Fire Shader (The "WOWER" Guarantee)
-    const shaderContainer = document.getElementById('shader-background-container');
-    if (shaderContainer) {
-        const s_scene = new THREE.Scene();
-        const s_camera = new THREE.OrthographicCamera(-1, 1, 1, -1, 0, 1);
-        const s_renderer = new THREE.WebGLRenderer({ antialias: true });
-        s_renderer.setSize(window.innerWidth, window.innerHeight);
-        shaderContainer.appendChild(s_renderer.domElement);
-
-        const s_material = new THREE.ShaderMaterial({
-            uniforms: { time: { value: 1.0 }, resolution: { value: new THREE.Vector2(window.innerWidth, window.innerHeight) } },
-            vertexShader: `void main() { gl_Position = vec4(position, 1.0); }`,
-            fragmentShader: `
-                uniform float time;
-                uniform vec2 resolution;
-                float hash(vec2 p) { return fract(sin(dot(p, vec2(127.1, 311.7))) * 43758.5453123); }
-                float noise(vec2 p) {
-                    vec2 i = floor(p); vec2 f = fract(p);
-                    vec2 u = f*f*(3.0-2.0*f);
-                    return mix(mix(hash(i + vec2(0.0,0.0)), hash(i + vec2(1.0,0.0)), u.x),
-                               mix(hash(i + vec2(0.0,1.0)), hash(i + vec2(1.0,1.0)), u.x), u.y);
-                }
-                void main() {
-                    vec2 uv = gl_FragCoord.xy / resolution.xy;
-                    float n = noise(uv * 4.0 + time * 0.5);
-                    vec3 fire = mix(vec3(0.8, 0.1, 0.0), vec3(1.0, 0.6, 0.1), n);
-                    gl_FragColor = vec4(fire * (1.0 - uv.y) * 1.5, 1.0);
-                }
-            `
-        });
-        const s_mesh = new THREE.Mesh(new THREE.PlaneGeometry(2, 2), s_material);
-        s_scene.add(s_mesh);
-
-        function s_animate(t) {
-            requestAnimationFrame(s_animate);
-            s_material.uniforms.time.value = t * 0.001;
-            s_renderer.render(s_scene, s_camera);
+    // Minimal aesthetic movement for the 'Void' background
+    const voidCont = document.getElementById('void-canvas');
+    if (voidCont) {
+        const canvas = document.createElement('canvas');
+        const ctx = canvas.getContext('2d');
+        voidCont.appendChild(canvas);
+        function resize() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
         }
-        s_animate(0);
-        
-        window.addEventListener('resize', () => {
-            s_renderer.setSize(window.innerWidth, window.innerHeight);
-            s_material.uniforms.resolution.value.set(window.innerWidth, window.innerHeight);
-        });
+        window.addEventListener('resize', resize);
+        resize();
+        function animate() {
+            ctx.clearRect(0,0,canvas.width, canvas.height);
+            ctx.fillStyle = 'rgba(255,255,255,0.05)';
+            for(let i=0; i<40; i++) {
+                ctx.beginPath();
+                ctx.arc(Math.sin(Date.now()*0.0002 + i)*canvas.width, Math.cos(Date.now()*0.0001 + i)*canvas.height, 1, 0, Math.PI*2);
+                ctx.fill();
+            }
+            requestAnimationFrame(animate);
+        }
+        animate();
     }
+
+    // Liquid Fire Shader (DEPRECATED - MOVED TO GENERIC SHADER)
 
     // AETHER_IGNIS_ULTIMA (The Mesmerising Realistic Fix)
     const realisticFire = document.getElementById('realistic-fire-container');
@@ -345,109 +310,12 @@ GSAP_SCRIPT = """
         });
     }
 
-    // AETHER_IGNIS_ULTRA_IGNITION (The "Match-Strike" Experience)
-    const fireContainer = document.getElementById('kinetic-fire-container');
-    const overlay = document.getElementById('ignition-overlay');
-    
-    if (fireContainer && overlay && window.FIRE_BG) {
-        const scene = new THREE.Scene();
-        const camera = new THREE.OrthographicCamera(-1, 1, 1, -1, 0, 1);
-        const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
-        renderer.setSize(window.innerWidth, window.innerHeight);
-        fireContainer.appendChild(renderer.domElement);
-
-        const loader = new THREE.TextureLoader();
-        loader.load(window.FIRE_BG, (texture) => {
-            const material = new THREE.ShaderMaterial({
-                uniforms: { 
-                    time: { value: 0.0 }, 
-                    opacity: { value: 0.0 },
-                    uTexture: { value: texture },
-                    resolution: { value: new THREE.Vector2(window.innerWidth, window.innerHeight) }
-                },
-                vertexShader: `void main() { gl_Position = vec4(position, 1.0); }`,
-                fragmentShader: `
-                    uniform float time;
-                    uniform float opacity;
-                    uniform sampler2D uTexture;
-                    uniform vec2 resolution;
-                    float hash(vec2 p) { return fract(sin(dot(p, vec2(12.9898, 78.233))) * 43758.5453); }
-                    float noise(vec2 p) {
-                        vec2 i = floor(p); vec2 f = fract(p);
-                        vec2 u = f*f*(3.0-2.0*f);
-                        return mix(mix(hash(i + vec2(0.,0.)), hash(i + vec2(1.,0.)), u.x),
-                                   mix(hash(i + vec2(0.,1.)), hash(i + vec2(1.,1.)), u.x), u.y);
-                    }
-                    void main() {
-                        vec2 uv = gl_FragCoord.xy / resolution.xy;
-                        vec4 base = texture2D(uTexture, uv);
-                        float isFire = smoothstep(0.3, 0.8, length(base.rgb));
-                        float distortion = noise(uv * 12.0 + time * 1.2) * 0.015 * isFire;
-                        vec4 final = texture2D(uTexture, uv + vec2(distortion, distortion - time * 0.02 * isFire));
-                        final.rgb *= 0.95 + 0.1 * noise(vec2(time * 3.0));
-                        gl_FragColor = vec4(final.rgb, opacity);
-                    }
-                `,
-                transparent: true
-            });
-            scene.add(new THREE.Mesh(new THREE.PlaneGeometry(2, 2), material));
-
-            // Match-Strike Spark System
-            const sparkCount = 150;
-            const sGeometry = new THREE.BufferGeometry();
-            const sPos = new Float32Array(sparkCount * 3);
-            const sVel = new Float32Array(sparkCount * 3);
-            for(let i=0; i<sparkCount*3; i++) { sPos[i] = 0; sVel[i] = 0; }
-            sGeometry.setAttribute('position', new THREE.BufferAttribute(sPos, 3));
-            const sMaterial = new THREE.PointsMaterial({ color: 0xffaa00, size: 0.02, transparent: true, opacity: 0, blending: THREE.AdditiveBlending });
-            const sparks = new THREE.Points(sGeometry, sMaterial);
-            scene.add(sparks);
-
-            let ignited = false;
-            overlay.addEventListener('click', () => {
-                if (ignited) return;
-                ignited = true;
-                
-                overlay.style.opacity = '0';
-                setTimeout(() => overlay.style.display = 'none', 1500);
-
-                gsap.to(material.uniforms.opacity, { value: 1, duration: 2.5, ease: "power2.inOut" });
-                gsap.to(".hero-content", { opacity: 1, duration: 2, delay: 0.8 });
-                
-                // Spark Explosion
-                sMaterial.opacity = 1;
-                const vel = sGeometry.attributes.position.array;
-                for(let i=0; i<sparkCount; i++) {
-                    const angle = Math.random() * Math.PI * 2;
-                    const speed = Math.random() * 0.08 + 0.02;
-                    sVel[i*3] = Math.cos(angle) * speed;
-                    sVel[i*3+1] = Math.sin(angle) * speed;
-                }
-                gsap.to(sMaterial, { opacity: 0, duration: 2, delay: 0.5 });
-                
-                // Reveal other elements
-                gsap.to(".reveal, section, .card", { opacity: 1, y: 0, duration: 1.5, stagger: 0.1, ease: "power4.out", delay: 1 });
-            });
-
-            function animate(t) {
-                requestAnimationFrame(animate);
-                const time = t * 0.001;
-                material.uniforms.time.value = time;
-                
-                if (ignited) {
-                    const pos = sGeometry.attributes.position.array;
-                    for(let i=0; i<sparkCount; i++) {
-                        pos[i*3] += sVel[i*3];
-                        pos[i*3+1] += sVel[i*3+1];
-                        sVel[i*3+1] -= 0.002; // Gravity
-                    }
-                    sGeometry.attributes.position.needsUpdate = true;
-                }
-                renderer.render(scene, camera);
-            }
-            animate(0);
-        });
-        window.addEventListener('resize', () => renderer.setSize(window.innerWidth, window.innerHeight));
+    // Indestructible Visual Fix Diagnostic
+    function diagnoseVisuals() {
+        const grid = document.querySelector('.features');
+        if (grid) {
+            alert(`Animus Diagnostic:\\n- Grid Active: ${grid.offsetWidth}x${grid.offsetHeight}\\n- Soul Identity: Active`);
+        }
     }
 
     // Magnetic Cursor Logic (WOW Factor)
@@ -501,6 +369,10 @@ BASE_HTML = """
             --accent-primary: #00d4ff;
             --glass-bg: rgba(255, 255, 255, 0.03);
             --glass-border: rgba(255, 255, 255, 0.1);
+            --glass-blur: [[glass_blur]];
+            --grid-radius: [[grid_radius]];
+            --btn-radius: [[btn_radius]];
+            --void-blur: [[void_blur]];
         }
         * { margin: 0; padding: 0; box-box: border-box; }
         body { 
