@@ -164,6 +164,36 @@ SENTRY_REPORT_TEMPLATE = """
 </div>
 """
 
+SOVEREIGN_SEAL_TEMPLATE = """
+<div class="sovereign-seal" style="position: fixed; bottom: 2rem; right: 2rem; width: 120px; z-index: 10006; opacity: 0.5; transition: opacity 0.5s var(--ease-vibe); cursor: pointer;" onmouseover="this.style.opacity=1" onmouseout="this.style.opacity=0.5">
+    <canvas id="seal-canvas" style="width: 100%; height: auto;"></canvas>
+</div>
+<script>
+    (function() {
+        const img = new Image();
+        img.src = '/static/signature.jpg';
+        img.onload = () => {
+            const canvas = document.getElementById('seal-canvas');
+            const ctx = canvas.getContext('2d');
+            canvas.width = img.width;
+            canvas.height = img.height;
+            ctx.drawImage(img, 0, 0);
+            const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+            const data = imageData.data;
+            for (let i = 0; i < data.length; i += 4) {
+                const r = data[i], g = data[i+1], b = data[i+2];
+                if ((r + g + b) / 3 < 160) {
+                    data[i] = 0; data[i+1] = 255; data[i+2] = 204; data[i+3] = 255;
+                } else {
+                    data[i+3] = 0;
+                }
+            }
+            ctx.putImageData(imageData, 0, 0);
+        };
+    })();
+</script>
+"""
+
 FOOTER_TEMPLATE = """
 <footer style="padding: 4rem 2rem; text-align: center; color: rgba(255,255,255,0.4); border-top: 1px solid var(--glass-border);">
     <p>&copy; 2026 AETHER_ANIMUS | Built for {project_name}</p>
