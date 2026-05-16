@@ -75,7 +75,7 @@ VIDEO_HERO_TEMPLATE = """
         renderer.setSize(window.innerWidth, window.innerHeight);
         container.appendChild(renderer.domElement);
 
-        // 1. High-Fidelity Fluid Fire Shader
+        // 1. High-Fidelity FBM Fire Shader
         const fireMaterial = new THREE.ShaderMaterial({
             uniforms: { 
                 time: { value: 0.0 }, 
@@ -100,37 +100,43 @@ VIDEO_HERO_TEMPLATE = """
                     return mix(mix(hash(i + vec2(0.,0.)), hash(i + vec2(1.,0.)), u.x),
                                mix(hash(i + vec2(0.,1.)), hash(i + vec2(1.,1.)), u.x), u.y);
                 }
+                float fbm(vec2 p) {
+                    float v = 0.0; float a = 0.5;
+                    for (int i = 0; i < 4; i++) {
+                        v += a * noise(p); p *= 2.0; a *= 0.5;
+                    }
+                    return v;
+                }
 
                 void main() {
                     vec2 uv = vUv;
-                    uv.y = 1.0 - uv.y;
                     
-                    // Flame Turbulence Logic
-                    float q = noise(uv * 3.0 + vec2(0.0, -time * 0.5));
-                    float r = noise(uv * 6.0 + q + vec2(0.0, -time * 0.8));
-                    float f = noise(uv * 12.0 + r + vec2(0.0, -time * 1.2));
+                    // Organic Flame Movement
+                    vec2 q = vec2(fbm(uv * 3.0 + vec2(0.0, -time * 0.8)), fbm(uv * 3.0 + vec2(1.0, -time * 0.5)));
+                    float f = fbm(uv * 4.0 + q + vec2(0.0, -time * 1.5));
                     
-                    // Tapered Flame Shape (Targets the center-bottom)
-                    float mask = smoothstep(0.4, 0.5, uv.x) * smoothstep(0.6, 0.5, uv.x);
-                    mask *= smoothstep(1.0, 0.7, uv.y);
+                    // Wide, Tapered Mask (Matches the Fireplace Opening)
+                    float mask = smoothstep(0.1, 0.4, uv.x) * smoothstep(0.9, 0.6, uv.x);
+                    mask *= smoothstep(0.0, 0.2, uv.y) * smoothstep(1.0, 0.4, uv.y);
                     
-                    f *= mask * 2.5;
+                    f *= mask * 2.2;
                     
-                    vec3 fireColor = mix(vec3(0.0), vec3(1.0, 0.2, 0.0), smoothstep(0.2, 0.25, f));
-                    fireColor = mix(fireColor, vec3(1.0, 0.6, 0.0), smoothstep(0.4, 0.45, f));
-                    fireColor = mix(fireColor, vec3(1.0, 1.0, 0.5), smoothstep(0.7, 0.72, f));
+                    vec3 fireColor = mix(vec3(0.0), vec3(1.0, 0.1, 0.0), smoothstep(0.1, 0.3, f));
+                    fireColor = mix(fireColor, vec3(1.0, 0.5, 0.0), smoothstep(0.3, 0.6, f));
+                    fireColor = mix(fireColor, vec3(1.0, 0.9, 0.4), smoothstep(0.6, 0.8, f));
                     
-                    gl_FragColor = vec4(fireColor, fireColor.r * 0.8);
+                    float alpha = smoothstep(0.0, 0.1, f);
+                    gl_FragColor = vec4(fireColor, alpha * 0.8);
                 }
             `,
             transparent: true,
             blending: THREE.AdditiveBlending
         });
 
-        // The Flame Mesh (Placed precisely over the fireplace logs)
-        const flameGeo = new THREE.PlaneGeometry(3, 3, 32, 32);
+        // The Flame Mesh (Placed horizontally over the logs)
+        const flameGeo = new THREE.PlaneGeometry(6, 4, 32, 32);
         const flames = new THREE.Mesh(flameGeo, fireMaterial);
-        flames.position.y = -1.2;
+        flames.position.y = -0.5;
         scene.add(flames);
 
         // 2. Realistic Rising Embers
