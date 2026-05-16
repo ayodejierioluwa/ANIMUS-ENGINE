@@ -234,11 +234,19 @@ h1, h2, h3 {
 <body class="page-index">
     <nav style="position: fixed; top: 2rem; width: 100%; display: flex; justify-content: center; gap: 2rem; z-index: 10001;"></nav>
     
-<section class="hero full-layout" id="hero">
-    <div id="three-canvas-container"></div>
+<div id="video-background-container" style="position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: -100; pointer-events: none; overflow: hidden; background: black;">
+    <iframe id="bg-video-iframe" 
+        src="https://www.youtube.com/embed/3_PTo_lZ_uU?autoplay=1&mute=1&loop=1&controls=0&showinfo=0&autohide=1&playlist=3_PTo_lZ_uU&rel=0&enablejsapi=1&vq=hd1080" 
+        frameborder="0" 
+        style="position: absolute; top: 50%; left: 50%; width: 100vw; height: 56.25vw; min-height: 100vh; min-width: 177.77vh; transform: translate(-50%, -50%);"
+        allow="autoplay; encrypted-media">
+    </iframe>
+</div>
+<section class="hero full-layout" id="hero" style="background: transparent !important;">
+    <div class="noise-overlay"></div>
     <div class="hero-content">
-        <h1 class="reveal">FUEL YOUR FIRE</h1>
-        <p class="reveal">The world's first bio-kinetic energy drink powered by AI-optimized nutrients.</p>
+        <h1 class="reveal">REALISTIC FIRE</h1>
+        <p class="reveal">High-fidelity wood burning with clear, realistic textures.</p>
         <div class="reveal">
             <a href="#" class="btn-primary">Get Started</a>
         </div>
@@ -250,13 +258,13 @@ h1, h2, h3 {
 <section class="grid">
     
 <div class="card glass reveal">
-    <h3>Zero Crash</h3>
-    <p>Steady energy for 12 hours straight.</p>
+    <h3>HD Quality</h3>
+    <p>1080p realistic fire loop.</p>
 </div>
 
 <div class="card glass reveal">
-    <h3>Neural Focus</h3>
-    <p>Boost your cognitive performance by 40%.</p>
+    <h3>Ambient</h3>
+    <p>Perfect for cozy brand vibes.</p>
 </div>
 
 </section>

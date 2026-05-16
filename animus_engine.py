@@ -1,6 +1,6 @@
 import os
 import json
-from components import HERO_TEMPLATE, THREE_JS_HERO_TEMPLATE, SPLIT_HERO_TEMPLATE, VIDEO_HERO_TEMPLATE, SCROLL_SECTION_TEMPLATE, CARD_TEMPLATE, FOOTER_TEMPLATE, GSAP_SCRIPT
+from components import HERO_TEMPLATE, THREE_JS_HERO_TEMPLATE, SPLIT_HERO_TEMPLATE, VIDEO_HERO_TEMPLATE, SHADER_HERO_TEMPLATE, SCROLL_SECTION_TEMPLATE, CARD_TEMPLATE, FOOTER_TEMPLATE, GSAP_SCRIPT
 
 class AnimusEngine:
     def __init__(self, output_dir="generated_site"):
@@ -104,6 +104,8 @@ class AnimusEngine:
         
         if use_video:
             template = VIDEO_HERO_TEMPLATE
+        elif data.get("use_shader", False):
+            template = SHADER_HERO_TEMPLATE
         elif layout_type == "SPLIT":
             template = SPLIT_HERO_TEMPLATE
         else:

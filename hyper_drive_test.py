@@ -11,14 +11,13 @@ def run_hyper_drive_test():
                 "name": "index",
                 "content": {
                     "theme": "DYNAMIC",
-                    "layout": "FULL",
-                    "geometry": "OCTA",
-                    "hero_title": "FUEL YOUR FIRE",
-                    "hero_subtitle": "The world's first bio-kinetic energy drink powered by AI-optimized nutrients.",
-                    "use_3d": True,
+                    "use_video": True,
+                    "youtube_id": "3_PTo_lZ_uU",
+                    "hero_title": "REALISTIC FIRE",
+                    "hero_subtitle": "High-fidelity wood burning with clear, realistic textures.",
                     "features": [
-                        {"title": "Zero Crash", "content": "Steady energy for 12 hours straight."},
-                        {"title": "Neural Focus", "content": "Boost your cognitive performance by 40%."}
+                        {"title": "HD Quality", "content": "1080p realistic fire loop."},
+                        {"title": "Ambient", "content": "Perfect for cozy brand vibes."}
                     ]
                 }
             },
@@ -26,13 +25,12 @@ def run_hyper_drive_test():
                 "name": "flavors",
                 "content": {
                     "theme": "DYNAMIC",
-                    "use_video": True,
-                    "hero_title": "EXPLOSIVE TASTE",
-                    "hero_subtitle": "From Electric Mango to Midnight Berries. Find your flow.",
-                    "video_url": "assets/fire.mp4",
+                    "use_shader": True,
+                    "hero_title": "ABSTRACT LIQUID",
+                    "hero_subtitle": "Testing the code-based generative fire shader.",
                     "features": [
-                        {"title": "Electric Mango", "content": "A surge of tropical intensity."},
-                        {"title": "Midnight Berry", "content": "Smooth, dark, and powerful."}
+                        {"title": "Indestructible", "content": "100% reliable GPU simulation."},
+                        {"title": "Interactive", "content": "Flows with your motion."}
                     ]
                 }
             },
