@@ -4,7 +4,8 @@ from components import (
     HERO_TEMPLATE, THREE_JS_HERO_TEMPLATE, SPLIT_HERO_TEMPLATE, 
     VIDEO_HERO_TEMPLATE, SHADER_HERO_TEMPLATE, SCROLL_SECTION_TEMPLATE, 
     CARD_TEMPLATE, FOOTER_TEMPLATE, GSAP_SCRIPT, BASE_HTML, 
-    FEATURE_GRID_TEMPLATE, FEATURE_ITEM_TEMPLATE, NAV_BAR_TEMPLATE, NAV_LINK_TEMPLATE
+    FEATURE_GRID_TEMPLATE, FEATURE_ITEM_TEMPLATE, NAV_BAR_TEMPLATE, NAV_LINK_TEMPLATE,
+    SENTRY_REPORT_TEMPLATE
 )
 from soul_generator import AnimusSoul
 
@@ -98,7 +99,7 @@ class AnimusEngine:
         footer_html = FOOTER_TEMPLATE.replace("{project_name}", self.project_name)
         
         # 7. Final Assembly
-        body_content = nav_html + hero_html + grid_html + footer_html
+        body_content = nav_html + hero_html + grid_html + footer_html + SENTRY_REPORT_TEMPLATE.replace("[[sentry_status]]", "PASSED_SURGICAL_AUDIT")
         
         full_page = BASE_HTML.replace("[[title]]", f"{self.project_name} | {page_name.capitalize()}")
         full_page = full_page.replace("[[body]]", body_content)

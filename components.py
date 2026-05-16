@@ -7,21 +7,24 @@ NAV_BAR_TEMPLATE = """
         [[nav_links]]
     </div>
     <div class="nav-cta">
-        <a href="#" style="background: white; color: black; padding: 0.5rem 1.5rem; border-radius: 50px; text-decoration: none; font-size: 0.8rem; font-weight: 700; letter-spacing: 0.05em; transition: transform 0.3s var(--ease-vibe);">[[cta_text]]</a>
+        <a href="#" style="background: white; color: black; padding: 0.5rem 1.5rem; border-radius: 50px; text-decoration: none; font-size: 0.8rem; font-weight: 700; letter-spacing: 0.05em; transition: transform 0.3s var(--ease-vibe); display: inline-block;">[[cta_text]]</a>
     </div>
 </nav>
+<style>
+    .nav-cta a:hover { transform: scale(1.05); box-shadow: 0 10px 20px rgba(0,0,0,0.3); }
+</style>
 """
 
 NAV_LINK_TEMPLATE = """
-<a href="[[link]]" class="nav-item [[active_class]]" style="text-decoration: none; color: white; font-size: 0.8rem; font-weight: 400; opacity: 0.5; letter-spacing: 0.05em; transition: all 0.3s var(--ease-vibe); font-family: var(--font-body); position: relative; padding: 0.5rem 0;">
+<a href="[[link]]" class="nav-item [[active_class]]" style="text-decoration: none; color: white; font-size: 0.8rem; font-weight: 400; letter-spacing: 0.05em; transition: all 0.3s var(--ease-vibe); font-family: var(--font-body); position: relative; padding: 0.5rem 0;">
     [[name]]
-    <div class="active-indicator" style="position: absolute; bottom: 0; left: 0; width: 100%; height: 2px; background: white; transform: scaleX(0); transition: transform 0.3s var(--ease-vibe); border-radius: 2px;"></div>
+    <div class="active-indicator" style="position: absolute; bottom: 0; left: 0; width: 100%; height: 2px; background: white; transition: transform 0.3s var(--ease-vibe); border-radius: 2px; transform: scaleX(0); transform-origin: left;"></div>
 </a>
 <style>
+    .nav-item { opacity: 0.5; }
     .nav-item:hover { opacity: 1; }
     .nav-item.active { opacity: 1; font-weight: 700; }
-    .nav-item.active .active-indicator { transform: scaleX(1); }
-    .nav-cta a:hover { transform: scale(1.05); box-shadow: 0 10px 20px rgba(0,0,0,0.3); }
+    .nav-item.active .active-indicator { transform: scaleX(1) !important; }
 </style>
 """
 
@@ -138,6 +141,13 @@ SPLIT_HERO_TEMPLATE = """
         <div id="three-canvas-container"></div>
     </div>
 </section>
+"""
+
+SENTRY_REPORT_TEMPLATE = """
+<div id="sentry-report" style="position: fixed; bottom: 2rem; left: 2rem; z-index: 10005; background: rgba(0,255,204,0.1); border: 1px solid rgba(0,255,204,0.3); padding: 1rem 1.5rem; border-radius: 12px; backdrop-filter: blur(10px); display: flex; align-items: center; gap: 1rem; cursor: pointer; transition: all 0.3s var(--ease-vibe);">
+    <div style="width: 8px; height: 8px; background: #00ffcc; border-radius: 50%; box-shadow: 0 0 10px #00ffcc;"></div>
+    <div style="font-family: 'Space Mono', monospace; font-size: 0.7rem; color: #00ffcc; letter-spacing: 0.1em;">SENTRY_AUDIT: [[sentry_status]]</div>
+</div>
 """
 
 FOOTER_TEMPLATE = """
