@@ -180,15 +180,7 @@ h1, h2, h3 {
 
 /* Noise Overlay */
 .noise-overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    z-index: 9999;
-    pointer-events: none;
-    opacity: 0.05;
-    background: url('https://grainy-gradients.vercel.app/noise.svg');
+    display: none; /* Removed for Crystal Clear clarity */
 }
 
 /* Custom Cursor */
@@ -429,25 +421,29 @@ h1, h2, h3 {
                 void main() {
                     vec2 uv = gl_FragCoord.xy / resolution.xy;
                     vec2 q = uv;
-                    q.y -= time * 0.4;
+                    q.y -= time * 0.6; // Faster, more energetic
                     
-                    float strength = 1.5;
-                    float T3 = 1.5 * noise(q * 2.0);
-                    float T2 = 1.0 * noise(q * 4.0 + T3);
-                    float T1 = 0.5 * noise(q * 8.0 + T2);
+                    float T3 = 1.6 * noise(q * 3.0);
+                    float T2 = 1.2 * noise(q * 6.0 + T3);
+                    float T1 = 0.8 * noise(q * 12.0 + T2);
                     float f = T1 + T2 + T3;
                     
-                    f *= (1.0 - uv.y) * 2.5; // Flame taper
+                    f *= (1.0 - uv.y) * 3.0; // Sharper taper
                     f = clamp(f, 0.0, 1.0);
                     
-                    // High Contrast Fire (Based on Uploaded Image)
-                    vec3 fireColor = mix(vec3(0.0), vec3(1.0, 0.3, 0.0), smoothstep(0.1, 0.4, f));
-                    fireColor = mix(fireColor, vec3(1.0, 0.8, 0.2), smoothstep(0.4, 0.7, f));
-                    fireColor = mix(fireColor, vec3(1.0, 1.0, 0.8), smoothstep(0.7, 1.0, f));
+                    // RAZOR SHARP STEPS (No more blur)
+                    vec3 fireColor = mix(vec3(0.0), vec3(1.0, 0.2, 0.0), smoothstep(0.2, 0.25, f));
+                    fireColor = mix(fireColor, vec3(1.0, 0.6, 0.0), smoothstep(0.4, 0.45, f));
+                    fireColor = mix(fireColor, vec3(1.0, 1.0, 0.5), smoothstep(0.7, 0.72, f));
                     
-                    // Mouse Distortion
+                    // High Contrast Bloom
+                    fireColor *= 1.5;
+                    
+                    // Mouse Distortion (Crystal Clear)
                     float dist = distance(uv, mouse);
-                    fireColor *= 1.0 + (0.5 / (1.0 + dist * 10.0));
+                    if (dist < 0.2) {
+                        fireColor *= 1.2;
+                    }
                     
                     gl_FragColor = vec4(fireColor, 1.0);
                 }
