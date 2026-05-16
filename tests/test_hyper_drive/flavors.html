@@ -476,6 +476,40 @@ h1, h2, h3 {
         });
     }
 
+    // Canvas Video Engine (The "Infinite Reliability" Fix)
+    const videoCanvas = document.getElementById('video-canvas-container');
+    if (videoCanvas && window.VIDEO_URL) {
+        const vc_scene = new THREE.Scene();
+        const vc_camera = new THREE.OrthographicCamera(-1, 1, 1, -1, 0, 1);
+        const vc_renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+        vc_renderer.setSize(window.innerWidth, window.innerHeight);
+        videoCanvas.appendChild(vc_renderer.domElement);
+
+        const video = document.createElement('video');
+        video.src = window.VIDEO_URL;
+        video.crossOrigin = "anonymous";
+        video.loop = true;
+        video.muted = true;
+        video.playsInline = true;
+        video.play().catch(() => {
+            document.body.addEventListener('click', () => video.play(), { once: true });
+        });
+
+        const texture = new THREE.VideoTexture(video);
+        const material = new THREE.MeshBasicMaterial({ map: texture });
+        const mesh = new THREE.Mesh(new THREE.PlaneGeometry(2, 2), material);
+        vc_scene.add(mesh);
+
+        function vc_animate() {
+            requestAnimationFrame(vc_animate);
+            vc_renderer.render(vc_scene, vc_camera);
+        }
+        vc_animate();
+        window.addEventListener('resize', () => {
+            vc_renderer.setSize(window.innerWidth, window.innerHeight);
+        });
+    }
+
     // Initial Reveal Animations
     gsap.to(".reveal", {
         opacity: 1,

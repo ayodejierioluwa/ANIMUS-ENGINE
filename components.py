@@ -14,15 +14,7 @@ HERO_TEMPLATE = """
 """
 
 VIDEO_HERO_TEMPLATE = """
-<video autoplay muted loop playsinline id="bg-video" style="position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; object-fit: cover; z-index: 1; pointer-events: none; background: black;">
-    <source src="[[video_url]]" type="video/mp4">
-</video>
-<script>
-    document.addEventListener('DOMContentLoaded', () => {
-        const v = document.getElementById('bg-video');
-        if (v) v.play().catch(e => console.log("Autoplay blocked, waiting for interaction."));
-    });
-</script>
+<div id="video-canvas-container" style="position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: -100; pointer-events: none;"></div>
 <section class="hero [[layout_class]]" id="hero" style="background: transparent !important;">
     <div class="hero-content">
         <h1 class="reveal">[[title]]</h1>
@@ -33,6 +25,9 @@ VIDEO_HERO_TEMPLATE = """
     </div>
 </section>
 <button onclick="diagnoseVisuals()" style="position: fixed; bottom: 1rem; right: 1rem; z-index: 10002; background: rgba(255,255,255,0.1); color: white; border: 1px solid white; padding: 0.5rem; border-radius: 5px; cursor: pointer;">Diagnostic</button>
+<script>
+    window.VIDEO_URL = "[[video_url]]";
+</script>
 """
 
 SHADER_HERO_TEMPLATE = """
@@ -303,6 +298,40 @@ GSAP_SCRIPT = """
         window.addEventListener('resize', () => {
             rf_renderer.setSize(window.innerWidth, window.innerHeight);
             rf_material.uniforms.resolution.value.set(window.innerWidth, window.innerHeight);
+        });
+    }
+
+    // Canvas Video Engine (The "Infinite Reliability" Fix)
+    const videoCanvas = document.getElementById('video-canvas-container');
+    if (videoCanvas && window.VIDEO_URL) {
+        const vc_scene = new THREE.Scene();
+        const vc_camera = new THREE.OrthographicCamera(-1, 1, 1, -1, 0, 1);
+        const vc_renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+        vc_renderer.setSize(window.innerWidth, window.innerHeight);
+        videoCanvas.appendChild(vc_renderer.domElement);
+
+        const video = document.createElement('video');
+        video.src = window.VIDEO_URL;
+        video.crossOrigin = "anonymous";
+        video.loop = true;
+        video.muted = true;
+        video.playsInline = true;
+        video.play().catch(() => {
+            document.body.addEventListener('click', () => video.play(), { once: true });
+        });
+
+        const texture = new THREE.VideoTexture(video);
+        const material = new THREE.MeshBasicMaterial({ map: texture });
+        const mesh = new THREE.Mesh(new THREE.PlaneGeometry(2, 2), material);
+        vc_scene.add(mesh);
+
+        function vc_animate() {
+            requestAnimationFrame(vc_animate);
+            vc_renderer.render(vc_scene, vc_camera);
+        }
+        vc_animate();
+        window.addEventListener('resize', () => {
+            vc_renderer.setSize(window.innerWidth, window.innerHeight);
         });
     }
 

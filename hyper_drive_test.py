@@ -12,8 +12,8 @@ def run_hyper_drive_test():
                 "content": {
                     "theme": "DYNAMIC",
                     "use_video": True,
-                    "vimeo_id": "370331493",
-                    "hero_title": "VIMEO RESTORED",
+                    "video_url": "https://archive.org/download/Fireplace_201602/Fireplace.mp4",
+                    "hero_title": "CANVAS REVELATION",
                     "hero_subtitle": "Testing the realistic fire textures for production.",
                     "features": [
                         {"title": "Realism", "content": "Sharp wood burning textures."},
