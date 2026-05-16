@@ -361,39 +361,51 @@ BASE_HTML = """
     <title>[[title]]</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&family=Outfit:wght@200;400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&family=Outfit:wght@200;400;700&family=Space+Mono&family=Playfair+Display:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
     <style>
         :root {
-            --bg-color: #050505;
-            --text-color: #ffffff;
-            --accent-primary: #00d4ff;
+            --bg-color: [[bg_color]];
+            --text-color: [[text_color]];
+            --accent-primary: [[accent_primary]];
             --glass-bg: rgba(255, 255, 255, 0.03);
             --glass-border: rgba(255, 255, 255, 0.1);
+            
+            /* Vibe Shift Tokens */
             --glass-blur: [[glass_blur]];
             --grid-radius: [[grid_radius]];
             --btn-radius: [[btn_radius]];
             --void-blur: [[void_blur]];
+            
+            /* Atmospheric DNA */
+            --font-heading: [[font_heading]];
+            --font-body: [[font_body]];
+            --ease-vibe: [[ease_vibe]];
+            --duration-vibe: [[duration_vibe]];
+            --hover-glow: [[hover_glow]];
         }
-        * { margin: 0; padding: 0; box-box: border-box; }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
         body { 
             background-color: var(--bg-color); 
             color: var(--text-color); 
-            font-family: 'Inter', sans-serif;
+            font-family: var(--font-body), sans-serif;
             overflow-x: hidden;
+            transition: background 1s ease;
         }
-        h1, h2, h3 { font-family: 'Outfit', sans-serif; }
+        h1, h2, h3 { 
+            font-family: var(--font-heading), sans-serif; 
+            letter-spacing: [[letter_spacing]];
+            text-transform: [[text_transform]];
+        }
         .site-wrapper { position: relative; z-index: 10; }
         
-        .custom-cursor {
-            position: fixed;
-            width: 20px;
-            height: 20px;
-            background: transparent;
-            border: 1px solid var(--accent-primary);
-            border-radius: 50%;
-            pointer-events: none;
-            z-index: 99999;
-            transform: translate(-50%, -50%);
+        .feature-item {
+            transition: all var(--duration-vibe) var(--ease-vibe) !important;
+        }
+        .feature-item:hover {
+            box-shadow: var(--hover-glow) !important;
+        }
+        .btn-primary {
+            transition: all 0.3s var(--ease-vibe) !important;
         }
     </style>
 </head>
