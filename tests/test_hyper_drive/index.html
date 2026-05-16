@@ -7,9 +7,9 @@
     <style>@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&family=Outfit:wght@300;500;700;900&display=swap');
 
 :root {
-    --bg-color: #080808;
+    --bg-color: #0a0202;
     --text-color: #ffffff;
-    --accent-primary: #ffffff;
+    --accent-primary: #ff4d00;
     --accent-secondary: #ffffff;
     --glass-bg: rgba(255, 255, 255, 0.02);
     --glass-border: rgba(255, 255, 255, 0.05);
@@ -91,7 +91,7 @@ h1, h2, h3 {
 .hero h1 {
     font-size: clamp(3rem, 10vw, 8rem);
     line-height: 0.9;
-    background: linear-gradient(to bottom, #ffffff, transparent);
+    background: linear-gradient(to bottom, #ff4d00, transparent);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     margin-bottom: 2rem;
@@ -233,19 +233,15 @@ h1, h2, h3 {
     <div class="site-wrapper">
         <nav style="position: fixed; top: 2rem; width: 100%; display: flex; justify-content: center; gap: 2rem; z-index: 10001;"></nav>
         
-<div id="video-background-container" style="position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: -100; pointer-events: none; overflow: hidden; background: black;">
-    <iframe id="bg-video-iframe" 
-        src="https://player.vimeo.com/video/370331493?background=1&autoplay=1&loop=1&byline=0&title=0&muted=1" 
-        frameborder="0" 
-        style="position: absolute; top: 50%; left: 50%; width: 100vw; height: 56.25vw; min-height: 100vh; min-width: 177.77vh; transform: translate(-50%, -50%);"
-        allow="autoplay; fullscreen">
-    </iframe>
-</div>
+<video autoplay muted loop playsinline crossorigin="anonymous" id="bg-video" 
+    style="position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; object-fit: cover; z-index: -100; pointer-events: none; background: black;">
+    <source src="https://v.ftcdn.net/05/23/94/29/700_F_523942944_v7f77N68C222X8q9pE6A69mK89g1B7Hh_ST.mp4" type="video/mp4">
+</video>
 <div id="kinetic-fire-container" style="position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: -101; pointer-events: none; background: black;"></div>
 
 <section class="hero full-layout" id="hero" style="background: transparent !important;">
     <div class="hero-content" style="position: relative; z-index: 9999;">
-        <h1 class="reveal">ULTIMATE IGNITION</h1>
+        <h1 class="reveal">PRODUCTION FIRE</h1>
         <p class="reveal">Testing the realistic fire textures for production.</p>
         <div class="reveal">
             <a href="#" class="btn-primary">Get Started</a>
@@ -255,7 +251,7 @@ h1, h2, h3 {
 <button onclick="diagnoseVisuals()" style="position: fixed; bottom: 1rem; right: 1rem; z-index: 10002; background: rgba(255,255,255,0.1); color: white; border: 1px solid white; padding: 0.5rem; border-radius: 5px; cursor: pointer;">Diagnostic</button>
 <script>
     window.FIRE_BG = "assets/fire_bg.png";
-    window.VIMEO_ID = "370331493";
+    window.VIMEO_ID = "189852033";
 </script>
 
         

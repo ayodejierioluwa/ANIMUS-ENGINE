@@ -12,8 +12,8 @@ def run_hyper_drive_test():
                 "content": {
                     "theme": "DYNAMIC",
                     "use_video": True,
-                    "vimeo_id": "370331493",
-                    "hero_title": "ULTIMATE IGNITION",
+                    "video_url": "https://v.ftcdn.net/05/23/94/29/700_F_523942944_v7f77N68C222X8q9pE6A69mK89g1B7Hh_ST.mp4",
+                    "hero_title": "PRODUCTION FIRE",
                     "hero_subtitle": "Testing the realistic fire textures for production.",
                     "features": [
                         {"title": "Realism", "content": "Sharp wood burning textures."},

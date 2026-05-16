@@ -14,14 +14,10 @@ HERO_TEMPLATE = """
 """
 
 VIDEO_HERO_TEMPLATE = """
-<div id="video-background-container" style="position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: -100; pointer-events: none; overflow: hidden; background: black;">
-    <iframe id="bg-video-iframe" 
-        src="https://player.vimeo.com/video/[[vimeo_id]]?background=1&autoplay=1&loop=1&byline=0&title=0&muted=1" 
-        frameborder="0" 
-        style="position: absolute; top: 50%; left: 50%; width: 100vw; height: 56.25vw; min-height: 100vh; min-width: 177.77vh; transform: translate(-50%, -50%);"
-        allow="autoplay; fullscreen">
-    </iframe>
-</div>
+<video autoplay muted loop playsinline crossorigin="anonymous" id="bg-video" 
+    style="position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; object-fit: cover; z-index: -100; pointer-events: none; background: black;">
+    <source src="[[video_url]]" type="video/mp4">
+</video>
 <div id="kinetic-fire-container" style="position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: -101; pointer-events: none; background: black;"></div>
 
 <section class="hero [[layout_class]]" id="hero" style="background: transparent !important;">
