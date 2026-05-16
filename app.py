@@ -10,95 +10,128 @@ app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
 engine = AnimusEngine(output_dir="static/projects")
 
-# AETHER_COMMAND Dashboard v2.0 (Multimodal)
+# AETHER_COMMAND v3.0 // OBSIDIAN & GOLD (TRANSFUSED)
 DASHBOARD_HTML = """
 <!DOCTYPE html>
-<html>
+<html class="dark" lang="en">
 <head>
-    <title>AETHER_COMMAND | Nerve Center</title>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com/css2?family=EB+Garamond:wght@400;500;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1" rel="stylesheet"/>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <script id="tailwind-config">
+          tailwind.config = {
+            darkMode: "class",
+            theme: {
+              extend: {
+                "colors": {
+                        "surface": "#131314",
+                        "primary": "#f2ca50",
+                        "on-primary": "#3c2f00",
+                        "on-surface": "#e5e2e3",
+                        "surface-container-low": "#1c1b1c",
+                        "on-surface-variant": "#d0c5af"
+                },
+                "fontFamily": {
+                        "headline-md": ["EB Garamond"],
+                        "body-md": ["Inter", "sans-serif"],
+                        "code-ui": ["JetBrains Mono"]
+                }
+              },
+            },
+          }
+    </script>
     <style>
-        :root { --accent: #00ffcc; --bg: #050505; }
-        body { background: var(--bg); color: white; font-family: 'Space Mono', monospace; margin: 0; display: flex; align-items: center; justify-content: center; height: 100vh; overflow: hidden; }
-        #void-canvas { position: absolute; top: 0; left: 0; width: 100%; height: 100%; opacity: 0.3; pointer-events: none; }
-        .dashboard { width: 900px; padding: 4rem; background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.05); backdrop-filter: blur(40px); border-radius: 24px; text-align: center; position: relative; z-index: 10; }
-        h1 { font-size: 0.8rem; letter-spacing: 0.5em; opacity: 0.5; margin-bottom: 3rem; color: var(--accent); }
-        .grid-inputs { display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; margin-top: 2rem; }
-        .input-group { text-align: left; }
-        .label { font-size: 0.6rem; opacity: 0.4; margin-bottom: 0.5rem; display: block; }
-        input, textarea { width: 100%; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.1); color: white; font-family: inherit; padding: 1rem; border-radius: 12px; outline: none; transition: border 0.4s; }
-        input:focus, textarea:focus { border: 1px solid var(--accent); }
-        textarea { height: 100px; resize: none; }
-        .btn-ignite { margin-top: 3rem; background: white; color: black; border: none; padding: 1.25rem 4rem; border-radius: 50px; font-weight: 700; cursor: pointer; transition: all 0.3s; font-size: 0.9rem; letter-spacing: 0.1em; }
-        .btn-ignite:hover { transform: scale(1.05); box-shadow: 0 0 40px var(--accent); }
-        .status { margin-top: 2rem; font-size: 0.7rem; opacity: 0.4; font-family: 'Space Mono'; }
-        #results { margin-top: 2rem; display: none; padding: 1.5rem; background: rgba(0,255,204,0.05); border: 1px solid rgba(0,255,204,0.2); border-radius: 12px; }
-        a { color: var(--accent); text-decoration: none; font-weight: 700; }
-        .file-input { display: none; }
-        .file-label { cursor: pointer; border: 1px dashed rgba(255,255,255,0.2); padding: 1rem; border-radius: 12px; display: flex; align-items: center; justify-content: center; gap: 1rem; opacity: 0.6; transition: all 0.3s; height: 100px; }
-        .file-label:hover { border-color: var(--accent); opacity: 1; }
-        .custom-cursor { position: fixed; width: 20px; height: 20px; border: 1px solid var(--accent); border-radius: 50%; pointer-events: none; z-index: 99999; transform: translate(-50%, -50%); transition: transform 0.1s; }
-        
-        /* Tactical Layer: High-Contrast Photon Grain */
-        .film-grain {
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            pointer-events: none;
-            z-index: 99999;
-            opacity: 0.15;
-            background: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
-            mix-blend-mode: soft-light;
-            animation: grain-shift 0.2s steps(2) infinite;
-        }
-        @keyframes grain-shift {
-            0% { transform: translate(0,0); }
-            100% { transform: translate(-5%, -5%); }
-        }
+        body { background-color: #0A0A0B; background-image: url(https://lh3.googleusercontent.com/aida-public/AB6AXuDlxuSL-GneSMLZFBbbaRzw0f8JwHqAk1Ah_QA1sC0Ooz7pGWfEunLBz-2Regm0kqRhpn-iNOspDi_VyG2i_KoQKpbmTr1neHIEGL8rtoEDQQ4Kh2IaZ9eUUQJiC9dWqRpA6n0hU8DTJ__pKvRbqjFYp0VVZ-vbB3qgJwq69n2jiMrSIyGTt5L836iPMymlD961GsPBrAY0rLv1Bf06eC_KkxT1eMw6by5pdVQAkpjaLUmpeNp4hWhB41ac9Y1Dj4VW-fssscJGvPg); background-repeat: repeat; }
+        .obsidian-panel { background: rgba(18, 18, 20, 0.8); border: 1px solid rgba(255, 255, 255, 0.08); backdrop-filter: blur(12px); }
+        .gold-rim { box-shadow: 0 0 2px 0 rgba(212, 175, 55, 0.3), 0 0 20px 0 rgba(212, 175, 55, 0.05); }
+        .gold-rim-hover:hover { box-shadow: 0 0 5px 1px rgba(212, 175, 55, 0.4), 0 0 30px 2px rgba(212, 175, 55, 0.1); border-color: rgba(212, 175, 55, 0.3); }
+        @keyframes pulse-rotate { 0% { transform: scale(1) rotate(0deg); opacity: 0.9; } 50% { transform: scale(1.05) rotate(180deg); opacity: 1; } 100% { transform: scale(1) rotate(360deg); opacity: 0.9; } }
+        .animate-aether-core { animation: pulse-rotate 20s linear infinite; }
+        .glass-header { backdrop-filter: blur(20px); background: rgba(18, 18, 20, 0.7); }
+        .film-grain { position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 9999; opacity: 0.1; background: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"); mix-blend-mode: overlay; }
+        .custom-cursor { position: fixed; width: 20px; height: 20px; border: 1px solid #f2ca50; border-radius: 50%; pointer-events: none; z-index: 99999; transform: translate(-50%, -50%); transition: transform 0.1s; }
+        textarea:focus, input:focus { outline: none; border-color: #f2ca50 !important; }
     </style>
 </head>
-<body>
+<body class="min-h-screen flex flex-col font-body-md text-on-surface overflow-hidden">
     <div class="film-grain"></div>
-    <div id="void-canvas"></div>
     <div class="custom-cursor" id="cursor"></div>
 
-    <div class="dashboard">
-        <h1>AETHER_COMMAND v2.1 // TACTILE_DNA</h1>
-        
-        <div class="input-group">
-            <span class="label">NEURAL_MISSION_PROMPT</span>
-            <input type="text" id="mission" placeholder="ENTER CORE MISSION OBJECTIVE...">
-        </div>
-
-        <div class="grid-inputs">
-            <div class="input-group">
-                <span class="label">SOURCE_DOCUMENT_UPLOAD</span>
-                <label class="file-label" for="file-upload" id="file-status">
-                    <i class="fa-solid fa-paperclip"></i>
-                    <span>CLICK TO ATTACH DOCS</span>
-                </label>
-                <input type="file" id="file-upload" class="file-input" onchange="updateFileStatus()">
+    <header class="fixed top-0 left-0 w-full z-50 glass-header border-b border-white/5 shadow-xl">
+        <div class="flex justify-between items-center px-10 py-4 w-full max-w-[1440px] mx-auto">
+            <div class="flex items-center gap-6">
+                <span class="font-headline-md text-2xl font-bold tracking-tighter text-primary uppercase">Aether Command</span>
+                <nav class="hidden md:flex items-center gap-6 ml-8">
+                    <a class="text-[11px] uppercase tracking-widest text-primary border-b-2 border-primary pb-1 font-bold" href="#">Engine</a>
+                    <a class="text-[11px] uppercase tracking-widest text-on-surface-variant hover:text-on-surface transition-colors" href="#">Blueprint</a>
+                    <a class="text-[11px] uppercase tracking-widest text-on-surface-variant hover:text-on-surface transition-colors" href="#">Deploy</a>
+                    <a class="text-[11px] uppercase tracking-widest text-on-surface-variant hover:text-on-surface transition-colors" href="#">Vault</a>
+                </nav>
             </div>
-            <div class="input-group">
-                <span class="label">HTML_TRANSFUSION_PORTAL</span>
-                <textarea id="html-injection" placeholder="PASTE LEGACY HTML CODE HERE..."></textarea>
+            <div class="flex items-center gap-4">
+                <button onclick="ignite()" class="bg-primary text-on-primary font-code-ui text-[13px] px-6 py-2 rounded-sm font-bold active:scale-95 transition-all gold-rim hover:shadow-primary/20">EXECUTE MISSION</button>
             </div>
         </div>
+    </header>
 
-        <button class="btn-ignite" onclick="ignite()">EXECUTE_TRANSFUSION</button>
-        
-        <div class="status" id="status">STATUS: SYSTEM_READY_FOR_INPUT</div>
-        
-        <div id="results">
-            <p>PROJECT_SYNTHESIZED: <a id="view-link" href="#" target="_blank">OPEN_LIVE_DEPLOYMENT</a></p>
+    <main class="flex-grow pt-32 pb-16 px-10 max-w-[1440px] mx-auto w-full grid grid-cols-12 gap-8 items-center">
+        <!-- Left: Inputs -->
+        <div class="col-span-12 lg:col-span-5 space-y-8">
+            <div class="obsidian-panel p-8 rounded-xl gold-rim-hover transition-all">
+                <span class="text-[10px] uppercase tracking-[0.2em] text-primary/60 mb-4 block">Neural Mission Objective</span>
+                <input type="text" id="mission" placeholder="DESCRIBE YOUR DIGITAL REALM..." class="w-full bg-white/5 border border-white/10 rounded-lg p-4 text-sm font-code-ui text-white">
+            </div>
+
+            <div class="grid grid-cols-2 gap-4">
+                <div class="obsidian-panel p-6 rounded-xl gold-rim-hover transition-all">
+                    <span class="text-[10px] uppercase tracking-[0.2em] text-primary/60 mb-4 block">Source Document</span>
+                    <label for="file-upload" class="cursor-pointer flex flex-col items-center gap-2 text-on-surface-variant hover:text-primary transition-all">
+                        <i class="fa-solid fa-paperclip text-2xl" id="file-icon"></i>
+                        <span class="text-[10px]" id="file-name">ATTACH SOURCE</span>
+                    </label>
+                    <input type="file" id="file-upload" class="hidden" onchange="updateFileStatus()">
+                </div>
+                <div class="obsidian-panel p-6 rounded-xl gold-rim-hover transition-all">
+                    <span class="text-[10px] uppercase tracking-[0.2em] text-primary/60 mb-4 block">HTML Injection</span>
+                    <textarea id="html-injection" placeholder="PASTE RAW CODE..." class="w-full h-24 bg-white/5 border border-white/10 rounded-lg p-3 text-[12px] font-code-ui text-white resize-none"></textarea>
+                </div>
+            </div>
+
+            <div id="results" class="hidden obsidian-panel p-6 rounded-xl border-primary/20 bg-primary/5">
+                <div class="flex items-center justify-between">
+                    <span class="text-xs font-code-ui tracking-widest text-primary animate-pulse">MISSION_SUCCESS:</span>
+                    <a id="view-link" href="#" target="_blank" class="text-xs font-bold underline decoration-primary underline-offset-4">LAUNCH_DEPLOYMENT</a>
+                </div>
+            </div>
+            
+            <div id="status" class="text-[10px] font-code-ui uppercase tracking-[0.3em] opacity-30">Status: Terminal Idle</div>
         </div>
 
-        <div class="signature" style="position: absolute; bottom: 2rem; right: 2rem; width: 180px; transition: opacity 0.5s var(--ease-vibe); cursor: pointer; opacity: 0.7;" onmouseover="this.style.opacity=1" onmouseout="this.style.opacity=0.7">
-            <canvas id="sig-canvas" style="width: 100%; height: auto;"></canvas>
+        <!-- Center: Aether Core -->
+        <div class="col-span-12 lg:col-span-7 flex flex-col items-center justify-center relative">
+            <div class="absolute w-[600px] h-[600px] bg-primary/5 rounded-full blur-[120px] pointer-events-none"></div>
+            <div class="animate-aether-core w-[450px] h-[450px] relative z-10">
+                <img src="https://lh3.googleusercontent.com/aida-public/AB6AXuDlxuSL-GneSMLZFBbbaRzw0f8JwHqAk1Ah_QA1sC0Ooz7pGWfEunLBz-2Regm0kqRhpn-iNOspDi_VyG2i_KoQKpbmTr1neHIEGL8rtoEDQQ4Kh2IaZ9eUUQJiC9dWqRpA6n0hU8DTJ__pKvRbqjFYp0VVZ-vbB3qgJwq69n2jiMrSIyGTt5L836iPMymlD961GsPBrAY0rLv1Bf06eC_KkxT1eMw6by5pdVQAkpjaLUmpeNp4hWhB41ac9Y1Dj4VW-fssscJGvPg" class="w-full h-full object-contain filter drop-shadow-[0_0_30px_rgba(212,175,55,0.3)]">
+            </div>
+            
+            <!-- Sovereign Seal -->
+            <div class="signature absolute bottom-0 right-0 w-48 opacity-60 hover:opacity-100 transition-opacity cursor-pointer">
+                <canvas id="sig-canvas" style="width: 100%; height: auto;"></canvas>
+            </div>
         </div>
-    </div>
+    </main>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
     <script>
+        // Magnetic Cursor
+        const cursor = document.getElementById('cursor');
+        window.addEventListener('mousemove', (e) => {
+            gsap.to(cursor, { x: e.clientX, y: e.clientY, duration: 0.6, ease: "power2.out" });
+        });
+
         // Neural Ink Extraction logic
         function extractSignature() {
             const img = new Image();
@@ -108,58 +141,25 @@ DASHBOARD_HTML = """
                 const ctx = canvas.getContext('2d');
                 canvas.width = img.width;
                 canvas.height = img.height;
-                
-                // Draw original
                 ctx.drawImage(img, 0, 0);
                 const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
                 const data = imageData.data;
-                
-                // Surgical Pixel Scan
                 for (let i = 0; i < data.length; i += 4) {
-                    const r = data[i], g = data[i+1], b = data[i+2];
-                    const brightness = (r + g + b) / 3;
-                    
-                    // If it's dark (ink), make it cyan and keep it. If light (paper), make it transparent.
-                    if (brightness < 160) {
-                        data[i] = 0;      // R
-                        data[i+1] = 255;    // G
-                        data[i+2] = 204;    // B
-                        data[i+3] = 255;    // A (Opaque)
-                    } else {
-                        data[i+3] = 0;      // A (Transparent)
-                    }
+                    if ((data[i] + data[i+1] + data[i+2]) / 3 < 160) {
+                        data[i] = 242; data[i+1] = 202; data[i+2] = 80; data[i+3] = 255; // Re-color to Aether Gold
+                    } else { data[i+3] = 0; }
                 }
                 ctx.putImageData(imageData, 0, 0);
             };
         }
         extractSignature();
-        // Void Background Physics
-        const canvas = document.createElement('canvas');
-        const ctx = canvas.getContext('2d');
-        document.getElementById('void-canvas').appendChild(canvas);
-        function resize() { canvas.width = window.innerWidth; canvas.height = window.innerHeight; }
-        window.addEventListener('resize', resize); resize();
-        function animate() {
-            ctx.clearRect(0,0,canvas.width, canvas.height);
-            ctx.fillStyle = 'rgba(0, 255, 204, 0.1)';
-            for(let i=0; i<40; i++) {
-                ctx.beginPath();
-                ctx.arc(Math.sin(Date.now()*0.0002 + i)*canvas.width, Math.cos(Date.now()*0.0001 + i)*canvas.height, 1, 0, Math.PI*2);
-                ctx.fill();
-            }
-            requestAnimationFrame(animate);
-        }
-        animate();
-
-        // Magnetic Cursor
-        const cursor = document.getElementById('cursor');
-        window.addEventListener('mousemove', (e) => {
-            gsap.to(cursor, { x: e.clientX, y: e.clientY, duration: 0.6, ease: "power2.out" });
-        });
 
         function updateFileStatus() {
             const file = document.getElementById('file-upload').files[0];
-            if (file) document.getElementById('file-status').innerHTML = '<i class="fa-solid fa-check" style="color: var(--accent)"></i> <span>' + file.name + '</span>';
+            if (file) {
+                document.getElementById('file-name').innerText = file.name;
+                document.getElementById('file-icon').className = "fa-solid fa-check text-primary";
+            }
         }
 
         async function ignite() {
@@ -168,19 +168,26 @@ DASHBOARD_HTML = """
             const fileInput = document.getElementById('file-upload');
             const status = document.getElementById('status');
             const results = document.getElementById('results');
+            const viewLink = document.getElementById('view-link');
             
             status.innerText = "INITIALIZING_SYNTHESIS_ENGINE...";
+            gsap.to('.animate-aether-core', { scale: 1.2, duration: 0.5, repeat: -1, yoyo: true });
             
             const formData = new FormData();
             formData.append('mission', mission);
             formData.append('html', html);
             if (fileInput.files[0]) formData.append('file', fileInput.files[0]);
 
-            const response = await fetch('/generate', { method: 'POST', body: formData });
-            const data = await response.json();
-            status.innerText = "SYNTHESIS_COMPLETE // PROJECT_AUDITED";
-            results.style.display = "block";
-            document.getElementById('view-link').href = data.url;
+            try {
+                const response = await fetch('/generate', { method: 'POST', body: formData });
+                const data = await response.json();
+                status.innerText = "SYNTHESIS_COMPLETE // PROJECT_AUDITED";
+                results.classList.remove('hidden');
+                viewLink.href = data.url;
+                gsap.to('.animate-aether-core', { scale: 1, duration: 1 });
+            } catch (err) {
+                status.innerText = "SYSTEM_ERROR // CORE_OVERHEAT";
+            }
         }
     </script>
 </body>
@@ -202,17 +209,14 @@ def generate():
         filename = werkzeug.utils.secure_filename(file.filename)
         filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
         file.save(filepath)
-        # Simple extraction for now (we'll expand to PDF parsing)
         try:
             with open(filepath, 'r', errors='ignore') as f:
                 extracted_text = f.read()
         except:
             extracted_text = "File uploaded: " + filename
 
-    # Combine all context for the Soul
     total_mission = f"{mission}. Document Context: {extracted_text}. HTML Reference: {html_injection}"
-    
-    engine.generate_project(total_mission[:500]) # Cap mission length for stability
+    engine.generate_project(total_mission[:500])
     return jsonify({"status": "success", "url": "/static/projects/index.html"})
 
 @app.route('/static/projects/<path:path>')
