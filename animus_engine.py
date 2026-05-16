@@ -80,7 +80,7 @@ class AnimusEngine:
             }
             tokens = themes.get(theme_type, themes["LIQUID_METAL"])
         tokens["hero_gradient"] = tokens.get("hero_gradient", "linear-gradient(to bottom, #fff, transparent)")
-        tokens["video_url"] = data.get("video_url", "https://assets.mixkit.co/videos/preview/mixkit-abstract-form-of-blue-and-purple-ink-in-water-39850-large.mp4")
+        tokens["video_url"] = data.get("video_url", "https://cdn.pixabay.com/vimeo/328941243/water-24088.mp4?width=1280&hash=5e5d3c8d3e0f1e0d3e0f1e0d3e0f1e0d3e0f1e0d")
 
         # 1. Build Hero (Variety Selection)
         layout_type = data.get("layout", "FULL")
@@ -127,6 +127,13 @@ class AnimusEngine:
             for key, value in tokens.items():
                 styles = styles.replace(f"[[{key}]]", value)
             
+        # 5. Build Dynamic Navigation
+        nav_html = '<nav style="position: fixed; top: 2rem; width: 100%; display: flex; justify-content: center; gap: 2rem; z-index: 10001;">'
+        for p in data.get("pages", []):
+            p_name = p.get("name", "index")
+            nav_html += f'<a href="{p_name}.html" class="glass" style="padding: 0.5rem 1.5rem; text-decoration: none; color: white; border-radius: 20px;">{p_name.capitalize()}</a>'
+        nav_html += '</nav>'
+
         full_html = f"""<!DOCTYPE html>
 <html lang="en">
 <head>
@@ -138,11 +145,7 @@ class AnimusEngine:
     </style>
 </head>
 <body class="page-{page_name}">
-    <nav style="position: fixed; top: 2rem; width: 100%; display: flex; justify-content: center; gap: 2rem; z-index: 10001;">
-        <a href="index.html" class="glass" style="padding: 0.5rem 1.5rem; text-decoration: none; color: white;">Home</a>
-        <a href="about.html" class="glass" style="padding: 0.5rem 1.5rem; text-decoration: none; color: white;">About</a>
-        <a href="contact.html" class="glass" style="padding: 0.5rem 1.5rem; text-decoration: none; color: white;">Contact</a>
-    </nav>
+    {nav_html}
     {hero_html}
     {feature_section_html}
     {footer_html}
