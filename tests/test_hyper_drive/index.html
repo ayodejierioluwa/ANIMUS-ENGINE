@@ -391,12 +391,11 @@ h1, h2, h3 {
     });
 
     function diagnoseVisuals() {
-        const iframe = document.getElementById('bg-video-iframe');
-        const container = document.getElementById('video-background-container');
-        if (iframe) {
-            alert(`Sentry Diagnostic:\n- Video Container: ${container.offsetWidth}x${container.offsetHeight}\n- Iframe Source: ${iframe.src}\n- Z-Index: ${container.style.zIndex}`);
+        const video = document.getElementById('bg-video');
+        if (video) {
+            alert(`Sentry Diagnostic:\n- Video State: ${video.readyState}\n- Video Source: ${video.currentSrc}\n- Z-Index: ${video.style.zIndex}`);
         } else {
-            alert("Sentry Diagnostic: NO VIDEO IFRAME FOUND.");
+            alert("Sentry Diagnostic: NO VIDEO TAG FOUND.");
         }
     }
 </script>

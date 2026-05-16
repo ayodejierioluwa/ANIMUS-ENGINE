@@ -228,14 +228,9 @@ h1, h2, h3 {
 <body class="page-flavors">
     <nav style="position: fixed; top: 2rem; width: 100%; display: flex; justify-content: center; gap: 2rem; z-index: 10001;"></nav>
     
-<div id="video-background-container" style="position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: -100; pointer-events: none; overflow: hidden;">
-    <iframe id="bg-video-iframe" 
-        src="https://www.youtube.com/embed/Lp6WjSTU80M?autoplay=1&mute=1&loop=1&controls=0&showinfo=0&autohide=1&playlist=Lp6WjSTU80M&rel=0&enablejsapi=1" 
-        frameborder="0" 
-        style="position: absolute; top: 50%; left: 50%; width: 100vw; height: 56.25vw; min-height: 100vh; min-width: 177.77vh; transform: translate(-50%, -50%);"
-        allow="autoplay; encrypted-media">
-    </iframe>
-</div>
+<video autoplay muted loop playsinline id="bg-video" style="position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; object-fit: cover; z-index: -100; pointer-events: none;">
+    <source src="assets/fire.mp4" type="video/mp4">
+</video>
 <section class="hero full-layout" id="hero" style="background: transparent !important;">
     <div class="noise-overlay"></div>
     <div class="hero-content">
@@ -400,12 +395,11 @@ h1, h2, h3 {
     });
 
     function diagnoseVisuals() {
-        const iframe = document.getElementById('bg-video-iframe');
-        const container = document.getElementById('video-background-container');
-        if (iframe) {
-            alert(`Sentry Diagnostic:\n- Video Container: ${container.offsetWidth}x${container.offsetHeight}\n- Iframe Source: ${iframe.src}\n- Z-Index: ${container.style.zIndex}`);
+        const video = document.getElementById('bg-video');
+        if (video) {
+            alert(`Sentry Diagnostic:\n- Video State: ${video.readyState}\n- Video Source: ${video.currentSrc}\n- Z-Index: ${video.style.zIndex}`);
         } else {
-            alert("Sentry Diagnostic: NO VIDEO IFRAME FOUND.");
+            alert("Sentry Diagnostic: NO VIDEO TAG FOUND.");
         }
     }
 </script>
