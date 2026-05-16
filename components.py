@@ -14,10 +14,10 @@ HERO_TEMPLATE = """
 """
 
 VIDEO_HERO_TEMPLATE = """
-<section class="hero [[layout_class]]" id="hero">
-    <video autoplay muted loop playsinline id="bg-video">
-        <source src="[[video_url]]" type="video/mp4">
-    </video>
+<video autoplay muted loop playsinline id="bg-video" style="position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; object-fit: cover; z-index: -100; pointer-events: none;">
+    <source src="[[video_url]]" type="video/mp4">
+</video>
+<section class="hero [[layout_class]]" id="hero" style="background: transparent !important;">
     <div class="noise-overlay"></div>
     <div class="hero-content">
         <h1 class="reveal">[[title]]</h1>

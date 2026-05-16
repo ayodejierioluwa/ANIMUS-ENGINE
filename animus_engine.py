@@ -18,14 +18,29 @@ class AnimusEngine:
         return plan
 
     def generate_site(self, data):
-        """Generates a multi-page interactive website from input data."""
+        """Generates a multi-page interactive website with an auto-correction loop."""
         pages = data.get("pages", [{"name": "index", "content": data}])
         generated_files = []
         
         for page in pages:
             page_name = page.get("name", "index")
             page_data = page.get("content", data)
+            
+            # Initial Attempt
             file_path = self.generate_page(page_name, page_data)
+            
+            # Sentry Audit & Correction Loop (WOWER Excellence)
+            from animus_sentry import AnimusSentry
+            sentry = AnimusSentry()
+            
+            retries = 2
+            while not sentry.audit_file(file_path) and retries > 0:
+                print(f"⚠️ Sentry detected issues in {file_path}. Attempting auto-correction...")
+                # Apply heuristic correction: force transparency and z-index
+                page_data["force_visual_fix"] = True
+                file_path = self.generate_page(page_name, page_data)
+                retries -= 1
+                
             generated_files.append(file_path)
             
         return f"Successfully generated {len(generated_files)} pages: {', '.join(generated_files)}"
@@ -80,7 +95,7 @@ class AnimusEngine:
             }
             tokens = themes.get(theme_type, themes["LIQUID_METAL"])
         tokens["hero_gradient"] = tokens.get("hero_gradient", "linear-gradient(to bottom, #fff, transparent)")
-        tokens["video_url"] = data.get("video_url", "https://v.ftcdn.net/04/79/10/83/700_F_479108331_l3N6nE7A69mK89g1B7Hh_ST.mp4")
+        tokens["video_url"] = data.get("video_url", "https://res.cloudinary.com/demo/video/upload/f_auto:video,q_auto/docs/sea_turtle.mp4")
 
         # 1. Build Hero (Variety Selection)
         layout_type = data.get("layout", "FULL")

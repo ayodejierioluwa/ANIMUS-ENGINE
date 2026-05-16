@@ -2,6 +2,19 @@ import os
 import re
 
 class AnimusSentry:
+    def audit_file(self, path):
+        """Audits a single file and returns True if it passes."""
+        if not os.path.exists(path):
+            return False
+        with open(path, "r") as f:
+            content = f.read()
+            # Heuristic checks for visibility and links
+            if "<video" in content and "z-index: -100" not in content:
+                return False
+            if "background: transparent" not in content:
+                return False
+            return True
+
     def audit_site(self, directory):
         print(f"--- Auditing Site: {directory} ---")
         errors = []
