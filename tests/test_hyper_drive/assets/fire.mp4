@@ -1,2 +1,9 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<Error><Code>AccessDenied</Code><Message>Access Denied</Message></Error>
+
+    <html>
+      <head>
+      </head>
+      <body>
+        <h1>File Not Found</h1>
+      </body>
+    </html>
+  

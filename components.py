@@ -14,7 +14,14 @@ HERO_TEMPLATE = """
 """
 
 VIDEO_HERO_TEMPLATE = """
-<div id="kinetic-fire-container" style="position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: 1; pointer-events: none; background: black;"></div>
+<div id="video-background-container" style="position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: 1; pointer-events: none; overflow: hidden; background: black;">
+    <iframe id="bg-video-iframe" 
+        src="https://player.vimeo.com/video/[[vimeo_id]]?background=1&autoplay=0&loop=1&byline=0&title=0&muted=1" 
+        frameborder="0" 
+        style="position: absolute; top: 50%; left: 50%; width: 100vw; height: 56.25vw; min-height: 100vh; min-width: 177.77vh; transform: translate(-50%, -50%);"
+        allow="autoplay; fullscreen">
+    </iframe>
+</div>
 <div id="ignition-overlay" style="position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: 10005; background: black; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: opacity 1.5s ease-out;">
     <div style="text-align: center;">
         <h2 style="color: white; font-size: 1.2rem; letter-spacing: 0.8rem; margin-bottom: 1rem; font-weight: 200;">STRIKE TO IGNITE</h2>
@@ -23,7 +30,7 @@ VIDEO_HERO_TEMPLATE = """
 </div>
 
 <section class="hero [[layout_class]]" id="hero" style="background: transparent !important;">
-    <div class="hero-content" style="position: relative; z-index: 10; opacity: 0;">
+    <div class="hero-content" style="position: relative; z-index: 10000; opacity: 0;">
         <h1 class="reveal">[[title]]</h1>
         <p class="reveal">[[subtitle]]</p>
         <div class="reveal">
@@ -32,8 +39,20 @@ VIDEO_HERO_TEMPLATE = """
     </div>
 </section>
 <button onclick="diagnoseVisuals()" style="position: fixed; bottom: 1rem; right: 1rem; z-index: 10002; background: rgba(255,255,255,0.1); color: white; border: 1px solid white; padding: 0.5rem; border-radius: 5px; cursor: pointer;">Diagnostic</button>
+<script src="https://player.vimeo.com/api/player.js"></script>
 <script>
-    window.FIRE_BG = "assets/fire_bg.png";
+    window.VIMEO_ID = "[[vimeo_id]]";
+    const iframe = document.getElementById('bg-video-iframe');
+    const player = new Vimeo.Player(iframe);
+    const overlay = document.getElementById('ignition-overlay');
+    
+    overlay.addEventListener('click', () => {
+        player.play().then(() => {
+            overlay.style.opacity = '0';
+            setTimeout(() => overlay.style.display = 'none', 1500);
+            gsap.to(".hero-content", { opacity: 1, duration: 2, delay: 0.5 });
+        }).catch(e => console.log("Ignition error:", e));
+    });
 </script>
 """
 

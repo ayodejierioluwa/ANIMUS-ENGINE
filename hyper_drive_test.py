@@ -13,7 +13,7 @@ def run_hyper_drive_test():
                     "theme": "DYNAMIC",
                     "use_video": True,
                     "vimeo_id": "370331493",
-                    "hero_title": "INTERACTIVE FIRE",
+                    "hero_title": "REAL MOTION FIRE",
                     "hero_subtitle": "Testing the realistic fire textures for production.",
                     "features": [
                         {"title": "Realism", "content": "Sharp wood burning textures."},
