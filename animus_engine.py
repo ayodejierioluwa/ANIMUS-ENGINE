@@ -159,6 +159,9 @@ class AnimusEngine:
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{self.project_name} | {page_name.capitalize()}</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/0.160.0/three.min.js"></script>
     <style>{styles}</style>
 </head>
 <body class="page-{page_name}">
@@ -169,7 +172,7 @@ class AnimusEngine:
         {feature_section_html}
         {footer_html}
     </div>
-    {GSAP_SCRIPT}
+    {GSAP_SCRIPT.replace('<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>', '').replace('<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>', '').replace('<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/0.160.0/three.min.js"></script>', '')}
 </body>
 </html>
 """
