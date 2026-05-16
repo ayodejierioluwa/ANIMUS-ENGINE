@@ -7,9 +7,10 @@ def run_test(prompt_id, data):
     print(engine.generate_site(data))
     print(f"View at: {output_dir}/index.html\n")
 
-# Prompt 1: Futuristic Crypto Exchange
+# Prompt 1: Futuristic Crypto Exchange (Dark Neon)
 run_test("crypto", {
     "project_name": "NEON_DEX",
+    "theme": "DARK_NEON",
     "hero_title": "THE FUTURE OF LIQUIDITY",
     "hero_subtitle": "Hyper-fast, decentralized, and entirely interactive trading experience.",
     "use_3d": True,
@@ -19,9 +20,10 @@ run_test("crypto", {
     ]
 })
 
-# Prompt 2: Minimalist Architecture Portfolio
+# Prompt 2: Minimalist Architecture Portfolio (Minimal Light)
 run_test("architecture", {
     "project_name": "STRUCT_STUDIO",
+    "theme": "MINIMAL_LIGHT",
     "hero_title": "SILENCE IN STRUCTURE",
     "hero_subtitle": "Designing the spaces that define tomorrow's skyline.",
     "use_3d": True,
@@ -31,9 +33,10 @@ run_test("architecture", {
     ]
 })
 
-# Prompt 3: Cyberpunk Fashion Brand
+# Prompt 3: Cyberpunk Fashion Brand (Luxury Gold)
 run_test("fashion", {
     "project_name": "VOID_WEAR",
+    "theme": "LUXURY_GOLD",
     "hero_title": "STYLE FROM THE ABYSS",
     "hero_subtitle": "Wearable tech that pushes the boundaries of human expression.",
     "use_3d": True,

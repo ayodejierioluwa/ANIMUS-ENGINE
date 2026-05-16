@@ -8,14 +8,14 @@
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&family=Outfit:wght@300;500;700;900&display=swap');
 
 :root {
-    --bg-color: #050505;
-    --text-color: #ffffff;
-    --accent-primary: #00ffcc;
-    --accent-secondary: #ff00ff;
-    --glass-bg: rgba(255, 255, 255, 0.03);
-    --glass-border: rgba(255, 255, 255, 0.08);
+    --bg-color: #fdfdfd;
+    --text-color: #111111;
+    --accent-primary: #333333;
+    --accent-secondary: #888888;
+    --glass-bg: rgba(0, 0, 0, 0.02);
+    --glass-border: rgba(0, 0, 0, 0.05);
     --font-main: 'Inter', sans-serif;
-    --font-heading: 'Outfit', sans-serif;
+    --font-heading: 'Inter', sans-serif;
     --section-padding: 8rem 2rem;
 }
 
@@ -242,24 +242,40 @@ h1, h2, h3 {
     gsap.to(".reveal", {
         opacity: 1,
         y: 0,
-        duration: 1.2,
-        stagger: 0.2,
-        ease: "power4.out",
-        delay: 0.5
+        duration: 1.5,
+        stagger: 0.15,
+        ease: "expo.out",
+        delay: 0.2
     });
 
-    // Scroll Triggered Animations
-    gsap.utils.toArray(".card").forEach(card => {
+    // Stunning Card Entrances
+    gsap.utils.toArray(".card").forEach((card, i) => {
         gsap.from(card, {
             scrollTrigger: {
                 trigger: card,
-                start: "top 80%",
-                toggleActions: "play none none reverse"
+                start: "top 95%",
+                toggleActions: "play none none none"
             },
             opacity: 0,
-            y: 50,
-            duration: 1,
-            ease: "power3.out"
+            scale: 0.8,
+            rotationY: 15,
+            duration: 1.2,
+            delay: i * 0.1,
+            ease: "back.out(1.7)"
+        });
+    });
+
+    // Content Safe Reveal (Fixes disappearing bug)
+    gsap.utils.toArray("section").forEach(section => {
+        gsap.from(section, {
+            scrollTrigger: {
+                trigger: section,
+                start: "top 90%",
+                toggleActions: "play none none none"
+            },
+            opacity: 0,
+            y: 30,
+            duration: 1
         });
     });
 </script>

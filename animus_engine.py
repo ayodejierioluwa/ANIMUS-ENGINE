@@ -22,6 +22,27 @@ class AnimusEngine:
         self.project_name = data.get("project_name", self.project_name)
         use_3d = data.get("use_3d", True)
         
+        # 0. Generate Theme Tokens (The "WOW" Factor)
+        theme_type = data.get("theme", "DARK_NEON")
+        themes = {
+            "DARK_NEON": {
+                "bg_color": "#050505", "text_color": "#ffffff", "accent_primary": "#00ffcc", "accent_secondary": "#ff00ff",
+                "glass_bg": "rgba(255, 255, 255, 0.03)", "glass_border": "rgba(255, 255, 255, 0.08)",
+                "font_main": "'Inter', sans-serif", "font_heading": "'Outfit', sans-serif"
+            },
+            "MINIMAL_LIGHT": {
+                "bg_color": "#fdfdfd", "text_color": "#111111", "accent_primary": "#333333", "accent_secondary": "#888888",
+                "glass_bg": "rgba(0, 0, 0, 0.02)", "glass_border": "rgba(0, 0, 0, 0.05)",
+                "font_main": "'Inter', sans-serif", "font_heading": "'Inter', sans-serif"
+            },
+            "LUXURY_GOLD": {
+                "bg_color": "#0a0908", "text_color": "#eae0d5", "accent_primary": "#c6ac8f", "accent_secondary": "#5e503f",
+                "glass_bg": "rgba(198, 172, 143, 0.05)", "glass_border": "rgba(198, 172, 143, 0.1)",
+                "font_main": "'Inter', sans-serif", "font_heading": "'Outfit', sans-serif"
+            }
+        }
+        tokens = themes.get(theme_type, themes["DARK_NEON"])
+
         # 1. Build Hero (3D or Standard)
         template = THREE_JS_HERO_TEMPLATE if use_3d else HERO_TEMPLATE
         hero_html = template.format(
@@ -49,6 +70,8 @@ class AnimusEngine:
         css_path = os.path.join(base_dir, "templates/base_styles.css")
         with open(css_path, "r") as f:
             styles = f.read()
+            for key, value in tokens.items():
+                styles = styles.replace(f"[[{key}]]", value)
             
         full_html = f"""<!DOCTYPE html>
 <html lang="en">
