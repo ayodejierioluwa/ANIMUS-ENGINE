@@ -1,280 +1,117 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Aether Project | Flavors</title>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/0.160.0/three.min.js"></script>
-    <style>@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&family=Outfit:wght@300;500;700;900&display=swap');
-
-:root {
-    --bg-color: #080808;
-    --text-color: #ffffff;
-    --accent-primary: #ffffff;
-    --accent-secondary: #ffffff;
-    --glass-bg: rgba(255, 255, 255, 0.02);
-    --glass-border: rgba(255, 255, 255, 0.05);
-    --font-main: 'Inter', sans-serif;
-    --font-heading: 'Outfit', sans-serif;
-    --section-padding: 8rem 2rem;
-}
-
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-    -webkit-font-smoothing: antialiased;
-}
-
-html {
-    background-color: var(--bg-color);
-}
-
-body {
-    background-color: transparent !important;
-    color: var(--text-color);
-    font-family: var(--font-main);
-    overflow-x: hidden;
-    line-height: 1.6;
-}
-
-.site-wrapper {
-    position: relative;
-    z-index: 10;
-}
-
-h1, h2, h3 {
-    font-family: var(--font-heading);
-    font-weight: 900;
-    text-transform: uppercase;
-    letter-spacing: -0.02em;
-}
-
-/* Glassmorphism Utility */
-.glass {
-    background: var(--glass-bg);
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
-    border: 1px solid var(--glass-border);
-    border-radius: 24px;
-}
-
-/* Hero Section */
-.hero {
-    height: 100vh;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    text-align: center;
-    position: relative;
-    padding: 0 1rem;
-    overflow: hidden;
-    background: transparent;
-}
-
-#three-canvas-container, #bg-video, #vimeo-background-container {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    z-index: 1; /* In front of HTML background, behind site-wrapper */
-    pointer-events: none;
-    object-fit: cover;
-}
-
-.hero-content {
-    position: relative;
-    z-index: 10; /* Above video and 3D */
-}
-
-.hero h1 {
-    font-size: clamp(3rem, 10vw, 8rem);
-    line-height: 0.9;
-    background: linear-gradient(to bottom, #ffffff, transparent);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    margin-bottom: 2rem;
-}
-
-.hero p {
-    font-size: 1.2rem;
-    color: rgba(255,255,255,0.6);
-    max-width: 600px;
-    margin-bottom: 3rem;
-}
-
-/* Buttons */
-.btn-primary {
-    background: #fff;
-    color: #000;
-    padding: 1rem 2.5rem;
-    border-radius: 100px;
-    font-weight: 600;
-    text-decoration: none;
-    transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-    display: inline-block;
-}
-
-.btn-primary:hover {
-    transform: scale(1.05);
-}
-
-/* Section Transitions */
-.reveal {
-    opacity: 0;
-    transform: translateY(30px);
-    animation: safetyReveal 1s forwards;
-    animation-delay: 2s; /* Forced reveal if GSAP fails */
-}
-
-@keyframes safetyReveal {
-    to { opacity: 1; transform: translateY(0); }
-}
-
-/* Mesh Background */
-.mesh-gradient {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    z-index: -200; /* Deep background to never block video */
-    background: 
-        radial-gradient(circle at 20% 20%, rgba(0, 255, 204, 0.15) 0%, transparent 40%),
-        radial-gradient(circle at 80% 80%, rgba(255, 0, 255, 0.15) 0%, transparent 40%);
-}
-
-/* Card Grid */
-.grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-    gap: 2rem;
-    padding: var(--section-padding);
-}
-
-/* Split Layout (The WOW Layout) */
-.split-layout {
-    display: flex !important;
-    flex-direction: row !important;
-    text-align: left !important;
-    align-items: center;
-    justify-content: space-between;
-    height: 100vh;
-}
-
-.hero-left {
-    flex: 1.2;
-    padding-left: 8%;
-    z-index: 10;
-}
-
-.hero-right {
-    flex: 1;
-    height: 100vh;
-    position: relative;
-    overflow: hidden;
-}
-
-#three-canvas-container {
-    width: 100%;
-    height: 100%;
-}
-
-.card {
-    padding: 3rem;
-    transition: border-color 0.3s ease;
-}
-
-/* Custom Cursor Logic (Corrected) */
-.custom-cursor {
-    position: fixed;
-    width: 20px;
-    height: 20px;
-    background: rgba(255, 255, 255, 0.5);
-    border: 1px solid var(--accent-primary);
-    border-radius: 50%;
-    pointer-events: none;
-    z-index: 10000;
-    transform: translate(-50%, -50%);
-    mix-blend-mode: difference;
-}
-
-/* Noise Overlay */
-.noise-overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    z-index: 9999;
-    pointer-events: none;
-    opacity: 0.05; 
-    background: url('https://grainy-gradients.vercel.app/noise.svg');
-}
-
-/* Custom Cursor */
-.custom-cursor {
-    position: fixed;
-    width: 20px;
-    height: 20px;
-    background: rgba(255, 255, 255, 0.5);
-    border: 1px solid var(--accent-primary);
-    border-radius: 50%;
-    pointer-events: none;
-    z-index: 10000;
-    transform: translate(-50%, -50%);
-    mix-blend-mode: difference;
-}
-</style>
+    <title>BEYOND CODE | Animus Engine</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&family=Outfit:wght@200;400;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-color: #050505;
+            --text-color: #ffffff;
+            --accent-primary: #00d4ff;
+            --glass-bg: rgba(255, 255, 255, 0.03);
+            --glass-border: rgba(255, 255, 255, 0.1);
+        }
+        * { margin: 0; padding: 0; box-box: border-box; }
+        body { 
+            background-color: var(--bg-color); 
+            color: var(--text-color); 
+            font-family: 'Inter', sans-serif;
+            overflow-x: hidden;
+        }
+        h1, h2, h3 { font-family: 'Outfit', sans-serif; }
+        .site-wrapper { position: relative; z-index: 10; }
+        
+        .custom-cursor {
+            position: fixed;
+            width: 20px;
+            height: 20px;
+            background: transparent;
+            border: 1px solid var(--accent-primary);
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 99999;
+            transform: translate(-50%, -50%);
+        }
+    </style>
 </head>
-<body class="page-flavors">
-    <div class="mesh-gradient"></div>
+<body>
+    <div class="custom-cursor"></div>
     <div class="site-wrapper">
-        <nav style="position: fixed; top: 2rem; width: 100%; display: flex; justify-content: center; gap: 2rem; z-index: 10001;"></nav>
         
 <div id="shader-background-container" style="position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: -100; pointer-events: none;"></div>
 <section class="hero full-layout" id="hero" style="background: transparent !important;">
     <div class="noise-overlay"></div>
     <div class="hero-content">
-        <h1 class="reveal">ABSTRACT LIQUID</h1>
-        <p class="reveal">Testing the code-based generative fire shader.</p>
+        <h1 class="reveal">BEYOND CODE</h1>
+        <p class="reveal">Engineering digital experiences that transcend the ordinary.</p>
         <div class="reveal">
-            <a href="#" class="btn-primary">Get Started</a>
+            <a href="#" class="btn-primary">START BUILDING</a>
         </div>
     </div>
 </section>
 <button onclick="diagnoseVisuals()" style="position: fixed; bottom: 1rem; right: 1rem; z-index: 10002; background: rgba(255,255,255,0.1); color: white; border: 1px solid white; padding: 0.5rem; border-radius: 5px; cursor: pointer;">Diagnostic</button>
 
-        
-<div class="noise-overlay"></div>
-<section class="grid">
-    
-<div class="card glass reveal">
-    <h3>Indestructible</h3>
-    <p>100% reliable GPU simulation.</p>
+<section class="features" style="padding: 8rem 2rem; background: #0a0a0a;">
+    <div class="container" style="max-width: 1200px; margin: 0 auto;">
+        <div class="grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2rem;">
+            
+<div class="feature-item" style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.1); padding: 3rem; border-radius: 24px; backdrop-filter: blur(10px); transition: transform 0.4s cubic-bezier(0.2, 0.8, 0.2, 1), border-color 0.4s ease;">
+    <div class="icon" style="font-size: 2rem; margin-bottom: 1.5rem;">🎨</div>
+    <h3 style="font-size: 1.5rem; margin-bottom: 1rem; color: white;">Visual Excellence</h3>
+    <p style="opacity: 0.6; line-height: 1.6;">High-fidelity aesthetics that redefine digital luxury.</p>
 </div>
+<style>
+    .feature-item:hover {
+        transform: translateY(-10px);
+        border-color: rgba(255,255,255,0.3);
+        background: rgba(255,255,255,0.05);
+    }
+</style>
 
-<div class="card glass reveal">
-    <h3>Interactive</h3>
-    <p>Flows with your motion.</p>
+<div class="feature-item" style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.1); padding: 3rem; border-radius: 24px; backdrop-filter: blur(10px); transition: transform 0.4s cubic-bezier(0.2, 0.8, 0.2, 1), border-color 0.4s ease;">
+    <div class="icon" style="font-size: 2rem; margin-bottom: 1.5rem;">⚙️</div>
+    <h3 style="font-size: 1.5rem; margin-bottom: 1rem; color: white;">Autonomous Logic</h3>
+    <p style="opacity: 0.6; line-height: 1.6;">Self-healing systems that evolve with your user base.</p>
 </div>
+<style>
+    .feature-item:hover {
+        transform: translateY(-10px);
+        border-color: rgba(255,255,255,0.3);
+        background: rgba(255,255,255,0.05);
+    }
+</style>
 
+<div class="feature-item" style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.1); padding: 3rem; border-radius: 24px; backdrop-filter: blur(10px); transition: transform 0.4s cubic-bezier(0.2, 0.8, 0.2, 1), border-color 0.4s ease;">
+    <div class="icon" style="font-size: 2rem; margin-bottom: 1.5rem;">🌐</div>
+    <h3 style="font-size: 1.5rem; margin-bottom: 1rem; color: white;">Global Scale</h3>
+    <p style="opacity: 0.6; line-height: 1.6;">Infrastructure designed for infinite expansion.</p>
+</div>
+<style>
+    .feature-item:hover {
+        transform: translateY(-10px);
+        border-color: rgba(255,255,255,0.3);
+        background: rgba(255,255,255,0.05);
+    }
+</style>
+
+        </div>
+    </div>
 </section>
 
-        
 <footer style="padding: 4rem 2rem; text-align: center; color: rgba(255,255,255,0.4); border-top: 1px solid var(--glass-border);">
     <p>&copy; 2026 AETHER_ANIMUS | Built for Aether Project</p>
 </footer>
 
     </div>
     
-
-
-
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/0.160.0/three.min.js"></script>
 
 <script>
     gsap.registerPlugin(ScrollTrigger);

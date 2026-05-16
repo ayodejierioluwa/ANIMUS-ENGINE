@@ -14,156 +14,64 @@ HERO_TEMPLATE = """
 """
 
 VIDEO_HERO_TEMPLATE = """
-<input type="checkbox" id="ignite-engine" style="display: none;">
-<div id="fireplace-base" style="position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: 1; pointer-events: none; background: url('assets/fire_bg.png') no-repeat center center; background-size: cover; opacity: 0; transition: opacity 2s ease;">
-    <div id="ultra-fire-container" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;"></div>
-</div>
-
-<div id="css-sparks" style="position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: 10006; pointer-events: none; opacity: 0;">
-    <div class="spark" style="left: 50%; top: 50%; width: 10px; height: 10px; background: orange; border-radius: 50%; position: absolute; filter: blur(2px);"></div>
-</div>
-
-<label for="ignite-engine" id="ignition-overlay" style="position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: 20000; background: black; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: opacity 1.5s ease-out, visibility 1.5s;">
-    <div style="text-align: center;">
-        <h2 style="color: white; font-size: 1.2rem; letter-spacing: 0.8rem; margin-bottom: 1rem; font-weight: 200;">STRIKE TO IGNITE</h2>
-        <div style="width: 40px; height: 1px; background: white; margin: 0 auto; opacity: 0.3;"></div>
-    </div>
-</label>
-
-<style>
-    #ignite-engine:checked ~ #fireplace-base { opacity: 1 !important; }
-    #ignite-engine:checked ~ #ignition-overlay { opacity: 0 !important; visibility: hidden; }
-    #ignite-engine:checked ~ .site-wrapper .hero-content { opacity: 1 !important; transform: translateY(0) !important; }
-    #ignite-engine:checked ~ #css-sparks { animation: sparkBurst 1s ease-out forwards; }
-    
-    @keyframes sparkBurst {
-        0% { opacity: 1; transform: scale(0); }
-        100% { opacity: 0; transform: scale(8); }
-    }
-    
-    .hero-content { 
-        transition: opacity 2s ease 0.8s, transform 2s ease 0.8s !important; 
-        transform: translateY(20px);
-        opacity: 0;
-    }
-</style>
-
-<section class="hero [[layout_class]]" id="hero" style="background: transparent !important;">
-    <div class="hero-content" style="position: relative; z-index: 10000;">
-        <h1 class="reveal">[[title]]</h1>
-        <p class="reveal">[[subtitle]]</p>
-        <div class="reveal">
-            <a href="[[cta_link]]" class="btn-primary">[[cta_text]]</a>
+<section class="hero [[layout_class]]" id="hero" style="background: linear-gradient(135deg, #0f0f0f 0%, #1a1a1a 100%) !important; min-height: 100vh; display: flex; align-items: center; justify-content: center; position: relative; overflow: hidden;">
+    <div id="void-canvas" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; opacity: 0.4;"></div>
+    <div class="hero-content" style="position: relative; z-index: 10; text-align: center;">
+        <h1 class="reveal" style="font-size: 5rem; letter-spacing: -0.02em; line-height: 1.1;">[[title]]</h1>
+        <p class="reveal" style="font-size: 1.5rem; opacity: 0.7; margin-top: 1.5rem; max-width: 600px; margin-left: auto; margin-right: auto;">[[subtitle]]</p>
+        <div class="reveal" style="margin-top: 3rem;">
+            <a href="[[cta_link]]" class="btn-primary" style="padding: 1.2rem 3rem; font-size: 1.1rem; border-radius: 50px; background: white; color: black; text-decoration: none; font-weight: 600; transition: transform 0.3s ease;">[[cta_text]]</a>
         </div>
     </div>
 </section>
-<button onclick="diagnoseVisuals()" style="position: fixed; bottom: 1rem; right: 1rem; z-index: 10002; background: rgba(255,255,255,0.1); color: white; border: 1px solid white; padding: 0.5rem; border-radius: 5px; cursor: pointer;">Diagnostic</button>
 <script>
-    document.getElementById('ignite-engine').addEventListener('change', (e) => {
-        if (e.target.checked) {
-            initUltraRealFire();
-        }
-    });
-
-    function initUltraRealFire() {
-        const container = document.getElementById('ultra-fire-container');
-        const scene = new THREE.Scene();
-        const camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000);
-        camera.position.z = 5;
-
-        const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
-        renderer.setSize(window.innerWidth, window.innerHeight);
-        container.appendChild(renderer.domElement);
-
-        const fireMaterial = new THREE.ShaderMaterial({
-            uniforms: { 
-                time: { value: 0.0 }, 
-                resolution: { value: new THREE.Vector2(window.innerWidth, window.innerHeight) }
-            },
-            vertexShader: `
-                varying vec2 vUv;
-                void main() {
-                    vUv = uv;
-                    gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
-                }
-            `,
-            fragmentShader: `
-                uniform float time;
-                uniform vec2 resolution;
-                varying vec2 vUv;
-                float hash(vec2 p) { return fract(sin(dot(p, vec2(12.9898, 78.233))) * 43758.5453); }
-                float noise(vec2 p) {
-                    vec2 i = floor(p); vec2 f = fract(p);
-                    vec2 u = f*f*(3.0-2.0*f);
-                    return mix(mix(hash(i + vec2(0.,0.)), hash(i + vec2(1.,0.)), u.x),
-                               mix(hash(i + vec2(0.,1.)), hash(i + vec2(1.,1.)), u.x), u.y);
-                }
-                float fbm(vec2 p) {
-                    float v = 0.0; float a = 0.5;
-                    for (int i = 0; i < 4; i++) {
-                        v += a * noise(p); p *= 2.0; a *= 0.5;
-                    }
-                    return v;
-                }
-                void main() {
-                    vec2 uv = vUv;
-                    vec2 q = vec2(fbm(uv * 3.0 + vec2(0.0, -time * 0.8)), fbm(uv * 3.0 + vec2(1.0, -time * 0.5)));
-                    float f = fbm(uv * 4.0 + q + vec2(0.0, -time * 1.5));
-                    float mask = smoothstep(0.1, 0.4, uv.x) * smoothstep(0.9, 0.6, uv.x);
-                    mask *= smoothstep(0.0, 0.2, uv.y) * smoothstep(1.0, 0.4, uv.y);
-                    f *= mask * 2.2;
-                    vec3 fireColor = mix(vec3(0.0), vec3(1.0, 0.1, 0.0), smoothstep(0.1, 0.3, f));
-                    fireColor = mix(fireColor, vec3(1.0, 0.5, 0.0), smoothstep(0.3, 0.6, f));
-                    fireColor = mix(fireColor, vec3(1.0, 0.9, 0.4), smoothstep(0.6, 0.8, f));
-                    gl_FragColor = vec4(fireColor, smoothstep(0.0, 0.1, f) * 0.8);
-                }
-            `,
-            transparent: true,
-            blending: THREE.AdditiveBlending
-        });
-
-        const flameGeo = new THREE.PlaneGeometry(6, 4, 32, 32);
-        const flames = new THREE.Mesh(flameGeo, fireMaterial);
-        flames.position.y = -0.5;
-        scene.add(flames);
-
-        const emberCount = 60;
-        const eGeo = new THREE.BufferGeometry();
-        const ePos = new Float32Array(emberCount * 3);
-        const eVel = new Float32Array(emberCount * 3);
-        for(let i=0; i<emberCount*3; i++) {
-            ePos[i] = (Math.random() - 0.5) * 4;
-            eVel[i] = Math.random() * 0.02 + 0.01;
-        }
-        eGeo.setAttribute('position', new THREE.BufferAttribute(ePos, 3));
-        const eMat = new THREE.PointsMaterial({ color: 0xff8800, size: 0.02, transparent: true, opacity: 0.8, blending: THREE.AdditiveBlending });
-        const embers = new THREE.Points(eGeo, eMat);
-        scene.add(embers);
-
-        function animate(t) {
-            requestAnimationFrame(animate);
-            const time = t * 0.001;
-            fireMaterial.uniforms.time.value = time;
-            const pos = eGeo.attributes.position.array;
-            for(let i=0; i<emberCount; i++) {
-                pos[i*3+1] += eVel[i*3+1];
-                pos[i*3] += Math.sin(time + i) * 0.005;
-                if (pos[i*3+1] > 3) {
-                    pos[i*3+1] = -1.5;
-                    pos[i*3] = (Math.random() - 0.5) * 2.5;
-                }
-            }
-            eGeo.attributes.position.needsUpdate = true;
-            renderer.render(scene, camera);
-        }
-        animate(0);
-        window.addEventListener('resize', () => {
-            camera.aspect = window.innerWidth / window.innerHeight;
-            camera.updateProjectionMatrix();
-            renderer.setSize(window.innerWidth, window.innerHeight);
-        });
+    // Minimal aesthetic movement for the 'Void' background
+    const canvas = document.createElement('canvas');
+    const ctx = canvas.getContext('2d');
+    document.getElementById('void-canvas').appendChild(canvas);
+    function resize() {
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
     }
+    window.addEventListener('resize', resize);
+    resize();
+    function animate() {
+        ctx.clearRect(0,0,canvas.width, canvas.height);
+        ctx.fillStyle = 'rgba(255,255,255,0.05)';
+        for(let i=0; i<20; i++) {
+            ctx.beginPath();
+            ctx.arc(Math.sin(Date.now()*0.001 + i)*canvas.width, Math.cos(Date.now()*0.0005 + i)*canvas.height, 2, 0, Math.PI*2);
+            ctx.fill();
+        }
+        requestAnimationFrame(animate);
+    }
+    animate();
 </script>
+"""
+
+FEATURE_GRID_TEMPLATE = """
+<section class="features" style="padding: 8rem 2rem; background: #0a0a0a;">
+    <div class="container" style="max-width: 1200px; margin: 0 auto;">
+        <div class="grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2rem;">
+            [[features]]
+        </div>
+    </div>
+</section>
+"""
+
+FEATURE_ITEM_TEMPLATE = """
+<div class="feature-item" style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.1); padding: 3rem; border-radius: 24px; backdrop-filter: blur(10px); transition: transform 0.4s cubic-bezier(0.2, 0.8, 0.2, 1), border-color 0.4s ease;">
+    <div class="icon" style="font-size: 2rem; margin-bottom: 1.5rem;">[[icon]]</div>
+    <h3 style="font-size: 1.5rem; margin-bottom: 1rem; color: white;">[[title]]</h3>
+    <p style="opacity: 0.6; line-height: 1.6;">[[description]]</p>
+</div>
+<style>
+    .feature-item:hover {
+        transform: translateY(-10px);
+        border-color: rgba(255,255,255,0.3);
+        background: rgba(255,255,255,0.05);
+    }
+</style>
 """
 
 SHADER_HERO_TEMPLATE = """
@@ -574,4 +482,55 @@ GSAP_SCRIPT = """
         }
     }
 </script>
+"""
+
+BASE_HTML = """
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[[title]]</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&family=Outfit:wght@200;400;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-color: #050505;
+            --text-color: #ffffff;
+            --accent-primary: #00d4ff;
+            --glass-bg: rgba(255, 255, 255, 0.03);
+            --glass-border: rgba(255, 255, 255, 0.1);
+        }
+        * { margin: 0; padding: 0; box-box: border-box; }
+        body { 
+            background-color: var(--bg-color); 
+            color: var(--text-color); 
+            font-family: 'Inter', sans-serif;
+            overflow-x: hidden;
+        }
+        h1, h2, h3 { font-family: 'Outfit', sans-serif; }
+        .site-wrapper { position: relative; z-index: 10; }
+        
+        .custom-cursor {
+            position: fixed;
+            width: 20px;
+            height: 20px;
+            background: transparent;
+            border: 1px solid var(--accent-primary);
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 99999;
+            transform: translate(-50%, -50%);
+        }
+    </style>
+</head>
+<body>
+    <div class="custom-cursor"></div>
+    <div class="site-wrapper">
+        [[body]]
+    </div>
+    """ + GSAP_SCRIPT + """
+</body>
+</html>
 """
