@@ -12,7 +12,7 @@ def run_hyper_drive_test():
                 "content": {
                     "theme": "DYNAMIC",
                     "use_video": True,
-                    "video_url": "https://archive.org/download/Fireplace_201602/Fireplace.mp4",
+                    "video_url": "https://v.ftcdn.net/05/23/94/29/700_F_523942944_v7f77N68C222X8q9pE6A69mK89g1B7Hh_ST.mp4",
                     "hero_title": "REALISTIC FIRE",
                     "hero_subtitle": "Testing the realistic fire textures for production.",
                     "features": [

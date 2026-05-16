@@ -248,11 +248,16 @@ h1, h2, h3 {
 <body class="page-index">
     <nav style="position: fixed; top: 2rem; width: 100%; display: flex; justify-content: center; gap: 2rem; z-index: 10001;"></nav>
     
-<video autoplay muted loop playsinline id="bg-video" style="position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; object-fit: cover; z-index: -100; pointer-events: none;">
-    <source src="https://archive.org/download/Fireplace_201602/Fireplace.mp4" type="video/mp4">
+<video autoplay muted loop playsinline id="bg-video" style="position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; object-fit: cover; z-index: -1000; pointer-events: none; background: black;">
+    <source src="https://v.ftcdn.net/05/23/94/29/700_F_523942944_v7f77N68C222X8q9pE6A69mK89g1B7Hh_ST.mp4" type="video/mp4">
 </video>
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const v = document.getElementById('bg-video');
+        if (v) v.play().catch(e => console.log("Autoplay blocked, waiting for interaction."));
+    });
+</script>
 <section class="hero full-layout" id="hero" style="background: transparent !important;">
-    <div class="noise-overlay"></div>
     <div class="hero-content">
         <h1 class="reveal">REALISTIC FIRE</h1>
         <p class="reveal">Testing the realistic fire textures for production.</p>
