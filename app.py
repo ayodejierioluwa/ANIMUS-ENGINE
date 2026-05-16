@@ -16,10 +16,12 @@ DASHBOARD_HTML = """
 <html>
 <head>
     <title>AETHER_COMMAND | Nerve Center</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
         :root { --accent: #00ffcc; --bg: #050505; }
         body { background: var(--bg); color: white; font-family: 'Space Mono', monospace; margin: 0; display: flex; align-items: center; justify-content: center; height: 100vh; overflow: hidden; }
-        .dashboard { width: 900px; padding: 4rem; background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.05); backdrop-filter: blur(40px); border-radius: 24px; text-align: center; position: relative; }
+        #void-canvas { position: absolute; top: 0; left: 0; width: 100%; height: 100%; opacity: 0.3; pointer-events: none; }
+        .dashboard { width: 900px; padding: 4rem; background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.05); backdrop-filter: blur(40px); border-radius: 24px; text-align: center; position: relative; z-index: 10; }
         h1 { font-size: 0.8rem; letter-spacing: 0.5em; opacity: 0.5; margin-bottom: 3rem; color: var(--accent); }
         .grid-inputs { display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; margin-top: 2rem; }
         .input-group { text-align: left; }
@@ -33,13 +35,34 @@ DASHBOARD_HTML = """
         #results { margin-top: 2rem; display: none; padding: 1.5rem; background: rgba(0,255,204,0.05); border: 1px solid rgba(0,255,204,0.2); border-radius: 12px; }
         a { color: var(--accent); text-decoration: none; font-weight: 700; }
         .file-input { display: none; }
-        .file-label { cursor: pointer; border: 1px dashed rgba(255,255,255,0.2); padding: 1rem; border-radius: 12px; display: block; text-align: center; opacity: 0.6; transition: all 0.3s; }
+        .file-label { cursor: pointer; border: 1px dashed rgba(255,255,255,0.2); padding: 1rem; border-radius: 12px; display: flex; align-items: center; justify-content: center; gap: 1rem; opacity: 0.6; transition: all 0.3s; height: 100px; }
         .file-label:hover { border-color: var(--accent); opacity: 1; }
+        .custom-cursor { position: fixed; width: 20px; height: 20px; border: 1px solid var(--accent); border-radius: 50%; pointer-events: none; z-index: 99999; transform: translate(-50%, -50%); transition: transform 0.1s; }
+        
+        /* Tactical Layer: High-Contrast Photon Grain */
+        .film-grain {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            pointer-events: none;
+            z-index: 99999;
+            opacity: 0.15;
+            background: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+            mix-blend-mode: soft-light;
+            animation: grain-shift 0.2s steps(2) infinite;
+        }
+        @keyframes grain-shift {
+            0% { transform: translate(0,0); }
+            100% { transform: translate(-5%, -5%); }
+        }
     </style>
 </head>
 <body>
+    <div class="film-grain"></div>
+    <div id="void-canvas"></div>
+    <div class="custom-cursor" id="cursor"></div>
+
     <div class="dashboard">
-        <h1>AETHER_COMMAND v2.0 // MULTIMODAL</h1>
+        <h1>AETHER_COMMAND v2.1 // TACTILE_DNA</h1>
         
         <div class="input-group">
             <span class="label">NEURAL_MISSION_PROMPT</span>
@@ -49,7 +72,10 @@ DASHBOARD_HTML = """
         <div class="grid-inputs">
             <div class="input-group">
                 <span class="label">SOURCE_DOCUMENT_UPLOAD</span>
-                <label class="file-label" for="file-upload" id="file-status">CLICK TO UPLOAD DOC/PDF</label>
+                <label class="file-label" for="file-upload" id="file-status">
+                    <i class="fa-solid fa-paperclip"></i>
+                    <span>CLICK TO ATTACH DOCS</span>
+                </label>
                 <input type="file" id="file-upload" class="file-input" onchange="updateFileStatus()">
             </div>
             <div class="input-group">
@@ -67,10 +93,35 @@ DASHBOARD_HTML = """
         </div>
     </div>
 
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
     <script>
+        // Void Background Physics
+        const canvas = document.createElement('canvas');
+        const ctx = canvas.getContext('2d');
+        document.getElementById('void-canvas').appendChild(canvas);
+        function resize() { canvas.width = window.innerWidth; canvas.height = window.innerHeight; }
+        window.addEventListener('resize', resize); resize();
+        function animate() {
+            ctx.clearRect(0,0,canvas.width, canvas.height);
+            ctx.fillStyle = 'rgba(0, 255, 204, 0.1)';
+            for(let i=0; i<40; i++) {
+                ctx.beginPath();
+                ctx.arc(Math.sin(Date.now()*0.0002 + i)*canvas.width, Math.cos(Date.now()*0.0001 + i)*canvas.height, 1, 0, Math.PI*2);
+                ctx.fill();
+            }
+            requestAnimationFrame(animate);
+        }
+        animate();
+
+        // Magnetic Cursor
+        const cursor = document.getElementById('cursor');
+        window.addEventListener('mousemove', (e) => {
+            gsap.to(cursor, { x: e.clientX, y: e.clientY, duration: 0.6, ease: "power2.out" });
+        });
+
         function updateFileStatus() {
             const file = document.getElementById('file-upload').files[0];
-            if (file) document.getElementById('file-status').innerText = "READY: " + file.name;
+            if (file) document.getElementById('file-status').innerHTML = '<i class="fa-solid fa-check" style="color: var(--accent)"></i> <span>' + file.name + '</span>';
         }
 
         async function ignite() {
@@ -87,11 +138,7 @@ DASHBOARD_HTML = """
             formData.append('html', html);
             if (fileInput.files[0]) formData.append('file', fileInput.files[0]);
 
-            const response = await fetch('/generate', {
-                method: 'POST',
-                body: formData
-            });
-            
+            const response = await fetch('/generate', { method: 'POST', body: formData });
             const data = await response.json();
             status.innerText = "SYNTHESIS_COMPLETE // PROJECT_AUDITED";
             results.style.display = "block";
