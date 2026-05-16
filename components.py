@@ -28,14 +28,29 @@ CARD_TEMPLATE = """
 """
 
 THREE_JS_HERO_TEMPLATE = """
-<section class="hero" id="hero">
+<section class="hero [[layout_class]]" id="hero">
     <div id="three-canvas-container"></div>
     <div class="hero-content">
-        <h1 class="reveal">{title}</h1>
-        <p class="reveal">{subtitle}</p>
+        <h1 class="reveal">[[title]]</h1>
+        <p class="reveal">[[subtitle]]</p>
         <div class="reveal">
-            <a href="{cta_link}" class="btn-primary">{cta_text}</a>
+            <a href="[[cta_link]]" class="btn-primary">[[cta_text]]</a>
         </div>
+    </div>
+</section>
+"""
+
+SPLIT_HERO_TEMPLATE = """
+<section class="hero split-layout" id="hero">
+    <div class="hero-left">
+        <h1 class="reveal">[[title]]</h1>
+        <p class="reveal">[[subtitle]]</p>
+        <div class="reveal">
+            <a href="[[cta_link]]" class="btn-primary">[[cta_text]]</a>
+        </div>
+    </div>
+    <div class="hero-right">
+        <div id="three-canvas-container"></div>
     </div>
 </section>
 """
@@ -58,14 +73,22 @@ GSAP_SCRIPT = """
     const container = document.getElementById('three-canvas-container');
     if (container) {
         const scene = new THREE.Scene();
-        const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+        const camera = new THREE.PerspectiveCamera(75, container.clientWidth / container.clientHeight, 0.1, 1000);
         const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
-        renderer.setSize(window.innerWidth, window.innerHeight);
+        renderer.setSize(container.clientWidth, container.clientHeight);
         container.appendChild(renderer.domElement);
 
-        const geometry = new THREE.IcosahedronGeometry(2, 1);
+        // Dynamic Geometry Selection (WOW Factor)
+        const geometries = {
+            "SPHERE": new THREE.IcosahedronGeometry(2, 1),
+            "TORUS": new THREE.TorusKnotGeometry(1.5, 0.4, 100, 16),
+            "PLANE": new THREE.PlaneGeometry(5, 5, 32, 32)
+        };
+        const geoType = "[[geometry_type]]";
+        const geometry = geometries[geoType] || geometries["SPHERE"];
+        
         const material = new THREE.MeshPhongMaterial({
-            color: 0x00ffcc,
+            color: "[[accent_primary_hex]]",
             wireframe: true,
             transparent: true,
             opacity: 0.5
@@ -135,17 +158,13 @@ GSAP_SCRIPT = """
         });
     });
 
-    // Content Safe Reveal (Fixes disappearing bug)
-    gsap.utils.toArray("section").forEach(section => {
-        gsap.from(section, {
-            scrollTrigger: {
-                trigger: section,
-                start: "top 90%",
-                toggleActions: "play none none none"
-            },
-            opacity: 0,
-            y: 30,
-            duration: 1
+    // Robust Scroll Reveal (Final Fix for disappearing bug)
+    gsap.utils.toArray(".reveal, section, .card").forEach(el => {
+        gsap.set(el, { opacity: 0, y: 30 }); // Ensure initial state
+        ScrollTrigger.create({
+            trigger: el,
+            start: "top 95%",
+            onEnter: () => gsap.to(el, { opacity: 1, y: 0, duration: 1.2, ease: "power4.out" })
         });
     });
 

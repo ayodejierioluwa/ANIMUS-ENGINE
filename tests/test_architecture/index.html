@@ -132,6 +132,34 @@ h1, h2, h3 {
     padding: var(--section-padding);
 }
 
+/* Split Layout (The WOW Layout) */
+.split-layout {
+    display: flex !important;
+    flex-direction: row !important;
+    text-align: left !important;
+    align-items: center;
+    justify-content: space-between;
+    height: 100vh;
+}
+
+.hero-left {
+    flex: 1.2;
+    padding-left: 8%;
+    z-index: 10;
+}
+
+.hero-right {
+    flex: 1;
+    height: 100vh;
+    position: relative;
+    overflow: hidden;
+}
+
+#three-canvas-container {
+    width: 100%;
+    height: 100%;
+}
+
 .card {
     padding: 3rem;
     transition: border-color 0.3s ease;
@@ -168,14 +196,16 @@ h1, h2, h3 {
 </head>
 <body>
     
-<section class="hero" id="hero">
-    <div id="three-canvas-container"></div>
-    <div class="hero-content">
+<section class="hero split-layout" id="hero">
+    <div class="hero-left">
         <h1 class="reveal">SILENCE IN STRUCTURE</h1>
         <p class="reveal">Designing the spaces that define tomorrow's skyline.</p>
         <div class="reveal">
             <a href="#" class="btn-primary">Get Started</a>
         </div>
+    </div>
+    <div class="hero-right">
+        <div id="three-canvas-container"></div>
     </div>
 </section>
 
@@ -212,14 +242,22 @@ h1, h2, h3 {
     const container = document.getElementById('three-canvas-container');
     if (container) {
         const scene = new THREE.Scene();
-        const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+        const camera = new THREE.PerspectiveCamera(75, container.clientWidth / container.clientHeight, 0.1, 1000);
         const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
-        renderer.setSize(window.innerWidth, window.innerHeight);
+        renderer.setSize(container.clientWidth, container.clientHeight);
         container.appendChild(renderer.domElement);
 
-        const geometry = new THREE.IcosahedronGeometry(2, 1);
+        // Dynamic Geometry Selection (WOW Factor)
+        const geometries = {
+            "SPHERE": new THREE.IcosahedronGeometry(2, 1),
+            "TORUS": new THREE.TorusKnotGeometry(1.5, 0.4, 100, 16),
+            "PLANE": new THREE.PlaneGeometry(5, 5, 32, 32)
+        };
+        const geoType = "[[geometry_type]]";
+        const geometry = geometries[geoType] || geometries["SPHERE"];
+        
         const material = new THREE.MeshPhongMaterial({
-            color: 0x00ffcc,
+            color: "[[accent_primary_hex]]",
             wireframe: true,
             transparent: true,
             opacity: 0.5
@@ -289,17 +327,13 @@ h1, h2, h3 {
         });
     });
 
-    // Content Safe Reveal (Fixes disappearing bug)
-    gsap.utils.toArray("section").forEach(section => {
-        gsap.from(section, {
-            scrollTrigger: {
-                trigger: section,
-                start: "top 90%",
-                toggleActions: "play none none none"
-            },
-            opacity: 0,
-            y: 30,
-            duration: 1
+    // Robust Scroll Reveal (Final Fix for disappearing bug)
+    gsap.utils.toArray(".reveal, section, .card").forEach(el => {
+        gsap.set(el, { opacity: 0, y: 30 }); // Ensure initial state
+        ScrollTrigger.create({
+            trigger: el,
+            start: "top 95%",
+            onEnter: () => gsap.to(el, { opacity: 1, y: 0, duration: 1.2, ease: "power4.out" })
         });
     });
 

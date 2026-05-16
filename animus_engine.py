@@ -1,6 +1,6 @@
 import os
 import json
-from components import HERO_TEMPLATE, THREE_JS_HERO_TEMPLATE, SCROLL_SECTION_TEMPLATE, CARD_TEMPLATE, FOOTER_TEMPLATE, GSAP_SCRIPT
+from components import HERO_TEMPLATE, THREE_JS_HERO_TEMPLATE, SPLIT_HERO_TEMPLATE, SCROLL_SECTION_TEMPLATE, CARD_TEMPLATE, FOOTER_TEMPLATE, GSAP_SCRIPT
 
 class AnimusEngine:
     def __init__(self, output_dir="generated_site"):
@@ -47,14 +47,27 @@ class AnimusEngine:
         tokens = themes.get(theme_type, themes["DARK_NEON"])
         tokens["hero_gradient"] = tokens.get("hero_gradient", "linear-gradient(to bottom, #fff, transparent)")
 
-        # 1. Build Hero (3D or Standard)
-        template = THREE_JS_HERO_TEMPLATE if use_3d else HERO_TEMPLATE
-        hero_html = template.format(
-            title=data.get("hero_title", "Infinity Awaits"),
-            subtitle=data.get("hero_subtitle", "Experience the future of interactive web design."),
-            cta_text=data.get("cta_text", "Get Started"),
-            cta_link=data.get("cta_link", "#")
-        )
+        # 1. Build Hero (Variety Selection)
+        layout_type = data.get("layout", "FULL")
+        geometry_type = data.get("geometry", "SPHERE")
+        
+        if layout_type == "SPLIT":
+            template = SPLIT_HERO_TEMPLATE
+        else:
+            template = THREE_JS_HERO_TEMPLATE if use_3d else HERO_TEMPLATE
+
+        # 2. Token Injection (Recursive)
+        tokens["title"] = data.get("hero_title", "Infinity Awaits")
+        tokens["subtitle"] = data.get("hero_subtitle", "Experience the future.")
+        tokens["cta_text"] = data.get("cta_text", "Get Started")
+        tokens["cta_link"] = data.get("cta_link", "#")
+        tokens["geometry_type"] = geometry_type
+        tokens["accent_primary_hex"] = tokens["accent_primary"]
+        tokens["layout_class"] = "full-layout"
+
+        hero_html = template
+        for key, value in tokens.items():
+            hero_html = hero_html.replace(f"[[{key}]]", str(value))
         
         # 2. Build Feature Cards
         cards_html = ""
