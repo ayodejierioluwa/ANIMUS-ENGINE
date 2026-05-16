@@ -15,10 +15,14 @@ HERO_TEMPLATE = """
 
 VIDEO_HERO_TEMPLATE = """
 <input type="checkbox" id="ignite-engine" style="display: none;">
-<video autoplay muted loop playsinline crossorigin="anonymous" id="bg-video" 
-    style="position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; object-fit: cover; z-index: 1; pointer-events: none; opacity: 0; transition: opacity 2s ease;">
-    <source src="[[video_url]]" type="video/mp4">
-</video>
+<div id="video-background-container" style="position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: 1; pointer-events: none; overflow: hidden; background: black; opacity: 0; transition: opacity 2s ease;">
+    <iframe id="bg-video-iframe" 
+        src="https://www.youtube.com/embed/9f7_5iS7nS8?enablejsapi=1&autoplay=0&loop=1&controls=0&showinfo=0&rel=0&mute=1&playlist=9f7_5iS7nS8" 
+        frameborder="0" 
+        style="position: absolute; top: 50%; left: 50%; width: 100vw; height: 56.25vw; min-height: 100vh; min-width: 177.77vh; transform: translate(-50%, -50%);"
+        allow="autoplay; fullscreen">
+    </iframe>
+</div>
 
 <div id="css-sparks" style="position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: 10006; pointer-events: none; opacity: 0;">
     <div class="spark" style="left: 50%; top: 50%; width: 10px; height: 10px; background: orange; border-radius: 50%; position: absolute; filter: blur(2px);"></div>
@@ -32,7 +36,7 @@ VIDEO_HERO_TEMPLATE = """
 </label>
 
 <style>
-    #ignite-engine:checked ~ #bg-video { opacity: 1 !important; }
+    #ignite-engine:checked ~ #video-background-container { opacity: 1 !important; }
     #ignite-engine:checked ~ #ignition-overlay { opacity: 0 !important; visibility: hidden; }
     #ignite-engine:checked ~ .site-wrapper .hero-content { opacity: 1 !important; transform: translateY(0) !important; }
     #ignite-engine:checked ~ #css-sparks { animation: sparkBurst 1s ease-out forwards; }
@@ -60,9 +64,11 @@ VIDEO_HERO_TEMPLATE = """
 </section>
 <button onclick="diagnoseVisuals()" style="position: fixed; bottom: 1rem; right: 1rem; z-index: 10002; background: rgba(255,255,255,0.1); color: white; border: 1px solid white; padding: 0.5rem; border-radius: 5px; cursor: pointer;">Diagnostic</button>
 <script>
-    // Hybrid support for older browsers
-    document.getElementById('ignite-engine').addEventListener('change', () => {
-        document.getElementById('bg-video').play();
+    document.getElementById('ignite-engine').addEventListener('change', (e) => {
+        if (e.target.checked) {
+            const iframe = document.getElementById('bg-video-iframe');
+            iframe.contentWindow.postMessage('{"event":"command","func":"playVideo","args":""}', '*');
+        }
     });
 </script>
 """
