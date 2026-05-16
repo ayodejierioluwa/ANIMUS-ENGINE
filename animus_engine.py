@@ -28,20 +28,24 @@ class AnimusEngine:
             "DARK_NEON": {
                 "bg_color": "#050505", "text_color": "#ffffff", "accent_primary": "#00ffcc", "accent_secondary": "#ff00ff",
                 "glass_bg": "rgba(255, 255, 255, 0.03)", "glass_border": "rgba(255, 255, 255, 0.08)",
-                "font_main": "'Inter', sans-serif", "font_heading": "'Outfit', sans-serif"
+                "font_main": "'Inter', sans-serif", "font_heading": "'Outfit', sans-serif",
+                "hero_gradient": "linear-gradient(to bottom, #fff 40%, rgba(255,255,255,0.4))"
             },
             "MINIMAL_LIGHT": {
-                "bg_color": "#fdfdfd", "text_color": "#111111", "accent_primary": "#333333", "accent_secondary": "#888888",
+                "bg_color": "#f8f9fa", "text_color": "#1a1a1a", "accent_primary": "#000000", "accent_secondary": "#6c757d",
                 "glass_bg": "rgba(0, 0, 0, 0.02)", "glass_border": "rgba(0, 0, 0, 0.05)",
-                "font_main": "'Inter', sans-serif", "font_heading": "'Inter', sans-serif"
+                "font_main": "'Inter', sans-serif", "font_heading": "'Inter', sans-serif",
+                "hero_gradient": "linear-gradient(to bottom, #1a1a1a 40%, rgba(26,26,26,0.5))"
             },
             "LUXURY_GOLD": {
                 "bg_color": "#0a0908", "text_color": "#eae0d5", "accent_primary": "#c6ac8f", "accent_secondary": "#5e503f",
                 "glass_bg": "rgba(198, 172, 143, 0.05)", "glass_border": "rgba(198, 172, 143, 0.1)",
-                "font_main": "'Inter', sans-serif", "font_heading": "'Outfit', sans-serif"
+                "font_main": "'Inter', sans-serif", "font_heading": "'Outfit', sans-serif",
+                "hero_gradient": "linear-gradient(to bottom, #c6ac8f 40%, #5e503f)"
             }
         }
         tokens = themes.get(theme_type, themes["DARK_NEON"])
+        tokens["hero_gradient"] = tokens.get("hero_gradient", "linear-gradient(to bottom, #fff, transparent)")
 
         # 1. Build Hero (3D or Standard)
         template = THREE_JS_HERO_TEMPLATE if use_3d else HERO_TEMPLATE

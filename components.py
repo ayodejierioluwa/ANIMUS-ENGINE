@@ -14,6 +14,7 @@ HERO_TEMPLATE = """
 """
 
 SCROLL_SECTION_TEMPLATE = """
+<div class="noise-overlay"></div>
 <section class="grid">
     {cards}
 </section>
@@ -146,6 +147,25 @@ GSAP_SCRIPT = """
             y: 30,
             duration: 1
         });
+    });
+
+    // Magnetic Cursor Logic (WOW Factor)
+    const cursor = document.createElement('div');
+    cursor.className = 'custom-cursor';
+    document.body.appendChild(cursor);
+
+    window.addEventListener('mousemove', (e) => {
+        gsap.to(cursor, {
+            x: e.clientX,
+            y: e.clientY,
+            duration: 0.6,
+            ease: "power2.out"
+        });
+    });
+
+    document.querySelectorAll('.btn-primary, .card').forEach(el => {
+        el.addEventListener('mouseenter', () => gsap.to(cursor, { scale: 3, backgroundColor: "var(--accent-primary)", opacity: 0.3 }));
+        el.addEventListener('mouseleave', () => gsap.to(cursor, { scale: 1, backgroundColor: "transparent", opacity: 1 }));
     });
 </script>
 """
