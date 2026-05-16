@@ -92,13 +92,47 @@ DASHBOARD_HTML = """
             <p>PROJECT_SYNTHESIZED: <a id="view-link" href="#" target="_blank">OPEN_LIVE_DEPLOYMENT</a></p>
         </div>
 
-        <div class="signature" style="position: absolute; bottom: 2rem; right: 2rem; width: 150px; opacity: 0.6; filter: invert(1) hue-rotate(120deg) brightness(2) contrast(1.2); mix-blend-mode: screen; transition: opacity 0.5s var(--ease-vibe); cursor: pointer;" onmouseover="this.style.opacity=1" onmouseout="this.style.opacity=0.6">
-            <img src="/static/signature.jpg" style="width: 100%; height: auto;">
+        <div class="signature" style="position: absolute; bottom: 2rem; right: 2rem; width: 180px; transition: opacity 0.5s var(--ease-vibe); cursor: pointer; opacity: 0.7;" onmouseover="this.style.opacity=1" onmouseout="this.style.opacity=0.7">
+            <canvas id="sig-canvas" style="width: 100%; height: auto;"></canvas>
         </div>
     </div>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
     <script>
+        // Neural Ink Extraction logic
+        function extractSignature() {
+            const img = new Image();
+            img.src = '/static/signature.jpg';
+            img.onload = () => {
+                const canvas = document.getElementById('sig-canvas');
+                const ctx = canvas.getContext('2d');
+                canvas.width = img.width;
+                canvas.height = img.height;
+                
+                // Draw original
+                ctx.drawImage(img, 0, 0);
+                const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+                const data = imageData.data;
+                
+                // Surgical Pixel Scan
+                for (let i = 0; i < data.length; i += 4) {
+                    const r = data[i], g = data[i+1], b = data[i+2];
+                    const brightness = (r + g + b) / 3;
+                    
+                    // If it's dark (ink), make it cyan and keep it. If light (paper), make it transparent.
+                    if (brightness < 160) {
+                        data[i] = 0;      // R
+                        data[i+1] = 255;    // G
+                        data[i+2] = 204;    // B
+                        data[i+3] = 255;    // A (Opaque)
+                    } else {
+                        data[i+3] = 0;      // A (Transparent)
+                    }
+                }
+                ctx.putImageData(imageData, 0, 0);
+            };
+        }
+        extractSignature();
         // Void Background Physics
         const canvas = document.createElement('canvas');
         const ctx = canvas.getContext('2d');
