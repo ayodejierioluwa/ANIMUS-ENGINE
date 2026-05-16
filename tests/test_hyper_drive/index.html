@@ -8,9 +8,9 @@
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&family=Outfit:wght@300;500;700;900&display=swap');
 
 :root {
-    --bg-color: #0a0202;
+    --bg-color: #080808;
     --text-color: #ffffff;
-    --accent-primary: #ff4d00;
+    --accent-primary: #ffffff;
     --accent-secondary: #ffffff;
     --glass-bg: rgba(255, 255, 255, 0.02);
     --glass-border: rgba(255, 255, 255, 0.05);
@@ -83,7 +83,7 @@ h1, h2, h3 {
 .hero h1 {
     font-size: clamp(3rem, 10vw, 8rem);
     line-height: 0.9;
-    background: linear-gradient(to bottom, #ff4d00, transparent);
+    background: linear-gradient(to bottom, #ffffff, transparent);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     margin-bottom: 2rem;
@@ -234,19 +234,14 @@ h1, h2, h3 {
 <body class="page-index">
     <nav style="position: fixed; top: 2rem; width: 100%; display: flex; justify-content: center; gap: 2rem; z-index: 10001;"></nav>
     
-<div id="video-background-container" style="position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: -100; pointer-events: none; overflow: hidden; background: black;">
-    <iframe id="bg-video-iframe" 
-        src="https://www.youtube.com/embed/3_PTo_lZ_uU?autoplay=1&mute=1&loop=1&controls=0&showinfo=0&autohide=1&playlist=3_PTo_lZ_uU&rel=0&enablejsapi=1&vq=hd1080" 
-        frameborder="0" 
-        style="position: absolute; top: 50%; left: 50%; width: 100vw; height: 56.25vw; min-height: 100vh; min-width: 177.77vh; transform: translate(-50%, -50%);"
-        allow="autoplay; encrypted-media">
-    </iframe>
-</div>
+<video autoplay muted loop playsinline id="bg-video" style="position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; object-fit: cover; z-index: -100; pointer-events: none;">
+    <source src="https://v.ftcdn.net/05/23/94/29/700_F_523942944_v7f77N68C222X8q9pE6A69mK89g1B7Hh_ST.mp4" type="video/mp4">
+</video>
 <section class="hero full-layout" id="hero" style="background: transparent !important;">
     <div class="noise-overlay"></div>
     <div class="hero-content">
-        <h1 class="reveal">REALISTIC FIRE</h1>
-        <p class="reveal">High-fidelity wood burning with clear, realistic textures.</p>
+        <h1 class="reveal">WOOD BURNING</h1>
+        <p class="reveal">Testing the realistic fire textures for production.</p>
         <div class="reveal">
             <a href="#" class="btn-primary">Get Started</a>
         </div>
@@ -258,13 +253,13 @@ h1, h2, h3 {
 <section class="grid">
     
 <div class="card glass reveal">
-    <h3>HD Quality</h3>
-    <p>1080p realistic fire loop.</p>
+    <h3>Realism</h3>
+    <p>Sharp wood burning textures.</p>
 </div>
 
 <div class="card glass reveal">
-    <h3>Ambient</h3>
-    <p>Perfect for cozy brand vibes.</p>
+    <h3>Direct Stream</h3>
+    <p>Zero YouTube UI artifacts.</p>
 </div>
 
 </section>

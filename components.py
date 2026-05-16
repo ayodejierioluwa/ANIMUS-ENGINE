@@ -14,14 +14,9 @@ HERO_TEMPLATE = """
 """
 
 VIDEO_HERO_TEMPLATE = """
-<div id="video-background-container" style="position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: -100; pointer-events: none; overflow: hidden; background: black;">
-    <iframe id="bg-video-iframe" 
-        src="https://www.youtube.com/embed/[[youtube_id]]?autoplay=1&mute=1&loop=1&controls=0&showinfo=0&autohide=1&playlist=[[youtube_id]]&rel=0&enablejsapi=1&vq=hd1080" 
-        frameborder="0" 
-        style="position: absolute; top: 50%; left: 50%; width: 100vw; height: 56.25vw; min-height: 100vh; min-width: 177.77vh; transform: translate(-50%, -50%);"
-        allow="autoplay; encrypted-media">
-    </iframe>
-</div>
+<video autoplay muted loop playsinline id="bg-video" style="position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; object-fit: cover; z-index: -100; pointer-events: none;">
+    <source src="[[video_url]]" type="video/mp4">
+</video>
 <section class="hero [[layout_class]]" id="hero" style="background: transparent !important;">
     <div class="noise-overlay"></div>
     <div class="hero-content">
