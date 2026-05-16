@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aether Project | About</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&family=Outfit:wght@300;500;700;900&display=swap');
+
+:root {
+    --bg-color: #f8f9fa;
+    --text-color: #1a1a1a;
+    --accent-primary: #000000;
+    --accent-secondary: #6c757d;
+    --glass-bg: rgba(0, 0, 0, 0.02);
+    --glass-border: rgba(0, 0, 0, 0.05);
+    --font-main: 'Inter', sans-serif;
+    --font-heading: 'Inter', sans-serif;
+    --section-padding: 8rem 2rem;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    -webkit-font-smoothing: antialiased;
+}
+
+body {
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    font-family: var(--font-main);
+    overflow-x: hidden;
+    line-height: 1.6;
+}
+
+h1, h2, h3 {
+    font-family: var(--font-heading);
+    font-weight: 900;
+    text-transform: uppercase;
+    letter-spacing: -0.02em;
+}
+
+/* Glassmorphism Utility */
+.glass {
+    background: var(--glass-bg);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid var(--glass-border);
+    border-radius: 24px;
+}
+
+/* Hero Section */
+.hero {
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    position: relative;
+    padding: 0 1rem;
+    overflow: hidden;
+}
+
+#three-canvas-container, #bg-video {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -1;
+    pointer-events: none;
+    object-fit: cover;
+}
+
+.hero h1 {
+    font-size: clamp(3rem, 10vw, 8rem);
+    line-height: 0.9;
+    background: linear-gradient(to bottom, #1a1a1a 40%, rgba(26,26,26,0.5));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    margin-bottom: 2rem;
+}
+
+.hero p {
+    font-size: 1.2rem;
+    color: rgba(255,255,255,0.6);
+    max-width: 600px;
+    margin-bottom: 3rem;
+}
+
+/* Buttons */
+.btn-primary {
+    background: #fff;
+    color: #000;
+    padding: 1rem 2.5rem;
+    border-radius: 100px;
+    font-weight: 600;
+    text-decoration: none;
+    transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    display: inline-block;
+}
+
+.btn-primary:hover {
+    transform: scale(1.05);
+}
+
+/* Section Transitions */
+.reveal {
+    opacity: 0;
+    transform: translateY(30px);
+}
+
+/* Mesh Background */
+.mesh-gradient {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -1;
+    background: 
+        radial-gradient(circle at 20% 20%, rgba(0, 255, 204, 0.15) 0%, transparent 40%),
+        radial-gradient(circle at 80% 80%, rgba(255, 0, 255, 0.15) 0%, transparent 40%);
+}
+
+/* Card Grid */
+.grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 2rem;
+    padding: var(--section-padding);
+}
+
+/* Split Layout (The WOW Layout) */
+.split-layout {
+    display: flex !important;
+    flex-direction: row !important;
+    text-align: left !important;
+    align-items: center;
+    justify-content: space-between;
+    height: 100vh;
+}
+
+.hero-left {
+    flex: 1.2;
+    padding-left: 8%;
+    z-index: 10;
+}
+
+.hero-right {
+    flex: 1;
+    height: 100vh;
+    position: relative;
+    overflow: hidden;
+}
+
+#three-canvas-container {
+    width: 100%;
+    height: 100%;
+}
+
+.card {
+    padding: 3rem;
+    transition: border-color 0.3s ease;
+}
+
+/* Noise Overlay */
+.noise-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 9999;
+    pointer-events: none;
+    opacity: 0.05;
+    background: url('https://grainy-gradients.vercel.app/noise.svg');
+}
+
+/* Custom Cursor */
+.custom-cursor {
+    position: fixed;
+    width: 20px;
+    height: 20px;
+    background: rgba(255, 255, 255, 0.5);
+    border: 1px solid var(--accent-primary);
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 10000;
+    transform: translate(-50%, -50%);
+    mix-blend-mode: difference;
+}
+
+    </style>
+</head>
+<body class="page-about">
+    <nav style="position: fixed; top: 2rem; width: 100%; display: flex; justify-content: center; gap: 2rem; z-index: 10001;">
+        <a href="index.html" class="glass" style="padding: 0.5rem 1.5rem; text-decoration: none; color: white;">Home</a>
+        <a href="about.html" class="glass" style="padding: 0.5rem 1.5rem; text-decoration: none; color: white;">About</a>
+        <a href="contact.html" class="glass" style="padding: 0.5rem 1.5rem; text-decoration: none; color: white;">Contact</a>
+    </nav>
+    
+<section class="hero split-layout" id="hero">
+    <div class="hero-left">
+        <h1 class="reveal">OUR ROOTS</h1>
+        <p class="reveal">Founded in the heart of the Amazon, built for the global stage.</p>
+        <div class="reveal">
+            <a href="#" class="btn-primary">Get Started</a>
+        </div>
+    </div>
+    <div class="hero-right">
+        <div id="three-canvas-container"></div>
+    </div>
+</section>
+
+    
+<div class="noise-overlay"></div>
+<section class="grid">
+    
+<div class="card glass reveal">
+    <h3>Transparency</h3>
+    <p>Open-source conservation data.</p>
+</div>
+
+<div class="card glass reveal">
+    <h3>Impact</h3>
+    <p>100% of proceeds go to reforestation.</p>
+</div>
+
+</section>
+
+    
+<footer style="padding: 4rem 2rem; text-align: center; color: rgba(255,255,255,0.4); border-top: 1px solid var(--glass-border);">
+    <p>&copy; 2026 AETHER_ANIMUS | Built for Aether Project</p>
+</footer>
+
+    
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/0.160.0/three.min.js"></script>
+
+<script>
+    gsap.registerPlugin(ScrollTrigger);
+
+    // Three.js Scene Setup
+    const container = document.getElementById('three-canvas-container');
+    if (container) {
+        const scene = new THREE.Scene();
+        const camera = new THREE.PerspectiveCamera(75, container.clientWidth / container.clientHeight, 0.1, 1000);
+        const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
+        renderer.setSize(container.clientWidth, container.clientHeight);
+        container.appendChild(renderer.domElement);
+
+        // Dynamic Geometry Selection (WOW Factor)
+        const geometries = {
+            "SPHERE": new THREE.IcosahedronGeometry(2, 1),
+            "TORUS": new THREE.TorusKnotGeometry(1.5, 0.4, 100, 16),
+            "PLANE": new THREE.PlaneGeometry(5, 5, 32, 32)
+        };
+        const geoType = "[[geometry_type]]";
+        const geometry = geometries[geoType] || geometries["SPHERE"];
+        
+        const material = new THREE.MeshPhongMaterial({
+            color: "[[accent_primary_hex]]",
+            wireframe: true,
+            transparent: true,
+            opacity: 0.5
+        });
+        const sphere = new THREE.Mesh(geometry, material);
+        scene.add(sphere);
+
+        const light = new THREE.PointLight(0xffffff, 1, 100);
+        light.position.set(10, 10, 10);
+        scene.add(light);
+        scene.add(new THREE.AmbientLight(0x404040));
+
+        camera.position.z = 5;
+
+        function animate() {
+            requestAnimationFrame(animate);
+            sphere.rotation.x += 0.005;
+            sphere.rotation.y += 0.005;
+            renderer.render(scene, camera);
+        }
+        animate();
+
+        // Mouse Interactivity for Three.js
+        window.addEventListener('mousemove', (e) => {
+            const x = (e.clientX / window.innerWidth - 0.5) * 2;
+            const y = (e.clientY / window.innerHeight - 0.5) * 2;
+            gsap.to(sphere.rotation, { y: x, x: -y, duration: 2 });
+        });
+
+        // Scroll Parallax for Three.js
+        gsap.to(sphere.position, {
+            scrollTrigger: {
+                trigger: "body",
+                start: "top top",
+                end: "bottom bottom",
+                scrub: 1
+            },
+            z: -5,
+            y: 2
+        });
+    }
+
+    // Initial Reveal Animations
+    gsap.to(".reveal", {
+        opacity: 1,
+        y: 0,
+        duration: 1.5,
+        stagger: 0.15,
+        ease: "expo.out",
+        delay: 0.2
+    });
+
+    // Stunning Card Entrances
+    gsap.utils.toArray(".card").forEach((card, i) => {
+        gsap.from(card, {
+            scrollTrigger: {
+                trigger: card,
+                start: "top 95%",
+                toggleActions: "play none none none"
+            },
+            opacity: 0,
+            scale: 0.8,
+            rotationY: 15,
+            duration: 1.2,
+            delay: i * 0.1,
+            ease: "back.out(1.7)"
+        });
+    });
+
+    // Robust Scroll Reveal (Final Fix for disappearing bug)
+    gsap.utils.toArray(".reveal, section, .card").forEach(el => {
+        gsap.set(el, { opacity: 0, y: 30 }); // Ensure initial state
+        ScrollTrigger.create({
+            trigger: el,
+            start: "top 95%",
+            onEnter: () => gsap.to(el, { opacity: 1, y: 0, duration: 1.2, ease: "power4.out" })
+        });
+    });
+
+    // Magnetic Cursor Logic (WOW Factor)
+    const cursor = document.createElement('div');
+    cursor.className = 'custom-cursor';
+    document.body.appendChild(cursor);
+
+    window.addEventListener('mousemove', (e) => {
+        gsap.to(cursor, {
+            x: e.clientX,
+            y: e.clientY,
+            duration: 0.6,
+            ease: "power2.out"
+        });
+    });
+
+    document.querySelectorAll('.btn-primary, .card').forEach(el => {
+        el.addEventListener('mouseenter', () => gsap.to(cursor, { scale: 3, backgroundColor: "var(--accent-primary)", opacity: 0.3 }));
+        el.addEventListener('mouseleave', () => gsap.to(cursor, { scale: 1, backgroundColor: "transparent", opacity: 1 }));
+    });
+</script>
+
+</body>
+</html>

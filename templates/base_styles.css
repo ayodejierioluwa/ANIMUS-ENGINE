@@ -56,7 +56,7 @@ h1, h2, h3 {
     overflow: hidden;
 }
 
-#three-canvas-container {
+#three-canvas-container, #bg-video {
     position: absolute;
     top: 0;
     left: 0;
@@ -64,6 +64,7 @@ h1, h2, h3 {
     height: 100%;
     z-index: -1;
     pointer-events: none;
+    object-fit: cover;
 }
 
 .hero h1 {

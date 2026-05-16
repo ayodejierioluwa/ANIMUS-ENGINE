@@ -13,6 +13,22 @@ HERO_TEMPLATE = """
 </section>
 """
 
+VIDEO_HERO_TEMPLATE = """
+<section class="hero [[layout_class]]" id="hero">
+    <video autoplay muted loop playsinline id="bg-video">
+        <source src="[[video_url]]" type="video/mp4">
+    </video>
+    <div class="noise-overlay"></div>
+    <div class="hero-content">
+        <h1 class="reveal">[[title]]</h1>
+        <p class="reveal">[[subtitle]]</p>
+        <div class="reveal">
+            <a href="[[cta_link]]" class="btn-primary">[[cta_text]]</a>
+        </div>
+    </div>
+</section>
+"""
+
 SCROLL_SECTION_TEMPLATE = """
 <div class="noise-overlay"></div>
 <section class="grid">

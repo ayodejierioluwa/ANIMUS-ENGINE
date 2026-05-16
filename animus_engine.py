@@ -1,6 +1,6 @@
 import os
 import json
-from components import HERO_TEMPLATE, THREE_JS_HERO_TEMPLATE, SPLIT_HERO_TEMPLATE, SCROLL_SECTION_TEMPLATE, CARD_TEMPLATE, FOOTER_TEMPLATE, GSAP_SCRIPT
+from components import HERO_TEMPLATE, THREE_JS_HERO_TEMPLATE, SPLIT_HERO_TEMPLATE, VIDEO_HERO_TEMPLATE, SCROLL_SECTION_TEMPLATE, CARD_TEMPLATE, FOOTER_TEMPLATE, GSAP_SCRIPT
 
 class AnimusEngine:
     def __init__(self, output_dir="generated_site"):
@@ -18,11 +18,25 @@ class AnimusEngine:
         return plan
 
     def generate_site(self, data):
-        """Generates a full interactive website from input data."""
+        """Generates a multi-page interactive website from input data."""
+        pages = data.get("pages", [{"name": "index", "content": data}])
+        generated_files = []
+        
+        for page in pages:
+            page_name = page.get("name", "index")
+            page_data = page.get("content", data)
+            file_path = self.generate_page(page_name, page_data)
+            generated_files.append(file_path)
+            
+        return f"Successfully generated {len(generated_files)} pages: {', '.join(generated_files)}"
+
+    def generate_page(self, page_name, data):
+        """Generates a single page of the site."""
         self.project_name = data.get("project_name", self.project_name)
         use_3d = data.get("use_3d", True)
+        use_video = data.get("use_video", False)
         
-        # 0. Generate Theme Tokens (The "WOW" Factor)
+        # 0. Generate Theme Tokens
         theme_type = data.get("theme", "DARK_NEON")
         themes = {
             "DARK_NEON": {
@@ -46,12 +60,15 @@ class AnimusEngine:
         }
         tokens = themes.get(theme_type, themes["DARK_NEON"])
         tokens["hero_gradient"] = tokens.get("hero_gradient", "linear-gradient(to bottom, #fff, transparent)")
+        tokens["video_url"] = data.get("video_url", "https://assets.mixkit.co/videos/preview/mixkit-abstract-form-of-blue-and-purple-ink-in-water-39850-large.mp4")
 
         # 1. Build Hero (Variety Selection)
         layout_type = data.get("layout", "FULL")
         geometry_type = data.get("geometry", "SPHERE")
         
-        if layout_type == "SPLIT":
+        if use_video:
+            template = VIDEO_HERO_TEMPLATE
+        elif layout_type == "SPLIT":
             template = SPLIT_HERO_TEMPLATE
         else:
             template = THREE_JS_HERO_TEMPLATE if use_3d else HERO_TEMPLATE
@@ -69,7 +86,7 @@ class AnimusEngine:
         for key, value in tokens.items():
             hero_html = hero_html.replace(f"[[{key}]]", str(value))
         
-        # 2. Build Feature Cards
+        # 3. Build Feature Cards
         cards_html = ""
         for card in data.get("features", []):
             cards_html += CARD_TEMPLATE.format(
@@ -79,10 +96,10 @@ class AnimusEngine:
         
         feature_section_html = SCROLL_SECTION_TEMPLATE.format(cards=cards_html)
         
-        # 3. Build Footer
+        # 4. Build Footer
         footer_html = FOOTER_TEMPLATE.format(project_name=self.project_name)
         
-        # 4. Assemble Index.html
+        # 5. Assemble Index.html
         base_dir = os.path.dirname(os.path.abspath(__file__))
         css_path = os.path.join(base_dir, "templates/base_styles.css")
         with open(css_path, "r") as f:
@@ -95,12 +112,17 @@ class AnimusEngine:
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{self.project_name} | AETHER_ANIMUS</title>
+    <title>{self.project_name} | {page_name.capitalize()}</title>
     <style>
         {styles}
     </style>
 </head>
-<body>
+<body class="page-{page_name}">
+    <nav style="position: fixed; top: 2rem; width: 100%; display: flex; justify-content: center; gap: 2rem; z-index: 10001;">
+        <a href="index.html" class="glass" style="padding: 0.5rem 1.5rem; text-decoration: none; color: white;">Home</a>
+        <a href="about.html" class="glass" style="padding: 0.5rem 1.5rem; text-decoration: none; color: white;">About</a>
+        <a href="contact.html" class="glass" style="padding: 0.5rem 1.5rem; text-decoration: none; color: white;">Contact</a>
+    </nav>
     {hero_html}
     {feature_section_html}
     {footer_html}
@@ -109,28 +131,44 @@ class AnimusEngine:
 </html>
 """
         
-        # 5. Write to File
+        # 6. Write to File
         os.makedirs(self.output_dir, exist_ok=True)
-        with open(f"{self.output_dir}/index.html", "w") as f:
+        out_path = f"{self.output_dir}/{page_name}.html"
+        with open(out_path, "w") as f:
             f.write(full_html)
             
-        # 6. Generate Asset Plan (The Viktor Guide Workflow)
+        # 7. Generate Asset Plan
         asset_plan = self.generate_asset_plan(data)
         with open(f"{self.output_dir}/asset_plan.json", "w") as f:
             json.dump(asset_plan, f, indent=4)
             
-        return f"Successfully generated site in {self.output_dir}/index.html and asset_plan.json"
+        return out_path
 
 if __name__ == "__main__":
     # Test Generation
     test_data = {
         "project_name": "CORTEX_PRO",
-        "hero_title": "THE ANIMUS SYSTEM",
-        "hero_subtitle": "Autonomous Interactive Web Experiences. Built in seconds, not hours.",
-        "features": [
-            {"title": "GSAP Powered", "content": "Smooth, scroll-triggered animations that bring your content to life."},
-            {"title": "Vibe Coding", "content": "Design through natural language. No manual CSS needed."},
-            {"title": "Cloud Ready", "content": "One-click deployment to Netlify and Vercel."}
+        "pages": [
+            {
+                "name": "index",
+                "content": {
+                    "theme": "DARK_NEON",
+                    "use_video": True,
+                    "hero_title": "BEYOND CODE",
+                    "hero_subtitle": "Experience the world's first autonomous web engine.",
+                    "video_url": "https://assets.mixkit.co/videos/preview/mixkit-abstract-form-of-blue-and-purple-ink-in-water-39850-large.mp4"
+                }
+            },
+            {
+                "name": "about",
+                "content": {
+                    "theme": "LUXURY_GOLD",
+                    "layout": "SPLIT",
+                    "geometry": "TORUS",
+                    "hero_title": "OUR VISION",
+                    "hero_subtitle": "Crafting the digital future with artificial intelligence.",
+                }
+            }
         ]
     }
     
