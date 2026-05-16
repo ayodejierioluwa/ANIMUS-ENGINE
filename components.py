@@ -14,7 +14,7 @@ HERO_TEMPLATE = """
 """
 
 VIDEO_HERO_TEMPLATE = """
-<video autoplay muted loop playsinline id="bg-video" style="position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; object-fit: cover; z-index: -1000; pointer-events: none; background: black;">
+<video autoplay muted loop playsinline id="bg-video" style="position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; object-fit: cover; z-index: 1; pointer-events: none; background: black;">
     <source src="[[video_url]]" type="video/mp4">
 </video>
 <script>
