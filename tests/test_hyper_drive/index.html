@@ -4,13 +4,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Aether Project | Index</title>
-    <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&family=Outfit:wght@300;500;700;900&display=swap');
+    <style>@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&family=Outfit:wght@300;500;700;900&display=swap');
 
 :root {
-    --bg-color: #0a0202;
+    --bg-color: #080808;
     --text-color: #ffffff;
-    --accent-primary: #ff4d00;
+    --accent-primary: #ffffff;
     --accent-secondary: #ffffff;
     --glass-bg: rgba(255, 255, 255, 0.02);
     --glass-border: rgba(255, 255, 255, 0.05);
@@ -26,12 +25,21 @@
     -webkit-font-smoothing: antialiased;
 }
 
-body {
+html {
     background-color: var(--bg-color);
+}
+
+body {
+    background-color: transparent !important;
     color: var(--text-color);
     font-family: var(--font-main);
     overflow-x: hidden;
     line-height: 1.6;
+}
+
+.site-wrapper {
+    position: relative;
+    z-index: 10;
 }
 
 h1, h2, h3 {
@@ -64,13 +72,13 @@ h1, h2, h3 {
     background: transparent;
 }
 
-#three-canvas-container, #bg-video {
+#three-canvas-container, #bg-video, #vimeo-background-container {
     position: fixed;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
-    z-index: 1; /* Above body background */
+    z-index: 1; /* In front of HTML background, behind site-wrapper */
     pointer-events: none;
     object-fit: cover;
 }
@@ -83,7 +91,7 @@ h1, h2, h3 {
 .hero h1 {
     font-size: clamp(3rem, 10vw, 8rem);
     line-height: 0.9;
-    background: linear-gradient(to bottom, #ff4d00, transparent);
+    background: linear-gradient(to bottom, #ffffff, transparent);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     margin-bottom: 2rem;
@@ -218,38 +226,15 @@ h1, h2, h3 {
     transform: translate(-50%, -50%);
     mix-blend-mode: difference;
 }
-
-        .hero {
-            position: relative;
-            height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            text-align: center;
-            overflow: hidden;
-            background: transparent; /* Fix: Allow video/3D to show through */
-        }
-        #three-canvas-container, #bg-video {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: 1; /* Move to front of background */
-            pointer-events: none;
-            object-fit: cover;
-        }
-        .hero-content {
-            position: relative;
-            z-index: 2; /* Ensure content is above video */
-        }
-    </style>
+</style>
 </head>
 <body class="page-index">
-    <nav style="position: fixed; top: 2rem; width: 100%; display: flex; justify-content: center; gap: 2rem; z-index: 10001;"></nav>
-    
+    <div class="mesh-gradient"></div>
+    <div class="site-wrapper">
+        <nav style="position: fixed; top: 2rem; width: 100%; display: flex; justify-content: center; gap: 2rem; z-index: 10001;"></nav>
+        
 <video autoplay muted loop playsinline id="bg-video" style="position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; object-fit: cover; z-index: 1; pointer-events: none; background: black;">
-    <source src="https://v.ftcdn.net/05/23/94/29/700_F_523942944_v7f77N68C222X8q9pE6A69mK89g1B7Hh_ST.mp4" type="video/mp4">
+    <source src="https://res.cloudinary.com/demo/video/upload/f_auto:video,q_auto/docs/sea_turtle.mp4" type="video/mp4">
 </video>
 <script>
     document.addEventListener('DOMContentLoaded', () => {
@@ -259,7 +244,7 @@ h1, h2, h3 {
 </script>
 <section class="hero full-layout" id="hero" style="background: transparent !important;">
     <div class="hero-content">
-        <h1 class="reveal">REALISTIC FIRE</h1>
+        <h1 class="reveal">VIMEO RESTORED</h1>
         <p class="reveal">Testing the realistic fire textures for production.</p>
         <div class="reveal">
             <a href="#" class="btn-primary">Get Started</a>
@@ -268,7 +253,7 @@ h1, h2, h3 {
 </section>
 <button onclick="diagnoseVisuals()" style="position: fixed; bottom: 1rem; right: 1rem; z-index: 10002; background: rgba(255,255,255,0.1); color: white; border: 1px solid white; padding: 0.5rem; border-radius: 5px; cursor: pointer;">Diagnostic</button>
 
-    
+        
 <div class="noise-overlay"></div>
 <section class="grid">
     
@@ -284,11 +269,12 @@ h1, h2, h3 {
 
 </section>
 
-    
+        
 <footer style="padding: 4rem 2rem; text-align: center; color: rgba(255,255,255,0.4); border-top: 1px solid var(--glass-border);">
     <p>&copy; 2026 AETHER_ANIMUS | Built for Aether Project</p>
 </footer>
 
+    </div>
     
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>

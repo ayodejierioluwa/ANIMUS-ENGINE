@@ -19,12 +19,21 @@
     -webkit-font-smoothing: antialiased;
 }
 
-body {
+html {
     background-color: var(--bg-color);
+}
+
+body {
+    background-color: transparent !important;
     color: var(--text-color);
     font-family: var(--font-main);
     overflow-x: hidden;
     line-height: 1.6;
+}
+
+.site-wrapper {
+    position: relative;
+    z-index: 10;
 }
 
 h1, h2, h3 {
@@ -57,13 +66,13 @@ h1, h2, h3 {
     background: transparent;
 }
 
-#three-canvas-container, #bg-video {
+#three-canvas-container, #bg-video, #vimeo-background-container {
     position: fixed;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
-    z-index: 1; /* Above body background */
+    z-index: 1; /* In front of HTML background, behind site-wrapper */
     pointer-events: none;
     object-fit: cover;
 }

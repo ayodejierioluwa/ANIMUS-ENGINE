@@ -159,39 +159,16 @@ class AnimusEngine:
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{self.project_name} | {page_name.capitalize()}</title>
-    <style>
-        {styles}
-        .hero {{
-            position: relative;
-            height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            text-align: center;
-            overflow: hidden;
-            background: transparent; /* Fix: Allow video/3D to show through */
-        }}
-        #three-canvas-container, #bg-video {{
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: 1; /* Move to front of background */
-            pointer-events: none;
-            object-fit: cover;
-        }}
-        .hero-content {{
-            position: relative;
-            z-index: 2; /* Ensure content is above video */
-        }}
-    </style>
+    <style>{styles}</style>
 </head>
 <body class="page-{page_name}">
-    {nav_html}
-    {hero_html}
-    {feature_section_html}
-    {footer_html}
+    <div class="mesh-gradient"></div>
+    <div class="site-wrapper">
+        {nav_html}
+        {hero_html}
+        {feature_section_html}
+        {footer_html}
+    </div>
     {GSAP_SCRIPT}
 </body>
 </html>
