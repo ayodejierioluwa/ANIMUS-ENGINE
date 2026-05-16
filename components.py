@@ -15,10 +15,14 @@ HERO_TEMPLATE = """
 
 VIDEO_HERO_TEMPLATE = """
 <input type="checkbox" id="ignite-engine" style="display: none;">
-<video autoplay muted loop playsinline crossorigin="anonymous" id="bg-video" 
-    style="position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; object-fit: cover; z-index: 1; pointer-events: none; opacity: 0; transition: opacity 2s ease;">
-    <source src="https://v.ftcdn.net/05/17/74/46/700_F_517744641_f7f7N68C222X8q9pE6A69mK89g1B7Hh_ST.mp4" type="video/mp4">
-</video>
+<div id="video-background-container" style="position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: 1; pointer-events: none; overflow: hidden; background: black url('assets/fire_bg.png') no-repeat center center; background-size: cover; opacity: 0; transition: opacity 2.5s ease;">
+    <iframe id="bg-video-iframe" 
+        src="https://www.youtube.com/embed/Lp6WjSTU80M?enablejsapi=1&autoplay=0&loop=1&controls=0&showinfo=0&rel=0&mute=1&playlist=Lp6WjSTU80M" 
+        frameborder="0" 
+        style="position: absolute; top: 50%; left: 50%; width: 100vw; height: 56.25vw; min-height: 100vh; min-width: 177.77vh; transform: translate(-50%, -50%); pointer-events: none;"
+        allow="autoplay; fullscreen">
+    </iframe>
+</div>
 
 <div id="css-sparks" style="position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: 10006; pointer-events: none; opacity: 0;">
     <div class="spark" style="left: 50%; top: 50%; width: 10px; height: 10px; background: orange; border-radius: 50%; position: absolute; filter: blur(2px);"></div>
@@ -32,14 +36,14 @@ VIDEO_HERO_TEMPLATE = """
 </label>
 
 <style>
-    #ignite-engine:checked ~ #bg-video { opacity: 1 !important; }
+    #ignite-engine:checked ~ #video-background-container { opacity: 1 !important; }
     #ignite-engine:checked ~ #ignition-overlay { opacity: 0 !important; visibility: hidden; }
     #ignite-engine:checked ~ .site-wrapper .hero-content { opacity: 1 !important; transform: translateY(0) !important; }
     #ignite-engine:checked ~ #css-sparks { animation: sparkBurst 1s ease-out forwards; }
     
     @keyframes sparkBurst {
         0% { opacity: 1; transform: scale(0); }
-        100% { opacity: 0; transform: scale(5); }
+        100% { opacity: 0; transform: scale(8); }
     }
     
     .hero-content { 
@@ -62,7 +66,10 @@ VIDEO_HERO_TEMPLATE = """
 <script>
     document.getElementById('ignite-engine').addEventListener('change', (e) => {
         if (e.target.checked) {
-            document.getElementById('bg-video').play();
+            const iframe = document.getElementById('bg-video-iframe');
+            if (iframe) {
+                iframe.contentWindow.postMessage('{"event":"command","func":"playVideo","args":""}', '*');
+            }
         }
     });
 </script>
