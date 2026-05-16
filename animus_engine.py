@@ -7,6 +7,16 @@ class AnimusEngine:
         self.output_dir = output_dir
         self.project_name = "Aether Project"
         
+    def generate_asset_plan(self, data):
+        """Generates prompts for external AI sites (Midjourney, Luma, etc.) to match Viktor's workflow."""
+        theme = data.get("hero_title", "Futuristic")
+        plan = {
+            "Midjourney_Hero_Image": f"/imagine prompt: A high-fidelity, premium {theme} website background, cinematic lighting, 8k, glassmorphism elements --ar 16:9",
+            "Luma_AI_Video_Background": f"A cinematic, slow-motion sweeping shot of a {theme} digital landscape with glowing cyan particles and liquid metal textures.",
+            "Spline_3D_Prompt": f"A high-detail, interactive 3D {theme} abstract geometry with soft shadows and metallic finish."
+        }
+        return plan
+
     def generate_site(self, data):
         """Generates a full interactive website from input data."""
         self.project_name = data.get("project_name", self.project_name)
@@ -35,7 +45,9 @@ class AnimusEngine:
         footer_html = FOOTER_TEMPLATE.format(project_name=self.project_name)
         
         # 4. Assemble Index.html
-        with open("aether_core/site_builder/templates/base_styles.css", "r") as f:
+        base_dir = os.path.dirname(os.path.abspath(__file__))
+        css_path = os.path.join(base_dir, "templates/base_styles.css")
+        with open(css_path, "r") as f:
             styles = f.read()
             
         full_html = f"""<!DOCTYPE html>
@@ -62,7 +74,12 @@ class AnimusEngine:
         with open(f"{self.output_dir}/index.html", "w") as f:
             f.write(full_html)
             
-        return f"Successfully generated site in {self.output_dir}/index.html"
+        # 6. Generate Asset Plan (The Viktor Guide Workflow)
+        asset_plan = self.generate_asset_plan(data)
+        with open(f"{self.output_dir}/asset_plan.json", "w") as f:
+            json.dump(asset_plan, f, indent=4)
+            
+        return f"Successfully generated site in {self.output_dir}/index.html and asset_plan.json"
 
 if __name__ == "__main__":
     # Test Generation
