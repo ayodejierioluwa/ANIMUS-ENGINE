@@ -301,14 +301,14 @@ GSAP_SCRIPT = """
         });
     }
 
-    // AETHER_IGNIS_KINETIC (The "WOWER" Reliability Fix)
-    const kineticFire = document.getElementById('kinetic-fire-container');
-    if (kineticFire && window.FIRE_BG) {
-        const kf_scene = new THREE.Scene();
-        const kf_camera = new THREE.OrthographicCamera(-1, 1, 1, -1, 0, 1);
-        const kf_renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
-        kf_renderer.setSize(window.innerWidth, window.innerHeight);
-        kineticFire.appendChild(kf_renderer.domElement);
+    // AETHER_IGNIS_LIVING (The "Brilliant Genius" Living Fire Upgrade)
+    const livingFire = document.getElementById('kinetic-fire-container');
+    if (livingFire && window.FIRE_BG) {
+        const lf_scene = new THREE.Scene();
+        const lf_camera = new THREE.OrthographicCamera(-1, 1, 1, -1, 0, 1);
+        const lf_renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+        lf_renderer.setSize(window.innerWidth, window.innerHeight);
+        livingFire.appendChild(lf_renderer.domElement);
 
         const loader = new THREE.TextureLoader();
         loader.load(window.FIRE_BG, (texture) => {
@@ -335,30 +335,61 @@ GSAP_SCRIPT = """
                     void main() {
                         vec2 uv = gl_FragCoord.xy / resolution.xy;
                         
-                        // Heat Distortion Logic
-                        float distortion = noise(uv * 10.0 + time * 0.5) * 0.02;
-                        vec2 distortedUV = uv + vec2(distortion, distortion);
+                        // Target Heat Distortion (Only affects bright/warm parts of the image)
+                        vec4 baseColor = texture2D(uTexture, uv);
+                        float brightness = length(baseColor.rgb);
+                        float isFire = smoothstep(0.4, 0.8, brightness);
                         
-                        vec4 color = texture2D(uTexture, distortedUV);
+                        float distortion = noise(uv * 15.0 + time * 1.5) * 0.015 * isFire;
+                        vec2 distortedUV = uv + vec2(distortion * 0.5, distortion - time * 0.02 * isFire);
                         
-                        // Subtle Flicker
-                        color.rgb *= 0.95 + 0.05 * sin(time * 10.0);
+                        vec4 finalColor = texture2D(uTexture, distortedUV);
                         
-                        gl_FragColor = color;
+                        // Living Pulse
+                        finalColor.rgb *= 0.9 + 0.15 * noise(vec2(time * 2.0));
+                        
+                        gl_FragColor = finalColor;
                     }
                 `
             });
-            const mesh = new THREE.Mesh(new THREE.PlaneGeometry(2, 2), material);
-            kf_scene.add(mesh);
+            lf_scene.add(new THREE.Mesh(new THREE.PlaneGeometry(2, 2), material));
 
-            function kf_animate(t) {
-                requestAnimationFrame(kf_animate);
-                material.uniforms.time.value = t * 0.001;
-                kf_renderer.render(kf_scene, kf_camera);
+            // CRACKLING SPARK SYSTEM
+            const particleCount = 40;
+            const pGeometry = new THREE.BufferGeometry();
+            const positions = new Float32Array(particleCount * 3);
+            const velocities = new Float32Array(particleCount * 3);
+            for(let i=0; i<particleCount*3; i++) {
+                positions[i] = (Math.random() - 0.5) * 2;
+                velocities[i] = Math.random() * 0.02 + 0.01;
             }
-            kf_animate(0);
+            pGeometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+            const pMaterial = new THREE.PointsMaterial({ color: 0xffaa00, size: 0.015, transparent: true, opacity: 0.8 });
+            const sparks = new THREE.Points(pGeometry, pMaterial);
+            lf_scene.add(sparks);
+
+            function lf_animate(t) {
+                requestAnimationFrame(lf_animate);
+                const time = t * 0.001;
+                material.uniforms.time.value = time;
+                
+                // Animate Sparks
+                const pos = pGeometry.attributes.position.array;
+                for(let i=0; i<particleCount; i++) {
+                    pos[i*3+1] += velocities[i*3+1];
+                    pos[i*3] += Math.sin(time + i) * 0.002;
+                    if(pos[i*3+1] > 1) {
+                        pos[i*3+1] = -0.5 + Math.random() * 0.5;
+                        pos[i*3] = (Math.random() - 0.5) * 0.8;
+                    }
+                }
+                pGeometry.attributes.position.needsUpdate = true;
+                
+                lf_renderer.render(lf_scene, lf_camera);
+            }
+            lf_animate(0);
         });
-        window.addEventListener('resize', () => kf_renderer.setSize(window.innerWidth, window.innerHeight));
+        window.addEventListener('resize', () => lf_renderer.setSize(window.innerWidth, window.innerHeight));
     }
 
     // Initial Reveal Animations
