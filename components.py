@@ -382,6 +382,8 @@ BASE_HTML = """
             --ease-vibe: [[ease_vibe]];
             --duration-vibe: [[duration_vibe]];
             --hover-glow: [[hover_glow]];
+            --breathing-anim: [[breathing_anim]];
+            --breathing-anim-hover: [[breathing_anim_hover]];
         }
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { 
@@ -400,12 +402,23 @@ BASE_HTML = """
         
         .feature-item {
             transition: all var(--duration-vibe) var(--ease-vibe) !important;
+            animation: var(--breathing-anim) 8s ease-in-out infinite;
         }
         .feature-item:hover {
             box-shadow: var(--hover-glow) !important;
+            animation: var(--breathing-anim-hover) 4s ease-in-out infinite;
         }
         .btn-primary {
             transition: all 0.3s var(--ease-vibe) !important;
+        }
+
+        @keyframes aether-breath {
+            0%, 100% { transform: translateY(0) scale(1); }
+            50% { transform: translateY(-10px) scale(1.01); }
+        }
+        @keyframes aether-breath-deep {
+            0%, 100% { transform: translateY(-15px) scale(1.02); }
+            50% { transform: translateY(-25px) scale(1.03); }
         }
     </style>
 </head>
