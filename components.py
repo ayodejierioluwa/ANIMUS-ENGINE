@@ -211,40 +211,78 @@ GSAP_SCRIPT = """
         });
     }
 
-    // Realistic Fireplace Shader (The "WOWER" Wood Burning Fix)
+    // AETHER_IGNIS_ULTIMA (The Mesmerising Realistic Fix)
     const realisticFire = document.getElementById('realistic-fire-container');
     if (realisticFire) {
         const rf_scene = new THREE.Scene();
         const rf_camera = new THREE.OrthographicCamera(-1, 1, 1, -1, 0, 1);
-        const rf_renderer = new THREE.WebGLRenderer({ antialias: true });
+        const rf_renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+        rf_renderer.setPixelRatio(window.devicePixelRatio);
         rf_renderer.setSize(window.innerWidth, window.innerHeight);
         realisticFire.appendChild(rf_renderer.domElement);
 
         const rf_material = new THREE.ShaderMaterial({
-            uniforms: { time: { value: 1.0 }, resolution: { value: new THREE.Vector2(window.innerWidth, window.innerHeight) } },
+            uniforms: { 
+                time: { value: 1.0 }, 
+                resolution: { value: new THREE.Vector2(window.innerWidth, window.innerHeight) },
+                mouse: { value: new THREE.Vector2(0.5, 0.5) }
+            },
             vertexShader: `void main() { gl_Position = vec4(position, 1.0); }`,
             fragmentShader: `
                 uniform float time;
                 uniform vec2 resolution;
-                float hash(vec2 p) { return fract(sin(dot(p, vec2(127.1, 311.7))) * 43758.5453); }
+                uniform vec2 mouse;
+                
+                vec3 firePalette(float t) {
+                    vec3 a = vec3(0.5, 0.5, 0.5);
+                    vec3 b = vec3(0.5, 0.5, 0.5);
+                    vec3 c = vec3(1.0, 1.0, 1.0);
+                    vec3 d = vec3(0.00, 0.10, 0.20);
+                    return a + b * cos(6.28318 * (c * t + d));
+                }
+
+                float hash(vec2 p) { return fract(sin(dot(p, vec2(12.9898, 78.233))) * 43758.5453); }
                 float noise(vec2 p) {
                     vec2 i = floor(p); vec2 f = fract(p);
                     vec2 u = f*f*(3.0-2.0*f);
                     return mix(mix(hash(i + vec2(0.,0.)), hash(i + vec2(1.,0.)), u.x),
                                mix(hash(i + vec2(0.,1.)), hash(i + vec2(1.,1.)), u.x), u.y);
                 }
+
                 void main() {
                     vec2 uv = gl_FragCoord.xy / resolution.xy;
-                    float wood = smoothstep(0.4, 0.45, uv.y + noise(uv * 10.0) * 0.05);
-                    vec3 col = mix(vec3(0.15, 0.08, 0.04), vec3(0.0), wood); 
-                    float fire = noise(uv * 3.0 - vec2(0.0, time * 0.4));
-                    fire *= (1.0 - uv.y) * 2.5;
-                    vec3 flame = mix(vec3(0.9, 0.2, 0.0), vec3(1.0, 0.7, 0.1), fire);
-                    gl_FragColor = vec4(max(col, flame * fire * (1.0 - wood)), 1.0);
+                    vec2 q = uv;
+                    q.y -= time * 0.4;
+                    
+                    float strength = 1.5;
+                    float T3 = 1.5 * noise(q * 2.0);
+                    float T2 = 1.0 * noise(q * 4.0 + T3);
+                    float T1 = 0.5 * noise(q * 8.0 + T2);
+                    float f = T1 + T2 + T3;
+                    
+                    f *= (1.0 - uv.y) * 2.5; // Flame taper
+                    f = clamp(f, 0.0, 1.0);
+                    
+                    // High Contrast Fire (Based on Uploaded Image)
+                    vec3 fireColor = mix(vec3(0.0), vec3(1.0, 0.3, 0.0), smoothstep(0.1, 0.4, f));
+                    fireColor = mix(fireColor, vec3(1.0, 0.8, 0.2), smoothstep(0.4, 0.7, f));
+                    fireColor = mix(fireColor, vec3(1.0, 1.0, 0.8), smoothstep(0.7, 1.0, f));
+                    
+                    // Mouse Distortion
+                    float dist = distance(uv, mouse);
+                    fireColor *= 1.0 + (0.5 / (1.0 + dist * 10.0));
+                    
+                    gl_FragColor = vec4(fireColor, 1.0);
                 }
             `
         });
         rf_scene.add(new THREE.Mesh(new THREE.PlaneGeometry(2, 2), rf_material));
+        
+        window.addEventListener('mousemove', (e) => {
+            rf_material.uniforms.mouse.value.x = e.clientX / window.innerWidth;
+            rf_material.uniforms.mouse.value.y = 1.0 - (e.clientY / window.innerHeight);
+        });
+
         function rf_animate(t) {
             requestAnimationFrame(rf_animate);
             rf_material.uniforms.time.value = t * 0.001;
