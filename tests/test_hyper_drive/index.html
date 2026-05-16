@@ -116,6 +116,12 @@ h1, h2, h3 {
 .reveal {
     opacity: 0;
     transform: translateY(30px);
+    animation: safetyReveal 1s forwards;
+    animation-delay: 2s; /* Forced reveal if GSAP fails */
+}
+
+@keyframes safetyReveal {
+    to { opacity: 1; transform: translateY(0); }
 }
 
 /* Mesh Background */
@@ -378,7 +384,6 @@ h1, h2, h3 {
             s_renderer.setSize(window.innerWidth, window.innerHeight);
             s_material.uniforms.resolution.value.set(window.innerWidth, window.innerHeight);
         });
-    }
     }
 
     // Initial Reveal Animations

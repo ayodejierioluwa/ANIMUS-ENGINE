@@ -195,7 +195,6 @@ GSAP_SCRIPT = """
             s_material.uniforms.resolution.value.set(window.innerWidth, window.innerHeight);
         });
     }
-    }
 
     // Initial Reveal Animations
     gsap.to(".reveal", {
