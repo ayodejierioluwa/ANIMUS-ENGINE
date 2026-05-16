@@ -467,9 +467,17 @@ BASE_HTML = """
             top: 0; left: 0; width: 100%; height: 100%;
             pointer-events: none;
             z-index: 99999;
-            opacity: 0.05;
+            opacity: 0.12;
             background: url('https://grainy-gradients.vercel.app/noise.svg');
             animation: grain 8s steps(10) infinite;
+            mix-blend-mode: screen;
+        }
+        .ambient-vignette {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            pointer-events: none;
+            z-index: 99998;
+            background: radial-gradient(circle, transparent 20%, rgba(0,0,0,0.4) 100%);
         }
         @keyframes grain {
             0%, 100% { transform: translate(0, 0); }
@@ -495,6 +503,8 @@ BASE_HTML = """
     </style>
 </head>
 <body>
+    <div class="film-grain"></div>
+    <div class="ambient-vignette"></div>
     <div class="custom-cursor"></div>
     <div class="site-wrapper">
         [[body]]
