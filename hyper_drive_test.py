@@ -12,8 +12,8 @@ def run_hyper_drive_test():
                 "content": {
                     "theme": "DYNAMIC",
                     "use_video": True,
-                    "vimeo_id": "189852033",
-                    "hero_title": "VIMEO REALISM",
+                    "vimeo_id": "370331493",
+                    "hero_title": "REALISTIC FIRE",
                     "hero_subtitle": "Testing the realistic fire textures for production.",
                     "features": [
                         {"title": "Realism", "content": "Sharp wood burning textures."},
