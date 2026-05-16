@@ -228,9 +228,7 @@ h1, h2, h3 {
 <body class="page-flavors">
     <nav style="position: fixed; top: 2rem; width: 100%; display: flex; justify-content: center; gap: 2rem; z-index: 10001;"></nav>
     
-<video autoplay muted loop playsinline id="bg-video" style="position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; object-fit: cover; z-index: -100; pointer-events: none;">
-    <source src="assets/fire.mp4" type="video/mp4">
-</video>
+<div id="shader-background-container" style="position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: -100; pointer-events: none;"></div>
 <section class="hero full-layout" id="hero" style="background: transparent !important;">
     <div class="noise-overlay"></div>
     <div class="hero-content">
@@ -338,6 +336,53 @@ h1, h2, h3 {
         });
     }
 
+    // Liquid Fire Shader (The "WOWER" Guarantee)
+    const shaderContainer = document.getElementById('shader-background-container');
+    if (shaderContainer) {
+        const s_scene = new THREE.Scene();
+        const s_camera = new THREE.OrthographicCamera(-1, 1, 1, -1, 0, 1);
+        const s_renderer = new THREE.WebGLRenderer({ antialias: true });
+        s_renderer.setSize(window.innerWidth, window.innerHeight);
+        shaderContainer.appendChild(s_renderer.domElement);
+
+        const s_material = new THREE.ShaderMaterial({
+            uniforms: { time: { value: 1.0 }, resolution: { value: new THREE.Vector2(window.innerWidth, window.innerHeight) } },
+            vertexShader: `void main() { gl_Position = vec4(position, 1.0); }`,
+            fragmentShader: `
+                uniform float time;
+                uniform vec2 resolution;
+                float hash(vec2 p) { return fract(sin(dot(p, vec2(127.1, 311.7))) * 43758.5453123); }
+                float noise(vec2 p) {
+                    vec2 i = floor(p); vec2 f = fract(p);
+                    vec2 u = f*f*(3.0-2.0*f);
+                    return mix(mix(hash(i + vec2(0.0,0.0)), hash(i + vec2(1.0,0.0)), u.x),
+                               mix(hash(i + vec2(0.0,1.0)), hash(i + vec2(1.0,1.0)), u.x), u.y);
+                }
+                void main() {
+                    vec2 uv = gl_FragCoord.xy / resolution.xy;
+                    float n = noise(uv * 4.0 + time * 0.5);
+                    vec3 fire = mix(vec3(0.8, 0.1, 0.0), vec3(1.0, 0.6, 0.1), n);
+                    gl_FragColor = vec4(fire * (1.0 - uv.y) * 1.5, 1.0);
+                }
+            `
+        });
+        const s_mesh = new THREE.Mesh(new THREE.PlaneGeometry(2, 2), s_material);
+        s_scene.add(s_mesh);
+
+        function s_animate(t) {
+            requestAnimationFrame(s_animate);
+            s_material.uniforms.time.value = t * 0.001;
+            s_renderer.render(s_scene, s_camera);
+        }
+        s_animate(0);
+        
+        window.addEventListener('resize', () => {
+            s_renderer.setSize(window.innerWidth, window.innerHeight);
+            s_material.uniforms.resolution.value.set(window.innerWidth, window.innerHeight);
+        });
+    }
+    }
+
     // Initial Reveal Animations
     gsap.to(".reveal", {
         opacity: 1,
@@ -396,10 +441,13 @@ h1, h2, h3 {
 
     function diagnoseVisuals() {
         const video = document.getElementById('bg-video');
-        if (video) {
+        const shader = document.getElementById('shader-background-container');
+        if (shader) {
+            alert(`Sentry Diagnostic:\n- Shader Container: ${shader.offsetWidth}x${shader.offsetHeight}\n- Z-Index: ${shader.style.zIndex}`);
+        } else if (video) {
             alert(`Sentry Diagnostic:\n- Video State: ${video.readyState}\n- Video Source: ${video.currentSrc}\n- Z-Index: ${video.style.zIndex}`);
         } else {
-            alert("Sentry Diagnostic: NO VIDEO TAG FOUND.");
+            alert("Sentry Diagnostic: NO BACKGROUND ELEMENT FOUND.");
         }
     }
 </script>
