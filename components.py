@@ -14,7 +14,14 @@ HERO_TEMPLATE = """
 """
 
 VIDEO_HERO_TEMPLATE = """
-<div id="kinetic-fire-container" style="position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: -100; pointer-events: none;"></div>
+<div id="video-background-container" style="position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: 1; pointer-events: none; overflow: hidden; background: black;">
+    <iframe id="bg-video-iframe" 
+        src="https://www.youtube.com/embed/[[youtube_id]]?autoplay=1&mute=1&loop=1&controls=0&showinfo=0&autohide=1&playlist=[[youtube_id]]&rel=0&enablejsapi=1&vq=hd1080" 
+        frameborder="0" 
+        style="position: absolute; top: 50%; left: 50%; width: 100vw; height: 56.25vw; min-height: 100vh; min-width: 177.77vh; transform: translate(-50%, -50%);"
+        allow="autoplay; encrypted-media">
+    </iframe>
+</div>
 <section class="hero [[layout_class]]" id="hero" style="background: transparent !important;">
     <div class="hero-content">
         <h1 class="reveal">[[title]]</h1>
@@ -25,9 +32,6 @@ VIDEO_HERO_TEMPLATE = """
     </div>
 </section>
 <button onclick="diagnoseVisuals()" style="position: fixed; bottom: 1rem; right: 1rem; z-index: 10002; background: rgba(255,255,255,0.1); color: white; border: 1px solid white; padding: 0.5rem; border-radius: 5px; cursor: pointer;">Diagnostic</button>
-<script>
-    window.FIRE_BG = "assets/fire_bg.png";
-</script>
 """
 
 SHADER_HERO_TEMPLATE = """
