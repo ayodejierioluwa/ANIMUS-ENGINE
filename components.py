@@ -14,16 +14,7 @@ HERO_TEMPLATE = """
 """
 
 VIDEO_HERO_TEMPLATE = """
-<div id="video-background-container" style="position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: 1; pointer-events: none; overflow: hidden; background: black;">
-    <iframe id="bg-video-iframe" 
-        src="https://player.vimeo.com/video/[[vimeo_id]]?background=1&autoplay=1&loop=1&byline=0&title=0&muted=1" 
-        frameborder="0" 
-        style="position: absolute; top: 50%; left: 50%; width: 100vw; height: 56.25vw; min-height: 100vh; min-width: 177.77vh; transform: translate(-50%, -50%);"
-        allow="autoplay; fullscreen">
-    </iframe>
-</div>
-<div id="kinetic-fallback-container" style="position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: 0; pointer-events: none; display: none;"></div>
-
+<div id="kinetic-fire-container" style="position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: 1; pointer-events: none; background: black;"></div>
 <section class="hero [[layout_class]]" id="hero" style="background: transparent !important;">
     <div class="hero-content">
         <h1 class="reveal">[[title]]</h1>
@@ -36,7 +27,6 @@ VIDEO_HERO_TEMPLATE = """
 <button onclick="diagnoseVisuals()" style="position: fixed; bottom: 1rem; right: 1rem; z-index: 10002; background: rgba(255,255,255,0.1); color: white; border: 1px solid white; padding: 0.5rem; border-radius: 5px; cursor: pointer;">Diagnostic</button>
 <script>
     window.FIRE_BG = "assets/fire_bg.png";
-    window.VIMEO_ID = "[[vimeo_id]]";
 </script>
 """
 
@@ -311,64 +301,96 @@ GSAP_SCRIPT = """
         });
     }
 
-    // REDUNDANT FIRE ENGINE (The "Indestructible" Logic)
-    const fallbackContainer = document.getElementById('kinetic-fallback-container');
-    const videoIframe = document.getElementById('bg-video-iframe');
-    
-    // Timeout to check if video is playing
-    let videoLoaded = false;
-    setTimeout(() => {
-        if (!videoLoaded) {
-            console.log("Video timeout: Triggering Kinetic Fallback.");
-            triggerFallback();
-        }
-    }, 4000);
+    // AETHER_IGNIS_KINETIC_ULTRA (The "Indestructible" Realism Engine)
+    const kineticFire = document.getElementById('kinetic-fire-container');
+    if (kineticFire && window.FIRE_BG) {
+        const kf_scene = new THREE.Scene();
+        const kf_camera = new THREE.OrthographicCamera(-1, 1, 1, -1, 0, 1);
+        const kf_renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+        kf_renderer.setSize(window.innerWidth, window.innerHeight);
+        kineticFire.appendChild(kf_renderer.domElement);
 
-    function triggerFallback() {
-        if (fallbackContainer && window.FIRE_BG) {
-            fallbackContainer.style.display = "block";
-            const kf_scene = new THREE.Scene();
-            const kf_camera = new THREE.OrthographicCamera(-1, 1, 1, -1, 0, 1);
-            const kf_renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
-            kf_renderer.setSize(window.innerWidth, window.innerHeight);
-            fallbackContainer.appendChild(kf_renderer.domElement);
+        const loader = new THREE.TextureLoader();
+        loader.load(window.FIRE_BG, (texture) => {
+            const material = new THREE.ShaderMaterial({
+                uniforms: { 
+                    time: { value: 1.0 }, 
+                    uTexture: { value: texture },
+                    resolution: { value: new THREE.Vector2(window.innerWidth, window.innerHeight) }
+                },
+                vertexShader: `void main() { gl_Position = vec4(position, 1.0); }`,
+                fragmentShader: `
+                    uniform float time;
+                    uniform sampler2D uTexture;
+                    uniform vec2 resolution;
+                    
+                    float hash(vec2 p) { return fract(sin(dot(p, vec2(12.9898, 78.233))) * 43758.5453); }
+                    float noise(vec2 p) {
+                        vec2 i = floor(p); vec2 f = fract(p);
+                        vec2 u = f*f*(3.0-2.0*f);
+                        return mix(mix(hash(i + vec2(0.,0.)), hash(i + vec2(1.,0.)), u.x),
+                                   mix(hash(i + vec2(0.,1.)), hash(i + vec2(1.,1.)), u.x), u.y);
+                    }
 
-            const loader = new THREE.TextureLoader();
-            loader.load(window.FIRE_BG, (texture) => {
-                const material = new THREE.ShaderMaterial({
-                    uniforms: { time: { value: 1.0 }, uTexture: { value: texture }, resolution: { value: new THREE.Vector2(window.innerWidth, window.innerHeight) } },
-                    vertexShader: `void main() { gl_Position = vec4(position, 1.0); }`,
-                    fragmentShader: `
-                        uniform float time;
-                        uniform sampler2D uTexture;
-                        uniform vec2 resolution;
-                        float hash(vec2 p) { return fract(sin(dot(p, vec2(12.9898, 78.233))) * 43758.5453); }
-                        float noise(vec2 p) {
-                            vec2 i = floor(p); vec2 f = fract(p);
-                            vec2 u = f*f*(3.0-2.0*f);
-                            return mix(mix(hash(i + vec2(0.,0.)), hash(i + vec2(1.,0.)), u.x),
-                                       mix(hash(i + vec2(0.,1.)), hash(i + vec2(1.,1.)), u.x), u.y);
-                        }
-                        void main() {
-                            vec2 uv = gl_FragCoord.xy / resolution.xy;
-                            vec4 baseColor = texture2D(uTexture, uv);
-                            float brightness = length(baseColor.rgb);
-                            float isFire = smoothstep(0.4, 0.8, brightness);
-                            float distortion = noise(uv * 10.0 + time * 0.8) * 0.012 * isFire;
-                            vec2 distortedUV = uv + vec2(distortion, distortion - time * 0.015 * isFire);
-                            gl_FragColor = texture2D(uTexture, distortedUV);
-                        }
-                    `
-                });
-                kf_scene.add(new THREE.Mesh(new THREE.PlaneGeometry(2, 2), material));
-                function kf_animate(t) {
-                    requestAnimationFrame(kf_animate);
-                    material.uniforms.time.value = t * 0.001;
-                    kf_renderer.render(kf_scene, kf_camera);
-                }
-                kf_animate(0);
+                    void main() {
+                        vec2 uv = gl_FragCoord.xy / resolution.xy;
+                        
+                        // Intelligent Heat Map (Targets the flames)
+                        vec4 baseColor = texture2D(uTexture, uv);
+                        float isFire = smoothstep(0.3, 0.8, length(baseColor.rgb));
+                        
+                        // Multi-Layer Motion
+                        float n1 = noise(uv * 8.0 + time * 1.2);
+                        float n2 = noise(uv * 16.0 - time * 0.8);
+                        float distortion = (n1 + n2 * 0.5) * 0.012 * isFire;
+                        
+                        vec2 distortedUV = uv + vec2(distortion * 0.3, distortion - time * 0.015 * isFire);
+                        vec4 finalColor = texture2D(uTexture, distortedUV);
+                        
+                        // Subtle flicker & Glow
+                        finalColor.rgb *= 0.96 + 0.08 * noise(vec2(time * 3.0));
+                        finalColor.rgb += vec3(0.1, 0.05, 0.0) * isFire * noise(uv * 10.0 + time);
+                        
+                        gl_FragColor = finalColor;
+                    }
+                `
             });
-        }
+            kf_scene.add(new THREE.Mesh(new THREE.PlaneGeometry(2, 2), material));
+
+            // REALISTIC RISING EMBERS
+            const emberCount = 35;
+            const eGeometry = new THREE.BufferGeometry();
+            const ePositions = new Float32Array(emberCount * 3);
+            const eVelocities = new Float32Array(emberCount * 3);
+            for(let i=0; i<emberCount*3; i++) {
+                ePositions[i] = (Math.random() - 0.5) * 1.5;
+                eVelocities[i] = Math.random() * 0.015 + 0.005;
+            }
+            eGeometry.setAttribute('position', new THREE.BufferAttribute(ePositions, 3));
+            const eMaterial = new THREE.PointsMaterial({ color: 0xff6600, size: 0.012, transparent: true, opacity: 0.7, blending: THREE.AdditiveBlending });
+            const embers = new THREE.Points(eGeometry, eMaterial);
+            kf_scene.add(embers);
+
+            function kf_animate(t) {
+                requestAnimationFrame(kf_animate);
+                const time = t * 0.001;
+                material.uniforms.time.value = time;
+                
+                const pos = eGeometry.attributes.position.array;
+                for(let i=0; i<emberCount; i++) {
+                    pos[i*3+1] += eVelocities[i*3+1];
+                    pos[i*3] += Math.sin(time + i) * 0.0015;
+                    if(pos[i*3+1] > 1) {
+                        pos[i*3+1] = -0.5;
+                        pos[i*3] = (Math.random() - 0.5) * 1.2;
+                    }
+                }
+                eGeometry.attributes.position.needsUpdate = true;
+                kf_renderer.render(kf_scene, kf_camera);
+            }
+            kf_animate(0);
+        });
+        window.addEventListener('resize', () => kf_renderer.setSize(window.innerWidth, window.innerHeight));
     }
 
     // Initial Reveal Animations
