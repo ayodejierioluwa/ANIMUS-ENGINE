@@ -92,7 +92,9 @@ DASHBOARD_HTML = """
             <p>PROJECT_SYNTHESIZED: <a id="view-link" href="#" target="_blank">OPEN_LIVE_DEPLOYMENT</a></p>
         </div>
 
-        <div class="signature" style="position: absolute; bottom: 2rem; right: 2rem; font-size: 0.7rem; letter-spacing: 0.3em; opacity: 0.4; color: var(--accent); text-shadow: 0 0 10px var(--accent);">SIGNED_BY_XXII</div>
+        <div class="signature" style="position: absolute; bottom: 2rem; right: 2rem; width: 150px; opacity: 0.6; filter: invert(1) hue-rotate(120deg) brightness(2) contrast(1.2); mix-blend-mode: screen; transition: opacity 0.5s var(--ease-vibe); cursor: pointer;" onmouseover="this.style.opacity=1" onmouseout="this.style.opacity=0.6">
+            <img src="/static/signature.jpg" style="width: 100%; height: auto;">
+        </div>
     </div>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
