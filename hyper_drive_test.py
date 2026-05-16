@@ -1,18 +1,24 @@
 from animus_engine import AnimusEngine
+from animus_sentry import AnimusSentry
 import os
 
 def test_neural_project():
-    print("--- Running Animus Neural Project Test ---")
+    print("--- Running Animus Deep Intelligence Test ---")
     engine = AnimusEngine(output_dir="tests/test_hyper_drive")
+    sentry = AnimusSentry()
     
-    # Generate a full 'Surgical Tech' Project
-    engine.generate_project("A surgical neural-bridge for high-frequency crypto trading")
+    # 1. Generate full 'Surgical Tech' Project
+    generated_files = engine.generate_project("A surgical neural-bridge for high-frequency crypto trading")
     
-    # Generate a full 'Organic Wellness' Project
-    # (Note: This will overwrite in the same dir if we don't change it, 
-    # but for testing we'll just check the first one)
-    
-    print(f"Successfully generated a full autonomous project in tests/test_hyper_drive/")
+    # 2. Sentry Audit
+    print("🕵️ Sentry performing deep project audit...")
+    if not sentry.audit_project(generated_files):
+        sentry.report_issues()
+        print("❌ Project Audit FAILED.")
+    else:
+        print("✅ Project Audit PASSED: All pages are unique and UX-compliant.")
+
+    print(f"Project can be viewed in tests/test_hyper_drive/")
 
 if __name__ == "__main__":
     test_neural_project()

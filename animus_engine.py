@@ -48,38 +48,45 @@ class AnimusEngine:
         
         # 2. Design System
         tokens = soul_data["tokens"]
+        page_file = f"{page_name}.html"
+        context = soul_data["page_contexts"].get(page_file, soul_data["page_contexts"].get("index.html"))
         
-        # 3. Build Navigation (Interactive Sitemap)
+        # 3. Build Navigation (Interactive Sitemap + Active State)
         nav_links_html = ""
         for page in soul_data["sitemap"]:
-            link = NAV_LINK_TEMPLATE.replace("[[link]]", page["file"])
-            link = link.replace("[[name]]", page["name"])
-            nav_links_html += link
+            link_html = NAV_LINK_TEMPLATE.replace("[[link]]", page["file"])
+            link_html = link_html.replace("[[name]]", page["name"])
+            
+            # Active Tab Logic
+            is_active = (page["file"] == page_file)
+            link_html = link_html.replace("[[active_class]]", "active" if is_active else "")
+            
+            nav_links_html += link_html
             
         nav_html = NAV_BAR_TEMPLATE.replace("[[project_name]]", self.project_name)
         nav_html = nav_html.replace("[[nav_links]]", nav_links_html)
-        nav_html = nav_html.replace("[[cta_text]]", soul_data["hero"]["cta"])
+        nav_html = nav_html.replace("[[cta_text]]", soul_data["hero_global"]["cta"])
 
-        # 4. Build Hero
+        # 4. Build Hero (Unique Content)
         use_shader = data.get("use_shader", False)
         use_3d = data.get("use_3d", False)
         
-        template = VIDEO_HERO_TEMPLATE # Standardized hero
+        template = VIDEO_HERO_TEMPLATE 
         if use_shader: template = SHADER_HERO_TEMPLATE
         elif use_3d: template = THREE_JS_HERO_TEMPLATE
 
         hero_html = template
-        hero_html = hero_html.replace("[[title]]", soul_data["hero"]["title"] if page_name == "index" else page_name.upper())
-        hero_html = hero_html.replace("[[subtitle]]", soul_data["hero"]["subtitle"])
-        hero_html = hero_html.replace("[[cta_text]]", soul_data["hero"]["cta"])
+        hero_html = hero_html.replace("[[title]]", context["title"])
+        hero_html = hero_html.replace("[[subtitle]]", context["subtitle"])
+        hero_html = hero_html.replace("[[cta_text]]", soul_data["hero_global"]["cta"])
         hero_html = hero_html.replace("[[cta_link]]", "#")
         hero_html = hero_html.replace("[[accent_primary_hex]]", tokens["accent_primary"])
         hero_html = hero_html.replace("[[geometry_type]]", "SPHERE")
         hero_html = hero_html.replace("[[layout_class]]", "full-layout")
 
-        # 5. Build Feature Grid
+        # 5. Build Feature Grid (Unique Features)
         feature_items_html = ""
-        for feat in soul_data["features"]:
+        for feat in context["features"]:
             item = FEATURE_ITEM_TEMPLATE.replace("[[icon]]", feat["icon"])
             item = item.replace("[[title]]", feat["title"])
             item = item.replace("[[description]]", feat["description"])

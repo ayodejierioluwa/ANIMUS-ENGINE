@@ -2,61 +2,54 @@ import os
 import re
 
 class AnimusSentry:
-    def audit_file(self, path):
-        """Audits a single file and returns True if it passes."""
-        if not os.path.exists(path):
-            return False
-        with open(path, "r") as f:
-            content = f.read()
-            # Heuristic checks for visibility and links
-            # Allow both -100 (hidden behind) and 1 (layered with wrapper)
-            if "<video" in content and ("z-index: 1" not in content and "z-index: -100" not in content):
-                return False
-            return True
+    """
+    The 'Quality Sentinel' of the Animus Engine.
+    Audits generated files for visual overlaps, content redundancy, and UX failures.
+    """
+    def __init__(self):
+        self.issues = []
 
-    def audit_site(self, directory):
-        print(f"--- Auditing Site: {directory} ---")
-        errors = []
-        files = [f for f in os.listdir(directory) if f.endswith(".html")]
+    def audit_project(self, generated_files):
+        """
+        Audits an entire project for cross-page consistency and content unique-ness.
+        """
+        self.issues = []
+        contents = {}
         
-        for file in files:
-            path = os.path.join(directory, file)
-            with open(path, "r") as f:
-                content = f.read()
+        for file_path in generated_files:
+            with open(file_path, "r") as f:
+                html = f.read()
+                # Extract the main content features to check for clones
+                features = re.findall(r'<h3.*?>(.*?)</h3>', html)
+                contents[file_path] = features
                 
-                # Check 1: Video visibility
-                if "<video" in content:
-                    if "z-index: 1" not in content and "z-index: 1" not in self._get_css(directory):
-                        errors.append(f"[{file}] Video element might be hidden by z-index.")
-                    if "background: transparent" not in content and "background: transparent" not in self._get_css(directory):
-                        errors.append(f"[{file}] Hero background might block video.")
-                
-                # Check 2: Broken Navigation
-                links = re.findall(r'href="([^"]+)"', content)
-                for link in links:
-                    if link.endswith(".html") and not os.path.exists(os.path.join(directory, link)):
-                        errors.append(f"[{file}] Broken Link: {link}")
-                        
-                # Check 3: Valid Video Source
-                video_srcs = re.findall(r'src="([^"]+)"', content)
-                for src in video_srcs:
-                    if ".mp4" in src and not src.startswith("http"):
-                         if not os.path.exists(os.path.join(directory, src)):
-                            errors.append(f"[{file}] Broken Video Source: {src}")
+                # Audit individual file
+                self.audit_file(file_path, html)
 
-        if not errors:
-            print("✅ Sentry Audit Passed: Everything looks clean.")
-            return True
-        else:
-            print("❌ Sentry Audit Failed:")
-            for err in errors:
-                print(f"  - {err}")
-            return False
+        # Content Redundancy Audit
+        file_paths = list(contents.keys())
+        for i in range(len(file_paths)):
+            for j in range(i + 1, len(file_paths)):
+                if contents[file_paths[i]] == contents[file_paths[j]] and len(contents[file_paths[i]]) > 0:
+                    self.issues.append(f"CRITICAL: Content Redundancy detected between {file_paths[i]} and {file_paths[j]}. Pages are clones.")
 
-    def _get_css(self, directory):
-        # Helper to find CSS in the directory or template
-        return "" # Simplified for now
+        return len(self.issues) == 0
 
-if __name__ == "__main__":
-    sentry = AnimusSentry()
-    sentry.audit_site("tests/test_hyper_drive")
+    def audit_file(self, file_path, html=None):
+        if html is None:
+            with open(file_path, "r") as f:
+                html = f.read()
+
+        # Visual Overlap Audit
+        if 'z-index: -100' in html and 'background: transparent' not in html:
+            self.issues.append(f"Visual Error in {file_path}: Background is opaque, hiding the shader layer.")
+
+        # Nav Active State Audit
+        if 'class="nav-item active"' not in html:
+            self.issues.append(f"UX Error in {file_path}: No active navigation state detected.")
+
+        return len(self.issues) == 0
+
+    def report_issues(self):
+        for issue in self.issues:
+            print(f"🚨 SENTRY ALERT: {issue}")

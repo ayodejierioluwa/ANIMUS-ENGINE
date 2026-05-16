@@ -13,9 +13,14 @@ NAV_BAR_TEMPLATE = """
 """
 
 NAV_LINK_TEMPLATE = """
-<a href="[[link]]" style="text-decoration: none; color: white; font-size: 0.8rem; font-weight: 400; opacity: 0.5; letter-spacing: 0.05em; transition: all 0.3s var(--ease-vibe); font-family: var(--font-body);">[[name]]</a>
+<a href="[[link]]" class="nav-item [[active_class]]" style="text-decoration: none; color: white; font-size: 0.8rem; font-weight: 400; opacity: 0.5; letter-spacing: 0.05em; transition: all 0.3s var(--ease-vibe); font-family: var(--font-body); position: relative; padding: 0.5rem 0;">
+    [[name]]
+    <div class="active-indicator" style="position: absolute; bottom: 0; left: 0; width: 100%; height: 2px; background: white; transform: scaleX(0); transition: transform 0.3s var(--ease-vibe); border-radius: 2px;"></div>
+</a>
 <style>
-    .nav-links a:hover { opacity: 1; transform: translateY(-2px); color: var(--accent-primary); }
+    .nav-item:hover { opacity: 1; }
+    .nav-item.active { opacity: 1; font-weight: 700; }
+    .nav-item.active .active-indicator { transform: scaleX(1); }
     .nav-cta a:hover { transform: scale(1.05); box-shadow: 0 10px 20px rgba(0,0,0,0.3); }
 </style>
 """
