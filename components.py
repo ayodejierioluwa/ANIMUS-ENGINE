@@ -14,7 +14,7 @@ HERO_TEMPLATE = """
 """
 
 VIDEO_HERO_TEMPLATE = """
-<div id="video-canvas-container" style="position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: -100; pointer-events: none;"></div>
+<div id="kinetic-fire-container" style="position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: -100; pointer-events: none;"></div>
 <section class="hero [[layout_class]]" id="hero" style="background: transparent !important;">
     <div class="hero-content">
         <h1 class="reveal">[[title]]</h1>
@@ -26,7 +26,7 @@ VIDEO_HERO_TEMPLATE = """
 </section>
 <button onclick="diagnoseVisuals()" style="position: fixed; bottom: 1rem; right: 1rem; z-index: 10002; background: rgba(255,255,255,0.1); color: white; border: 1px solid white; padding: 0.5rem; border-radius: 5px; cursor: pointer;">Diagnostic</button>
 <script>
-    window.VIDEO_URL = "[[video_url]]";
+    window.FIRE_BG = "assets/fire_bg.png";
 </script>
 """
 
@@ -301,38 +301,64 @@ GSAP_SCRIPT = """
         });
     }
 
-    // Canvas Video Engine (The "Infinite Reliability" Fix)
-    const videoCanvas = document.getElementById('video-canvas-container');
-    if (videoCanvas && window.VIDEO_URL) {
-        const vc_scene = new THREE.Scene();
-        const vc_camera = new THREE.OrthographicCamera(-1, 1, 1, -1, 0, 1);
-        const vc_renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
-        vc_renderer.setSize(window.innerWidth, window.innerHeight);
-        videoCanvas.appendChild(vc_renderer.domElement);
+    // AETHER_IGNIS_KINETIC (The "WOWER" Reliability Fix)
+    const kineticFire = document.getElementById('kinetic-fire-container');
+    if (kineticFire && window.FIRE_BG) {
+        const kf_scene = new THREE.Scene();
+        const kf_camera = new THREE.OrthographicCamera(-1, 1, 1, -1, 0, 1);
+        const kf_renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+        kf_renderer.setSize(window.innerWidth, window.innerHeight);
+        kineticFire.appendChild(kf_renderer.domElement);
 
-        const video = document.createElement('video');
-        video.src = window.VIDEO_URL;
-        video.crossOrigin = "anonymous";
-        video.loop = true;
-        video.muted = true;
-        video.playsInline = true;
-        video.play().catch(() => {
-            document.body.addEventListener('click', () => video.play(), { once: true });
+        const loader = new THREE.TextureLoader();
+        loader.load(window.FIRE_BG, (texture) => {
+            const material = new THREE.ShaderMaterial({
+                uniforms: { 
+                    time: { value: 1.0 }, 
+                    uTexture: { value: texture },
+                    resolution: { value: new THREE.Vector2(window.innerWidth, window.innerHeight) }
+                },
+                vertexShader: `void main() { gl_Position = vec4(position, 1.0); }`,
+                fragmentShader: `
+                    uniform float time;
+                    uniform sampler2D uTexture;
+                    uniform vec2 resolution;
+                    
+                    float hash(vec2 p) { return fract(sin(dot(p, vec2(12.9898, 78.233))) * 43758.5453); }
+                    float noise(vec2 p) {
+                        vec2 i = floor(p); vec2 f = fract(p);
+                        vec2 u = f*f*(3.0-2.0*f);
+                        return mix(mix(hash(i + vec2(0.,0.)), hash(i + vec2(1.,0.)), u.x),
+                                   mix(hash(i + vec2(0.,1.)), hash(i + vec2(1.,1.)), u.x), u.y);
+                    }
+
+                    void main() {
+                        vec2 uv = gl_FragCoord.xy / resolution.xy;
+                        
+                        // Heat Distortion Logic
+                        float distortion = noise(uv * 10.0 + time * 0.5) * 0.02;
+                        vec2 distortedUV = uv + vec2(distortion, distortion);
+                        
+                        vec4 color = texture2D(uTexture, distortedUV);
+                        
+                        // Subtle Flicker
+                        color.rgb *= 0.95 + 0.05 * sin(time * 10.0);
+                        
+                        gl_FragColor = color;
+                    }
+                `
+            });
+            const mesh = new THREE.Mesh(new THREE.PlaneGeometry(2, 2), material);
+            kf_scene.add(mesh);
+
+            function kf_animate(t) {
+                requestAnimationFrame(kf_animate);
+                material.uniforms.time.value = t * 0.001;
+                kf_renderer.render(kf_scene, kf_camera);
+            }
+            kf_animate(0);
         });
-
-        const texture = new THREE.VideoTexture(video);
-        const material = new THREE.MeshBasicMaterial({ map: texture });
-        const mesh = new THREE.Mesh(new THREE.PlaneGeometry(2, 2), material);
-        vc_scene.add(mesh);
-
-        function vc_animate() {
-            requestAnimationFrame(vc_animate);
-            vc_renderer.render(vc_scene, vc_camera);
-        }
-        vc_animate();
-        window.addEventListener('resize', () => {
-            vc_renderer.setSize(window.innerWidth, window.innerHeight);
-        });
+        window.addEventListener('resize', () => kf_renderer.setSize(window.innerWidth, window.innerHeight));
     }
 
     // Initial Reveal Animations
