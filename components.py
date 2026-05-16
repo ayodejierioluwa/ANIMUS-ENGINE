@@ -461,16 +461,21 @@ BASE_HTML = """
             transition: all 0.3s var(--ease-vibe) !important;
         }
 
-        /* Tactile Layer: Film Grain */
+        /* Tactical Layer: Surgical SVG Grain */
         .film-grain {
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
             pointer-events: none;
             z-index: 99999;
-            opacity: 0.12;
-            background: url('https://grainy-gradients.vercel.app/noise.svg');
-            animation: grain 8s steps(10) infinite;
-            mix-blend-mode: screen;
+            opacity: 0.25;
+            filter: url(#grainy);
+        }
+        .ambient-vignette {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            pointer-events: none;
+            z-index: 99998;
+            background: radial-gradient(circle, transparent 20%, rgba(0,0,0,0.6) 100%);
         }
         .ambient-vignette {
             position: fixed;
@@ -503,6 +508,12 @@ BASE_HTML = """
     </style>
 </head>
 <body>
+    <svg style="display: none;">
+        <filter id="grainy">
+            <feTurbulence type="fractalNoise" baseFrequency="0.6" numOctaves="3" stitchTiles="stitch" />
+            <feColorMatrix type="saturate" values="0" />
+        </filter>
+    </svg>
     <div class="film-grain"></div>
     <div class="ambient-vignette"></div>
     <div class="custom-cursor"></div>
