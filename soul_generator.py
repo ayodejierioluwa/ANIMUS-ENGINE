@@ -63,12 +63,12 @@ class AnimusSoul:
 
         # Dynamic high-fidelity video loop streams matching the AI-prompted video_style archetype
         video_libraries = {
-            "CYBER_NET": "https://assets.mixkit.co/videos/preview/mixkit-abstract-laser-lights-background-loop-41865-large.mp4",
-            "ORGANIC_WAVE": "https://assets.mixkit.co/videos/preview/mixkit-mysterious-foggy-green-mountains-41006-large.mp4",
-            "GOLD_DUST": "https://assets.mixkit.co/videos/preview/mixkit-luxury-gold-glitter-particles-background-loop-41864-large.mp4",
-            "FIRE_EMBER": "https://assets.mixkit.co/videos/preview/mixkit-particles-of-glowing-embers-in-the-dark-41861-large.mp4",
-            "DARK_ENERGY": "https://assets.mixkit.co/videos/preview/mixkit-abstract-dark-smoky-ink-background-loop-41860-large.mp4",
-            "COSMIC_NEBULA": "https://assets.mixkit.co/videos/preview/mixkit-stars-in-space-background-1611-large.mp4"
+            "CYBER_NET": "/static/videos/cyber_net.mp4",
+            "ORGANIC_WAVE": "/static/videos/organic_wave.mp4",
+            "GOLD_DUST": "/static/videos/organic_wave.mp4",
+            "FIRE_EMBER": "/static/videos/organic_wave.mp4",
+            "DARK_ENERGY": "/static/videos/organic_wave.mp4",
+            "COSMIC_NEBULA": "/static/videos/organic_wave.mp4"
         }
         
         style_key = tokens.get("video_style", "COSMIC_NEBULA").upper()
