@@ -74,6 +74,34 @@ class AnimusSoul:
         style_key = tokens.get("video_style", "COSMIC_NEBULA").upper()
         tokens["video_url"] = video_libraries.get(style_key, video_libraries["COSMIC_NEBULA"])
 
+        # Determine relative luminance of the chosen background to establish high-contrast glass panels
+        bg_hex = tokens.get("bg_color", "#0a0a0c").lower().strip("#")
+        try:
+            if len(bg_hex) == 3:
+                bg_hex = "".join([c*2 for c in bg_hex])
+            r, g, b = int(bg_hex[0:2], 16), int(bg_hex[2:4], 16), int(bg_hex[4:6], 16)
+            luminance = (0.299 * r + 0.587 * g + 0.114 * b) / 255.0
+        except Exception:
+            luminance = 0.0 # Default dark
+
+        if luminance > 0.6:
+            # Bright/Light Theme: Apply dark text, dark glass outlines, and thin dynamic vignette
+            logger.info("AETHER_LUMINANCE: Light theme detected. Adjusting glass overlay contrast limits.")
+            tokens["glass_bg_token"] = "rgba(0, 0, 0, 0.03)"
+            tokens["glass_border_token"] = "rgba(0, 0, 0, 0.07)"
+            tokens["vignette_token"] = "radial-gradient(circle, transparent 40%, rgba(0,0,0,0.03) 100%)"
+            # Auto-align contrasting text color if the brain didn't generate one
+            if tokens.get("text_color") == "#ffffff":
+                tokens["text_color"] = "#0d0e12"
+        else:
+            # Classic Dark Theme: Apply light frosted glass overlays and thick dark vignette
+            tokens["glass_bg_token"] = "rgba(255, 255, 255, 0.03)"
+            tokens["glass_border_token"] = "rgba(255, 255, 255, 0.1)"
+            tokens["vignette_token"] = "radial-gradient(circle, transparent 20%, rgba(0,0,0,0.6) 100%)"
+            # Auto-align contrasting text color if the brain didn't generate one
+            if tokens.get("text_color") == "#0d0e12":
+                tokens["text_color"] = "#ffffff"
+
         # Dynamic visual prompt generation for DALL-E / Midjourney mockup displays
         visual_prompt = f"Breathtaking premium website dashboard mockups for {project_name}, high-fidelity, styling tokens: bg {tokens['bg_color']}, accent {tokens['accent_primary']}, typography {tokens['font_heading']}, architecture aesthetic, 3D geometry {geometry_type}"
 

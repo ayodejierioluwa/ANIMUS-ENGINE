@@ -15,14 +15,19 @@ SYSTEM_PROMPT = """
 You are the ANIMUS Core Web Architect AI.
 Your purpose is to analyze the user's mission prompt, any extracted document context, and optional user preferences to design a visually stunning, highly premium, custom web architecture.
 
-CRITICAL FEATURE - IN-CONTEXT STYLE LEARNING:
-Analyze the EXTRACTED DOCUMENT CONTEXT. If it contains HTML, CSS, branding guidelines, or style instructions, extract the design style (e.g., color hex codes, font faces, border-radii, spacing) and replicate or adapt them harmoniously into the output JSON configuration.
+### STRICT PROMPT ALIGNMENT RULES (CRITICAL) ###
+1. COLOR FIDELITY: You must strictly honor the user's requested color scheme, brand identity, or theme:
+   - If they ask for a 'light theme', 'clean white', 'luxury cream', 'solar gold', 'soft pastel pink', or 'sky blue', you MUST return a bright, elegant light-themed background (e.g., #f5f6f8, #ffffff, #faf9f6) and contrasting dark text!
+   - If they specify any custom color (e.g., 'forest green', 'deep space violet', 'coral orange'), craft the primary and accent tokens strictly around those choices.
+   - Do NOT force a generic dark/black background if the user explicitly requested a light theme or alternate colors.
+2. SITEMAP & PAGE COUNT COMPLIANCE:
+   - You must customize the sitemap count and page names to match the user's prompt exactly. 
+   - If they ask for a 'one-page website' or 'single landing page', return exactly one page object in the sitemap array (e.g. index.html).
+   - If they ask for specific subpages (e.g. 'a contact form page', 'a vault gallery page', 'a real-time terminal page'), create the exact sitemap files (e.g., contact.html, vault.html, terminal.html) and custom page names.
+3. CONTEXT INTEGRITY: Ensure the hero titles, subtitles, features, and text blocks are highly specific, detailed, and directly relevant to the prompt and uploaded documents. Do not write generic marketing placeholders.
 
-Choose colors and typography that match the brand perfectly if no styling is extracted:
-- Cyber/Tech: 'Space Mono' or 'Outfit', dark base (#020205), neon primary (#00ffcc), sharp borders, fast transition.
-- Wellness/Nature: 'Playfair Display' or 'Inter', warm dark (#0d0e0c) or serene cream (#f4f6f0), soft sage green (#a8e6cf) or mist white, rounded grid, breathing animation.
-- Luxury/Fashion: 'EB Garamond' or 'Outfit', rich dark (#0b090a), champagne gold (#d4af37), elegant letter spacing, slow luxurious transitions.
-- Modern Bold: 'Inter' with heavy weight, high contrast (#000000 / #ffffff), hyper modern accents.
+### IN-CONTEXT STYLE LEARNING ###
+Analyze the EXTRACTED DOCUMENT CONTEXT. If it contains HTML, CSS, branding guidelines, or style instructions, extract the design style (e.g., color hex codes, font faces, border-radii, spacing) and replicate or adapt them harmoniously into the output JSON configuration.
 
 Choose a 3D canvas geometry type:
 - "SPHERE": Standard/organic/particles
@@ -32,14 +37,13 @@ Choose a 3D canvas geometry type:
 - "RING": Modern orbit
 
 SELECT THE PERFECT VIDEO BACKDROP ARCHETYPE:
-You will configure a looping, high-fidelity background video loop to add cinematic energy.
 Choose a matching "video_style" based on prompt brand archetype:
-- "CYBER_NET": Glowing cyberpunk networks, neon grids, data particles.
-- "ORGANIC_WAVE": Serene misty mountains, calm ocean waves, natural mist.
-- "GOLD_DUST": Premium golden ink flows, luxury champagne dust drifting.
-- "FIRE_EMBER": Mesmerizing glowing coals, campfire flame sparks flickering.
-- "DARK_ENERGY": Shifting dark atmospheric smoke, ethereal liquid ink.
-- "COSMIC_NEBULA": Deep space stars orbiting, galactic cosmic nebula gas.
+- "CYBER_NET": Glowing cyberpunk networks, neon grids, data particles (for cyber/tech).
+- "ORGANIC_WAVE": Serene misty mountains, calm ocean waves, natural mist (for organic/wellness/light-themed).
+- "GOLD_DUST": Premium golden ink flows, luxury champagne dust drifting (for luxury/finance/gold themes).
+- "FIRE_EMBER": Mesmerizing glowing coals, campfire flame sparks flickering (for warm/cozy/rustic).
+- "DARK_ENERGY": Shifting dark atmospheric smoke, ethereal liquid ink (for dark/abstract).
+- "COSMIC_NEBULA": Deep space stars orbiting, galactic cosmic nebula gas (for space/futuristic).
 
 SELECT CUSTOM MOVEMENT INTERACTIVITY PHYSICS:
 Choose a matching "video_interactivity" that fits the visual pacing of the theme:
@@ -52,8 +56,8 @@ JSON Schema to return:
 {
   "project_name": "A unique, dynamic name for this digital realm (e.g., NEURAL_GRID, SAGE_SANCTUARY, AURA_GOLD)",
   "tokens": {
-    "bg_color": "Hex color code for background (must be premium and dark/moody by default)",
-    "text_color": "Hex color code for text (contrast with bg)",
+    "bg_color": "Hex color code for background (MUST strictly align with requested theme: light/white background if prompted, otherwise premium dark moody)",
+    "text_color": "Hex color code for text (contrast perfectly with bg_color: dark text for light bg, white/light text for dark bg)",
     "accent_primary": "Hex color code for active elements/glows",
     "accent_primary_hex": "The same primary hex (e.g. 0x00ffcc format for Three.js)",
     "glass_blur": "Blur size for panels (e.g., '12px', '40px', '5px')",
@@ -74,39 +78,23 @@ JSON Schema to return:
   },
   "geometry_type": "SPHERE | TORUS | PLANE | OCTA | RING",
   "sitemap": [
-    {"name": "Home", "file": "index.html"},
-    {"name": "Second Page Name", "file": "page2.html"},
-    {"name": "Third Page Name", "file": "page3.html"}
+    {"name": "Home", "file": "index.html"}
+    // Generate exactly the pages requested. Adjust count dynamically.
   ],
   "page_contexts": {
     "index.html": {
-      "title": "A breathtaking, bold title for the homepage hero section",
-      "subtitle": "An elegant, comprehensive subtitle that captures the user's mission and context",
+      "title": "Breathtaking title customized to prompt details",
+      "subtitle": "Comprehensive, highly relevant subtitle context",
       "features": [
-        {"icon": "An emoji representing feature 1", "title": "Highly creative feature title 1", "description": "High-fidelity description based on the prompt/document context"},
-        {"icon": "An emoji representing feature 2", "title": "Highly creative feature title 2", "description": "High-fidelity description based on the prompt/document context"},
-        {"icon": "An emoji representing feature 3", "title": "Highly creative feature title 3", "description": "High-fidelity description based on the prompt/document context"}
-      ]
-    },
-    "page2.html": {
-      "title": "Breathtaking title for page 2",
-      "subtitle": "Detailed and meaningful subtitle for page 2",
-      "features": [
-        {"icon": "Emoji", "title": "Feature title 1", "description": "Description based on document context"},
-        {"icon": "Emoji", "title": "Feature title 2", "description": "Description based on document context"}
-      ]
-    },
-    "page3.html": {
-      "title": "Breathtaking title for page 3",
-      "subtitle": "Detailed and meaningful subtitle for page 3",
-      "features": [
-        {"icon": "Emoji", "title": "Feature title 1", "description": "Description based on document context"},
-        {"icon": "Emoji", "title": "Feature title 2", "description": "Description based on document context"}
+        {"icon": "Emoji", "title": "Bespoke feature 1", "description": "Highly descriptive text detailing prompt context"},
+        {"icon": "Emoji", "title": "Bespoke feature 2", "description": "Highly descriptive text detailing prompt context"},
+        {"icon": "Emoji", "title": "Bespoke feature 3", "description": "Highly descriptive text detailing prompt context"}
       ]
     }
+    // You MUST provide a page context entry for every file declared in the sitemap array above!
   },
   "hero_global": {
-    "cta": "Sovereign Call-to-Action label (e.g. ENTER_VOID, COMMENCE_SYNTHESIS, EXPERIENCE_FLOW)"
+    "cta": "Bespoke Action Label"
   }
 }
 """
@@ -183,7 +171,7 @@ class AnimusBrain:
             logger.error(f"Error saving preference in AnimusBrain: {e}")
 
     def generate_soul_data(self, mission_prompt, doc_context="", critique="", user_id=None):
-        """Queries Gemini to generate the dynamic site and style configuration."""
+        """Queries Gemini with strict compliance guidelines to generate the site configuration."""
         prefs_text = self._load_user_preferences(user_id)
         
         user_input = f"""
@@ -251,6 +239,49 @@ EXTRACTED DOCUMENT CONTEXT:
     def _generate_fallback_soul(self, mission, doc_context):
         """Standard beautiful local templates in case of API failure."""
         m = mission.lower()
+        if "light" in m or "white" in m or "cream" in m:
+            return {
+                "project_name": "AETHER_CREAM",
+                "tokens": {
+                    "bg_color": "#faf9f6",
+                    "text_color": "#0d0e12",
+                    "accent_primary": "#d4af37",
+                    "accent_primary_hex": "0xd4af37",
+                    "glass_blur": "24px",
+                    "grid_radius": "24px",
+                    "btn_radius": "50px",
+                    "void_blur": "40px",
+                    "font_heading": "'Playfair Display'",
+                    "font_body": "'Inter'",
+                    "ease_vibe": "cubic-bezier(0.2, 0.8, 0.2, 1)",
+                    "duration_vibe": "0.6s",
+                    "hover_glow": "0 20px 40px rgba(0,0,0,0.05)",
+                    "letter_spacing": "-0.01em",
+                    "text_transform": "none",
+                    "breathing_anim": "none",
+                    "breathing_anim_hover": "none",
+                    "video_style": "ORGANIC_WAVE",
+                    "video_interactivity": "BREATHING_ZOOM"
+                },
+                "geometry_type": "SPHERE",
+                "sitemap": [
+                    {"name": "Home", "file": "index.html"}
+                ],
+                "page_contexts": {
+                    "index.html": {
+                        "title": "PRISTINE SIMPLICITY",
+                        "subtitle": "Elegant cream and gold visual systems designed dynamically.",
+                        "features": [
+                            {"icon": "✨", "title": "Solar Alignment", "description": "High-fidelity light-themed layout structures built for your natural focus."},
+                            {"icon": "🌾", "title": "Minimal Density", "description": "Zero distraction zones containing pure ambient details."}
+                        ]
+                    }
+                },
+                "hero_global": {
+                    "cta": "BEGIN_FLOW"
+                }
+            }
+        
         if "crypto" in m or "tech" in m or "sentry" in m:
             return {
                 "project_name": "NEURAL_CORE",
@@ -287,6 +318,13 @@ EXTRACTED DOCUMENT CONTEXT:
                         "features": [
                             {"icon": "⚡", "title": "Latency Zero", "description": "Sub-millisecond data feeds and execution layers."},
                             {"icon": "📟", "title": "EVM Grid", "description": "Parallel virtual machines operating natively."}
+                        ]
+                    },
+                    "terminal.html": {
+                        "title": "DATA TERMINAL",
+                        "subtitle": "Real-time liquidity bridge and transaction dispatch.",
+                        "features": [
+                            {"icon": "📊", "title": "Stream Metrics", "description": "Live web-socket based telemetry visualization."}
                         ]
                     }
                 },

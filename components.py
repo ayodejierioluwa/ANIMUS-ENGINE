@@ -522,8 +522,8 @@ BASE_HTML = """
             --bg-color: [[bg_color]];
             --text-color: [[text_color]];
             --accent-primary: [[accent_primary]];
-            --glass-bg: rgba(255, 255, 255, 0.03);
-            --glass-border: rgba(255, 255, 255, 0.1);
+            --glass-bg: [[glass_bg_token]];
+            --glass-border: [[glass_border_token]];
             
             /* Vibe Shift Tokens */
             --glass-blur: [[glass_blur]];
@@ -587,7 +587,7 @@ BASE_HTML = """
             top: 0; left: 0; width: 100%; height: 100%;
             pointer-events: none;
             z-index: 99998;
-            background: radial-gradient(circle, transparent 20%, rgba(0,0,0,0.6) 100%);
+            background: [[vignette_token]];
         }
         @keyframes grain {
             0%, 100% { transform: translate(0, 0); }
