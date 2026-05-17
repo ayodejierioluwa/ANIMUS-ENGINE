@@ -399,6 +399,25 @@ def get_file():
 
 @app.route('/static/projects/<path:path>')
 def serve_project(path):
+    # Verify if it's an HTML page first
+    if path.endswith('.html') or '.' not in path:
+        page_name = path if path.endswith('.html') else f"{path}.html"
+        db_path = "/Users/macbook/.gemini/antigravity/scratch/aether_companion/laura_memory.db"
+        if not os.path.exists(db_path):
+            db_path = "laura_memory.db"
+            
+        try:
+            conn = sqlite3.connect(db_path)
+            cursor = conn.cursor()
+            cursor.execute("SELECT html_content FROM generated_pages WHERE page_name = ?", (page_name,))
+            row = cursor.fetchone()
+            conn.close()
+            if row:
+                from flask import Response
+                return Response(row[0], mimetype='text/html')
+        except Exception as e:
+            app.logger.error(f"Error serving {page_name} from database: {e}")
+
     return send_from_directory('static/projects', path)
 
 @app.route('/api/bridge', methods=['POST'])

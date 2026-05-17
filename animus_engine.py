@@ -66,6 +66,7 @@ class AnimusEngine:
                 self._learn_user_style_preferences(user_id, soul_data["tokens"])
             
         print(f"✅ PROJECT COMPLETE: {len(generated_files)} pages compiled.")
+        self._sync_to_github()
         return generated_files
 
     def _learn_user_style_preferences(self, user_id, tokens):
@@ -162,4 +163,49 @@ class AnimusEngine:
         with open(file_path, "w") as f:
             f.write(full_page)
             
+        self._write_page_to_db(f"{page_name}.html", full_page)
         return file_path
+
+    def _write_page_to_db(self, page_name, html_content):
+        db_path = "/Users/macbook/.gemini/antigravity/scratch/aether_companion/laura_memory.db"
+        if not os.path.exists(db_path):
+            db_path = "laura_memory.db"
+        try:
+            import sqlite3
+            conn = sqlite3.connect(db_path)
+            cursor = conn.cursor()
+            cursor.execute('''
+                CREATE TABLE IF NOT EXISTS generated_pages (
+                    page_name TEXT PRIMARY KEY,
+                    html_content TEXT,
+                    timestamp DATETIME DEFAULT CURRENT_TIMESTAMP
+                )
+            ''')
+            cursor.execute("""
+                INSERT OR REPLACE INTO generated_pages (page_name, html_content)
+                VALUES (?, ?)
+            """, (page_name, html_content))
+            conn.commit()
+            conn.close()
+            print(f"💾 DATABASE SYNC: Saved {page_name} to SQLite shared memory.")
+        except Exception as e:
+            print(f"⚠️ Failed to sync {page_name} to database: {e}")
+
+    def _sync_to_github(self):
+        import subprocess
+        db_path = "/Users/macbook/.gemini/antigravity/scratch/aether_companion/laura_memory.db"
+        if os.path.exists(db_path):
+            print("📤 GIT SYNC: Local Mac detected. Auto-syncing generated work to GitHub...")
+            try:
+                # Stage projects and tests
+                subprocess.run(["git", "add", "static/projects/", "tests/"], check=True)
+                status = subprocess.run(["git", "status", "--porcelain"], capture_output=True, text=True)
+                if status.stdout.strip():
+                    subprocess.run(["git", "commit", "-m", f"FEAT: Live compile - {self.project_name}"], check=True)
+                    subprocess.run(["git", "push", "origin", "main"], check=True)
+                    print("✅ GIT SYNC SUCCESS: Generated files pushed to GitHub main branch!")
+                else:
+                    print("📤 GIT SYNC: No static files changed, skipping commit.")
+            except Exception as e:
+                print(f"⚠️ GIT SYNC FAILED: {e}")
+
