@@ -86,8 +86,11 @@ DASHBOARD_HTML = """
         <div id="tab-engine" class="tab-content active grid grid-cols-12 gap-8 items-center h-full">
             <div class="col-span-5 space-y-8">
                 <div class="obsidian-panel p-8 rounded-xl gold-rim-hover transition-all">
-                    <span class="text-[10px] uppercase tracking-[0.2em] text-primary/60 mb-4 block">Neural Mission Objective</span>
-                    <input type="text" id="mission" placeholder="DESCRIBE YOUR DIGITAL REALM..." class="w-full bg-white/5 border border-white/10 rounded-lg p-4 text-sm font-code-ui text-white">
+                    <div class="flex justify-between items-center mb-4">
+                        <span class="text-[10px] uppercase tracking-[0.2em] text-primary/60">Neural Mission Objective</span>
+                        <button onclick="document.getElementById('mission').value=''" class="text-[9px] uppercase tracking-widest text-primary/40 hover:text-primary transition-colors font-bold font-code-ui">Clear</button>
+                    </div>
+                    <textarea id="mission" placeholder="DESCRIBE YOUR DIGITAL REALM..." rows="4" class="w-full bg-white/5 border border-white/10 rounded-lg p-4 text-sm font-code-ui text-white resize-none focus:outline-none focus:border-primary transition-all"></textarea>
                 </div>
                 <div class="grid grid-cols-2 gap-4">
                     <div class="obsidian-panel p-6 rounded-xl gold-rim-hover transition-all">

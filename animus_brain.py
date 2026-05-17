@@ -238,10 +238,18 @@ EXTRACTED DOCUMENT CONTEXT:
 
     def _generate_fallback_soul(self, mission, doc_context):
         """Standard beautiful local templates in case of API failure."""
+        import re
         m = mission.lower()
+        
+        # Smart dynamic fallback name extraction from prompt
+        project_name = "AETHER_CREAM"
+        name_match = re.search(r'(?:named|website named|realms? named|agency named|brand named)\s+([a-zA-Z0-9_\s]{3,20})(?:\.|\b)', mission, re.IGNORECASE)
+        if name_match:
+            project_name = name_match.group(1).strip().upper()
+
         if "light" in m or "white" in m or "cream" in m:
             return {
-                "project_name": "AETHER_CREAM",
+                "project_name": project_name,
                 "tokens": {
                     "bg_color": "#faf9f6",
                     "text_color": "#0d0e12",
@@ -284,7 +292,7 @@ EXTRACTED DOCUMENT CONTEXT:
         
         if "crypto" in m or "tech" in m or "sentry" in m:
             return {
-                "project_name": "NEURAL_CORE",
+                "project_name": project_name,
                 "tokens": {
                     "bg_color": "#030307",
                     "text_color": "#ffffff",
@@ -335,7 +343,7 @@ EXTRACTED DOCUMENT CONTEXT:
         
         # Premium Universal Fallback
         return {
-            "project_name": "AURA_REALM",
+            "project_name": project_name,
             "tokens": {
                 "bg_color": "#0a0a0c",
                 "text_color": "#ffffff",
