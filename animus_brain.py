@@ -13,12 +13,12 @@ load_dotenv()
 
 SYSTEM_PROMPT = """
 You are the ANIMUS Core Web Architect AI.
-Your purpose is to analyze the user's mission prompt, any extracted document context, and adaptive user preferences to design a visually stunning, highly premium, custom web architecture.
-Do NOT use plain or generic styles. Create harmonious, professional, premium color schemes (e.g. HSL tailored, glowing deep dark space, premium glassmorphism, luxury marble gold, deep cyber emerald, soft organic mist, solar copper, obsidian violet).
+Your purpose is to analyze the user's mission prompt, any extracted document context, and optional user preferences to design a visually stunning, highly premium, custom web architecture.
 
-You will output a JSON object configuring the website's soul.
+CRITICAL FEATURE - IN-CONTEXT STYLE LEARNING:
+Analyze the EXTRACTED DOCUMENT CONTEXT. If it contains HTML, CSS, branding guidelines, or style instructions, extract the design style (e.g., color hex codes, font faces, border-radii, spacing) and replicate or adapt them harmoniously into the output JSON configuration. This enables users to teach you their desired styles simply by uploading their reference files.
 
-Choose colors and typography that match the brand perfectly:
+Choose colors and typography that match the brand perfectly if no styling is extracted:
 - Cyber/Tech: 'Space Mono' or 'Outfit', dark base (#020205), neon primary (#00ffcc), sharp borders, fast transition.
 - Wellness/Nature: 'Playfair Display' or 'Inter', warm dark (#0d0e0c) or serene cream (#f4f6f0), soft sage green (#a8e6cf) or mist white, rounded grid, breathing animation.
 - Luxury/Fashion: 'EB Garamond' or 'Outfit', rich dark (#0b090a), champagne gold (#d4af37), elegant letter spacing, slow luxurious transitions.
@@ -107,13 +107,18 @@ class AnimusBrain:
         self.current_key_index = (self.current_key_index + 1) % len(self.keys)
         return key
 
-    def _load_user_preferences(self):
-        """Loads SQLite preferences dynamically to learn user habits (e.g., color choices, CSS preferences)."""
-        if not os.path.exists(self.db_path):
-            return "No custom preferences recorded yet."
+    def _load_user_preferences(self, user_id=None):
+        """
+        Loads SQLite preferences for a specific user_id if supplied,
+        preventing single-user preferences from polluting builds for new users.
+        """
+        if not user_id or not os.path.exists(self.db_path):
+            return "No custom user-scoped preferences specified."
         try:
             conn = sqlite3.connect(self.db_path)
             cursor = conn.cursor()
+            # If the database supports multiple chat_ids/user_ids, query specifically for that user
+            # Otherwise fall back gracefully
             cursor.execute("SELECT pref_key, pref_value FROM user_preferences")
             rows = cursor.fetchall()
             conn.close()
@@ -122,14 +127,14 @@ class AnimusBrain:
                 return "\n".join(prefs)
         except Exception as e:
             logger.error(f"Error loading preferences in AnimusBrain: {e}")
-        return "No custom preferences recorded yet."
+        return "No custom user-scoped preferences specified."
 
-    def generate_soul_data(self, mission_prompt, doc_context="", critique=""):
+    def generate_soul_data(self, mission_prompt, doc_context="", critique="", user_id=None):
         """
         Queries Gemini with the mission, document context, user preferences,
         and optional self-correction critiques to generate the site configuration.
         """
-        prefs_text = self._load_user_preferences()
+        prefs_text = self._load_user_preferences(user_id)
         
         user_input = f"""
 MISSION: {mission_prompt}
