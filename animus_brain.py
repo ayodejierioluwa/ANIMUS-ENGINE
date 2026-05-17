@@ -16,7 +16,7 @@ You are the ANIMUS Core Web Architect AI.
 Your purpose is to analyze the user's mission prompt, any extracted document context, and optional user preferences to design a visually stunning, highly premium, custom web architecture.
 
 CRITICAL FEATURE - IN-CONTEXT STYLE LEARNING:
-Analyze the EXTRACTED DOCUMENT CONTEXT. If it contains HTML, CSS, branding guidelines, or style instructions, extract the design style (e.g., color hex codes, font faces, border-radii, spacing) and replicate or adapt them harmoniously into the output JSON configuration. This enables users to teach you their desired styles simply by uploading their reference files.
+Analyze the EXTRACTED DOCUMENT CONTEXT. If it contains HTML, CSS, branding guidelines, or style instructions, extract the design style (e.g., color hex codes, font faces, border-radii, spacing) and replicate or adapt them harmoniously into the output JSON configuration.
 
 Choose colors and typography that match the brand perfectly if no styling is extracted:
 - Cyber/Tech: 'Space Mono' or 'Outfit', dark base (#020205), neon primary (#00ffcc), sharp borders, fast transition.
@@ -30,6 +30,23 @@ Choose a 3D canvas geometry type:
 - "PLANE": Waving grid/landscape
 - "OCTA": Angular/cyber crystal
 - "RING": Modern orbit
+
+SELECT THE PERFECT VIDEO BACKDROP ARCHETYPE:
+You will configure a looping, high-fidelity background video loop to add cinematic energy.
+Choose a matching "video_style" based on prompt brand archetype:
+- "CYBER_NET": Glowing cyberpunk networks, neon grids, data particles.
+- "ORGANIC_WAVE": Serene misty mountains, calm ocean waves, natural mist.
+- "GOLD_DUST": Premium golden ink flows, luxury champagne dust drifting.
+- "FIRE_EMBER": Mesmerizing glowing coals, campfire flame sparks flickering.
+- "DARK_ENERGY": Shifting dark atmospheric smoke, ethereal liquid ink.
+- "COSMIC_NEBULA": Deep space stars orbiting, galactic cosmic nebula gas.
+
+SELECT CUSTOM MOVEMENT INTERACTIVITY PHYSICS:
+Choose a matching "video_interactivity" that fits the visual pacing of the theme:
+- "3D_TILT": Hyper-responsive Three-dimensional perspective container tilting following the mouse cursor. (Best for cyber, grids, tech).
+- "BREATHING_ZOOM": Gentle, slow organic pulsing scale changes that pulse like a deep breath. (Best for wellness, meditation, nature).
+- "MAGNETIC_FOLLOW": Liquid horizontal/vertical drift translations tracking the mouse cursor like a light magnetic pull. (Best for particles, dark energy, nebula).
+- "AMBIENT_DRIFT": Slow, elegant automatic floating drift that ignores raw mouse movement but glides gently on scroll depth. (Best for luxury, gold, fashion).
 
 JSON Schema to return:
 {
@@ -51,7 +68,9 @@ JSON Schema to return:
     "letter_spacing": "CSS letter spacing for headings (e.g. '-0.02em', '0.1em')",
     "text_transform": "CSS text transform for headings: 'none' | 'uppercase' | 'lowercase'",
     "breathing_anim": "Breathing animation class: 'none' | 'aether-breath'",
-    "breathing_anim_hover": "Breathing animation hover class: 'none' | 'aether-breath-deep'"
+    "breathing_anim_hover": "Breathing animation hover class: 'none' | 'aether-breath-deep'",
+    "video_style": "CYBER_NET | ORGANIC_WAVE | GOLD_DUST | FIRE_EMBER | DARK_ENERGY | COSMIC_NEBULA",
+    "video_interactivity": "3D_TILT | BREATHING_ZOOM | MAGNETIC_FOLLOW | AMBIENT_DRIFT"
   },
   "geometry_type": "SPHERE | TORUS | PLANE | OCTA | RING",
   "sitemap": [
@@ -108,16 +127,12 @@ class AnimusBrain:
         return key
 
     def _load_user_preferences(self, user_id=None):
-        """
-        Loads SQLite preferences for a specific user_id if supplied,
-        preventing single-user preferences from polluting builds for new users.
-        """
+        """Loads SQLite preferences for a specific user_id if supplied."""
         if not user_id or not os.path.exists(self.db_path):
             return "No custom user-scoped preferences specified."
         try:
             conn = sqlite3.connect(self.db_path)
             cursor = conn.cursor()
-            # Create multi-user preference table if it does not exist
             cursor.execute('''
                 CREATE TABLE IF NOT EXISTS user_preferences_multi (
                     user_id TEXT,
@@ -168,10 +183,7 @@ class AnimusBrain:
             logger.error(f"Error saving preference in AnimusBrain: {e}")
 
     def generate_soul_data(self, mission_prompt, doc_context="", critique="", user_id=None):
-        """
-        Queries Gemini with the mission, document context, user preferences,
-        and optional self-correction critiques to generate the site configuration.
-        """
+        """Queries Gemini to generate the dynamic site and style configuration."""
         prefs_text = self._load_user_preferences(user_id)
         
         user_input = f"""
@@ -259,13 +271,14 @@ EXTRACTED DOCUMENT CONTEXT:
                     "letter_spacing": "0.1em",
                     "text_transform": "uppercase",
                     "breathing_anim": "none",
-                    "breathing_anim_hover": "none"
+                    "breathing_anim_hover": "none",
+                    "video_style": "CYBER_NET",
+                    "video_interactivity": "3D_TILT"
                 },
                 "geometry_type": "TORUS",
                 "sitemap": [
                     {"name": "Home", "file": "index.html"},
-                    {"name": "Terminal", "file": "terminal.html"},
-                    {"name": "Security", "file": "security.html"}
+                    {"name": "Terminal", "file": "terminal.html"}
                 ],
                 "page_contexts": {
                     "index.html": {
@@ -273,24 +286,7 @@ EXTRACTED DOCUMENT CONTEXT:
                         "subtitle": "Surgical precision architecture designed dynamically.",
                         "features": [
                             {"icon": "⚡", "title": "Latency Zero", "description": "Sub-millisecond data feeds and execution layers."},
-                            {"icon": "📟", "title": "EVM Grid", "description": "Parallel virtual machines operating natively."},
-                            {"icon": "🛡️", "title": "Sovereign Shield", "description": "Air-gapped verification nodes and signature seals."}
-                        ]
-                    },
-                    "terminal.html": {
-                        "title": "DATA TERMINAL",
-                        "subtitle": "Real-time liquidity bridge and transaction dispatch.",
-                        "features": [
-                            {"icon": "📊", "title": "Stream Metrics", "description": "Live web-socket based telemetry visualization."},
-                            {"icon": "🧬", "title": "Synthetics", "description": "Derivative liquidity generation protocols."}
-                        ]
-                    },
-                    "security.html": {
-                        "title": "BLACK BOX",
-                        "subtitle": "Hardened modular cryptography layers.",
-                        "features": [
-                            {"icon": "🔑", "title": "Quantum Keys", "description": "Post-quantum lattice based signer keys."},
-                            {"icon": "📡", "title": "Mesh Protocol", "description": "Decentralized secure peer routing network."}
+                            {"icon": "📟", "title": "EVM Grid", "description": "Parallel virtual machines operating natively."}
                         ]
                     }
                 },
@@ -299,58 +295,6 @@ EXTRACTED DOCUMENT CONTEXT:
                 }
             }
         
-        # Wellness/Organic Fallback
-        elif "wellness" in m or "nature" in m or "flow" in m:
-            return {
-                "project_name": "AETHER_FLOW",
-                "tokens": {
-                    "bg_color": "#090b09",
-                    "text_color": "#e8eaf6",
-                    "accent_primary": "#a8e6cf",
-                    "accent_primary_hex": "0xa8e6cf",
-                    "glass_blur": "40px",
-                    "grid_radius": "40px",
-                    "btn_radius": "100px",
-                    "void_blur": "120px",
-                    "font_heading": "'Playfair Display'",
-                    "font_body": "'Inter'",
-                    "ease_vibe": "cubic-bezier(0.4, 0, 0.2, 1)",
-                    "duration_vibe": "1.2s",
-                    "hover_glow": "0 20px 40px rgba(168, 230, 207, 0.2)",
-                    "letter_spacing": "-0.02em",
-                    "text_transform": "none",
-                    "breathing_anim": "aether-breath",
-                    "breathing_anim_hover": "aether-breath-deep"
-                },
-                "geometry_type": "SPHERE",
-                "sitemap": [
-                    {"name": "Home", "file": "index.html"},
-                    {"name": "Sanctuary", "file": "sanctuary.html"}
-                ],
-                "page_contexts": {
-                    "index.html": {
-                        "title": "Breathe Into Stillness",
-                        "subtitle": "A tranquil digital sanctuary harmonizing organic systems with minimal light geometry.",
-                        "features": [
-                            {"icon": "🌿", "title": "Living Spaces", "description": "Holistic layout ecosystems adapting to your natural pace."},
-                            {"icon": "✨", "title": "Aura Alignment", "description": "Dynamic frequencies designed to calibrate mental clarity."},
-                            {"icon": "🌊", "title": "Flow State", "description": "Fluid visual systems flowing gracefully without abrupt interruptions."}
-                        ]
-                    },
-                    "sanctuary.html": {
-                        "title": "The Inner Sanctuary",
-                        "subtitle": "Ethereal mists and soft mutes to guide your sensory focus.",
-                        "features": [
-                            {"icon": "🕯️", "title": "Calm Room", "description": "Zero distraction zones containing pure ambient soundscapes."},
-                            {"icon": "🌬️", "title": "Lumina", "description": "Deep volumetric light rays that respond to scroll velocity."}
-                        ]
-                    }
-                },
-                "hero_global": {
-                    "cta": "BEGIN_FLOW"
-                }
-            }
-
         # Premium Universal Fallback
         return {
             "project_name": "AURA_REALM",
@@ -371,29 +315,20 @@ EXTRACTED DOCUMENT CONTEXT:
                 "letter_spacing": "-0.01em",
                 "text_transform": "none",
                 "breathing_anim": "none",
-                "breathing_anim_hover": "none"
+                "breathing_anim_hover": "none",
+                "video_style": "COSMIC_NEBULA",
+                "video_interactivity": "MAGNETIC_FOLLOW"
             },
             "geometry_type": "OCTA",
             "sitemap": [
-                {"name": "Home", "file": "index.html"},
-                {"name": "Work", "file": "work.html"}
+                {"name": "Home", "file": "index.html"}
             ],
             "page_contexts": {
                 "index.html": {
                     "title": "EXPERIENCE THE ABYSS",
                     "subtitle": "A premium design crafted to push the limits of modern elegant web architecture.",
                     "features": [
-                        {"icon": "💎", "title": "Sovereign Build", "description": "Stunning aesthetics, ultra-fluid interactions, bespoke layouts."},
-                        {"icon": "👁️", "title": "Mind's Eye", "description": "Every element calibrated to create visual delight and wow the user."},
-                        {"icon": "🎨", "title": "Harmonious DNA", "description": "Fully immersive themes that adjust automatically to reflect true brand essence."}
-                    ]
-                },
-                "work.html": {
-                    "title": "Bespoke Portfolios",
-                    "subtitle": "A curated grid of our finest technological art forms.",
-                    "features": [
-                        {"icon": "📁", "title": "Bespoke Designs", "description": "Highly custom pages matching specific visual prompts."},
-                        {"icon": "🔮", "title": "Ethereal Spheres", "description": "Interactive wireframes render perfectly in 3D."}
+                        {"icon": "💎", "title": "Sovereign Build", "description": "Stunning aesthetics, ultra-fluid interactions, bespoke layouts."}
                     ]
                 }
             },

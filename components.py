@@ -57,7 +57,11 @@ IMAGE_HERO_TEMPLATE = """
 
 VIDEO_HERO_TEMPLATE = """
 <section class="hero [[layout_class]]" id="hero" style="background: var(--bg-color) !important; min-height: 100vh; display: flex; align-items: center; justify-content: center; position: relative; overflow: hidden;">
-    <div id="void-canvas" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; opacity: 0.3; filter: blur(var(--void-blur));"></div>
+    <div style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 2; background: linear-gradient(to bottom, rgba(0,0,0,0.5) 0%, var(--bg-color) 100%); pointer-events: none;"></div>
+    <video autoplay loop muted playsinline id="hero-bg-video" style="position: absolute; top: -5%; left: -5%; width: 110%; height: 110%; object-fit: cover; z-index: 1; opacity: 0.35; filter: saturate(0.8) contrast(1.1); pointer-events: none; transform: scale(1.05); transition: transform 0.1s ease-out;">
+        <source src="[[video_url]]" type="video/mp4">
+    </video>
+    <div id="void-canvas" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; opacity: 0.2; z-index: 3; pointer-events: none;"></div>
     <div class="hero-content" style="position: relative; z-index: 10; text-align: center;">
         <h1 class="reveal" style="font-size: clamp(3rem, 10vw, 6rem); letter-spacing: -0.04em; line-height: 0.95; font-weight: 700;">[[title]]</h1>
         <p class="reveal" style="font-size: 1.25rem; opacity: 0.6; margin-top: 2rem; max-width: 650px; margin-left: auto; margin-right: auto; line-height: 1.6; font-weight: 300;">[[subtitle]]</p>
@@ -67,6 +71,7 @@ VIDEO_HERO_TEMPLATE = """
     </div>
 </section>
 """
+
 
 FEATURE_GRID_TEMPLATE = """
 <section class="features" style="padding: 12rem 2rem; background: var(--bg-color); position: relative;">
@@ -254,12 +259,83 @@ GSAP_SCRIPT = """
         }
         animate();
 
-        // Mouse Interactivity for Three.js
+        // Mouse Interactivity for Three.js & Background Video Parallax (Viktor's Interactivity)
+        const interactModel = "[[video_interactivity]]";
+        const video = document.getElementById('hero-bg-video');
+
+        // Initialize Ambient Breath for BREATHING_ZOOM
+        if (video && interactModel === "BREATHING_ZOOM") {
+            gsap.to(video, {
+                scale: 1.07,
+                duration: 4,
+                repeat: -1,
+                yoyo: true,
+                ease: "power1.inOut"
+            });
+        }
+
+        // Initialize Ambient Float for AMBIENT_DRIFT
+        if (video && interactModel === "AMBIENT_DRIFT") {
+            // Auto drift loops
+            gsap.to(video, {
+                x: 15,
+                y: 10,
+                duration: 8,
+                repeat: -1,
+                yoyo: true,
+                ease: "sine.inOut"
+            });
+            // Parallax scroll glide
+            gsap.to(video, {
+                scrollTrigger: {
+                    trigger: "#hero",
+                    start: "top top",
+                    end: "bottom top",
+                    scrub: true
+                },
+                yPercent: 12,
+                ease: "none"
+            });
+        }
+
         window.addEventListener('mousemove', (e) => {
             const x = (e.clientX / window.innerWidth - 0.5) * 2;
             const y = (e.clientY / window.innerHeight - 0.5) * 2;
             gsap.to(sphere.rotation, { y: x, x: -y, duration: 2 });
+
+            if (video) {
+                if (interactModel === "3D_TILT") {
+                    const tiltX = (window.innerWidth / 2 - e.clientX) / 40;
+                    const tiltY = (window.innerHeight / 2 - e.clientY) / 40;
+                    gsap.to(video, {
+                        transform: `perspective(1000px) rotateX(${tiltY}deg) rotateY(${-tiltX}deg) scale(1.08)`,
+                        duration: 1.5,
+                        ease: "power2.out"
+                    });
+                } else if (interactModel === "MAGNETIC_FOLLOW") {
+                    const shiftX = (e.clientX - window.innerWidth / 2) * 0.05;
+                    const shiftY = (e.clientY - window.innerHeight / 2) * 0.05;
+                    gsap.to(video, {
+                        x: shiftX,
+                        y: shiftY,
+                        scale: 1.12,
+                        duration: 2,
+                        ease: "power2.out"
+                    });
+                } else if (interactModel === "BREATHING_ZOOM") {
+                    const dist = Math.hypot(e.clientX - window.innerWidth/2, e.clientY - window.innerHeight/2);
+                    const maxDist = Math.hypot(window.innerWidth/2, window.innerHeight/2);
+                    const factor = 1 - (dist / maxDist);
+                    gsap.to(video, {
+                        scale: 1.05 + (factor * 0.06),
+                        duration: 2,
+                        ease: "power1.out"
+                    });
+                }
+            }
         });
+
+
 
         // Scroll Parallax for Three.js
         gsap.to(sphere.position, {
