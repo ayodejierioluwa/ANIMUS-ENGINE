@@ -304,6 +304,13 @@ DASHBOARD_HTML = """
             }
         }
 
+        // Retrieve or generate unique persistent client identifier
+        let animusUserId = localStorage.getItem('animus_user_id');
+        if (!animusUserId) {
+            animusUserId = 'user_' + Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
+            localStorage.setItem('animus_user_id', animusUserId);
+        }
+
         async function ignite() {
             const status = document.getElementById('status');
             const results = document.getElementById('results');
@@ -313,6 +320,7 @@ DASHBOARD_HTML = """
             const formData = new FormData();
             formData.append('mission', document.getElementById('mission').value);
             formData.append('html', document.getElementById('html-injection').value);
+            formData.append('user_id', animusUserId);
             if (document.getElementById('file-upload').files[0]) formData.append('file', document.getElementById('file-upload').files[0]);
 
             const response = await fetch('/generate', { method: 'POST', body: formData });
@@ -364,6 +372,7 @@ def extract_file_content(filepath):
 def generate():
     mission = request.form.get('mission', 'Autonomous Project')
     html_injection = request.form.get('html', '')
+    user_id = request.form.get('user_id', 'anonymous')
     file = request.files.get('file')
     extracted_text = ""
     if file:
@@ -373,7 +382,7 @@ def generate():
         extracted_text = extract_file_content(filepath)
 
     total_mission = f"{mission}. Context: {extracted_text}. HTML: {html_injection}"
-    engine.generate_project(total_mission)
+    engine.generate_project(total_mission, user_id=user_id)
     return jsonify({"status": "success", "url": "/static/projects/index.html"})
 
 @app.route('/api/list_files')
@@ -395,7 +404,8 @@ def serve_project(path):
 def bridge():
     data = request.json
     mission = data.get('mission')
-    engine.generate_project(mission)
+    user_id = data.get('user_id', 'telegram_user')
+    engine.generate_project(mission, user_id=user_id)
     return jsonify({"status": "success", "url": "/static/projects/index.html"})
 
 if __name__ == '__main__':

@@ -9,6 +9,7 @@ from components import (
 )
 from soul_generator import AnimusSoul
 from animus_sentry import AnimusSentry
+from animus_brain import AnimusBrain
 
 class AnimusEngine:
     def __init__(self, output_dir="generated_site"):
@@ -16,15 +17,15 @@ class AnimusEngine:
         self.project_name = "Aether Project"
         self.sentry = AnimusSentry()
         
-    def generate_project(self, mission, hero_image=None):
+    def generate_project(self, mission, hero_image=None, user_id=None):
         """
         The 'Master Build' Command.
-        Now integrates an autonomous Self-Correction Critique Loop.
+        Now integrates an autonomous Self-Correction Critique Loop and Adaptive User Preference Learning.
         """
-        print(f"🚀 IGNITING PROJECT (Generation Phase 1): {mission}")
+        print(f"🚀 IGNITING PROJECT (Generation Phase 1) for user {user_id}: {mission}")
         
         # Iteration 1: Initial Generation
-        soul = AnimusSoul(mission)
+        soul = AnimusSoul(mission, user_id=user_id)
         soul_data = soul.get_soul()
         self.project_name = soul_data["project_name"]
         
@@ -40,7 +41,7 @@ class AnimusEngine:
             print("🔄 IGNITING PROJECT (Self-Correction Phase 2): Querying critic layer...")
             
             # Iteration 2: Self-Correction Loop
-            corrected_soul = AnimusSoul(mission, critique=critiques)
+            corrected_soul = AnimusSoul(mission, critique=critiques, user_id=user_id)
             corrected_soul_data = corrected_soul.get_soul()
             self.project_name = corrected_soul_data["project_name"]
             
@@ -52,14 +53,38 @@ class AnimusEngine:
             second_audit = self.sentry.audit_project(generated_files)
             if second_audit:
                 print("✅ SELF-CORRECTION SUCCESSFUL: Visual layout errors resolved.")
+                # Learn preferences since the build successfully passed
+                if user_id and user_id != "anonymous":
+                    self._learn_user_style_preferences(user_id, corrected_soul_data["tokens"])
             else:
                 print("⚠️ SELF-CORRECTION PARTIAL: Audits completed with minor styling items.")
                 self.sentry.report_issues()
         else:
             print("✅ AUDIT PASSED: Visual contrast, template tags, and layer stacks are pristine.")
+            # Learn preferences since the build successfully passed immediately
+            if user_id and user_id != "anonymous":
+                self._learn_user_style_preferences(user_id, soul_data["tokens"])
             
         print(f"✅ PROJECT COMPLETE: {len(generated_files)} pages compiled.")
         return generated_files
+
+    def _learn_user_style_preferences(self, user_id, tokens):
+        """Analyzes the successful styling choices and records them as user-scoped preferences."""
+        pref_mappings = {
+            "font_heading": "preferred_heading_font",
+            "font_body": "preferred_body_font",
+            "bg_color": "preferred_bg_color",
+            "accent_primary": "preferred_accent_color",
+            "geometry_type": "preferred_3d_geometry"
+        }
+        try:
+            brain = AnimusBrain()
+            for token_key, pref_key in pref_mappings.items():
+                if token_key in tokens:
+                    brain.save_user_preference(user_id, pref_key, tokens[token_key])
+            print(f"📈 MACHINE LEARNING: User {user_id} styling preferences parsed and learned successfully.")
+        except Exception as e:
+            print(f"⚠️ Preference learning failed: {e}")
 
     def _assemble_site_files(self, soul_data, mission, hero_image):
         generated_files = []

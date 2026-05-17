@@ -117,9 +117,18 @@ class AnimusBrain:
         try:
             conn = sqlite3.connect(self.db_path)
             cursor = conn.cursor()
-            # If the database supports multiple chat_ids/user_ids, query specifically for that user
-            # Otherwise fall back gracefully
-            cursor.execute("SELECT pref_key, pref_value FROM user_preferences")
+            # Create multi-user preference table if it does not exist
+            cursor.execute('''
+                CREATE TABLE IF NOT EXISTS user_preferences_multi (
+                    user_id TEXT,
+                    pref_key TEXT,
+                    pref_value TEXT,
+                    confidence INTEGER DEFAULT 1,
+                    updated_at TEXT,
+                    PRIMARY KEY (user_id, pref_key)
+                )
+            ''')
+            cursor.execute("SELECT pref_key, pref_value FROM user_preferences_multi WHERE user_id = ?", (user_id,))
             rows = cursor.fetchall()
             conn.close()
             if rows:
@@ -128,6 +137,35 @@ class AnimusBrain:
         except Exception as e:
             logger.error(f"Error loading preferences in AnimusBrain: {e}")
         return "No custom user-scoped preferences specified."
+
+    def save_user_preference(self, user_id, key, value):
+        """Saves a learned habit/preference specifically for a unique user_id."""
+        if not user_id or not os.path.exists(self.db_path):
+            return
+        try:
+            import datetime
+            conn = sqlite3.connect(self.db_path)
+            cursor = conn.cursor()
+            cursor.execute('''
+                CREATE TABLE IF NOT EXISTS user_preferences_multi (
+                    user_id TEXT,
+                    pref_key TEXT,
+                    pref_value TEXT,
+                    confidence INTEGER DEFAULT 1,
+                    updated_at TEXT,
+                    PRIMARY KEY (user_id, pref_key)
+                )
+            ''')
+            updated_at = datetime.datetime.now().isoformat()
+            cursor.execute("""
+                INSERT OR REPLACE INTO user_preferences_multi (user_id, pref_key, pref_value, updated_at)
+                VALUES (?, ?, ?, ?)
+            """, (user_id, key, value, updated_at))
+            conn.commit()
+            conn.close()
+            logger.info(f"Learned preference for user {user_id}: {key} = {value}")
+        except Exception as e:
+            logger.error(f"Error saving preference in AnimusBrain: {e}")
 
     def generate_soul_data(self, mission_prompt, doc_context="", critique="", user_id=None):
         """
@@ -139,7 +177,7 @@ class AnimusBrain:
         user_input = f"""
 MISSION: {mission_prompt}
 
-ADAPTIVE USER PREFERENCES (LEARNED HABITS):
+ADAPTIVE USER PREFERENCES (LEARNED HABITS FOR THIS USER):
 {prefs_text}
 
 EXTRACTED DOCUMENT CONTEXT:

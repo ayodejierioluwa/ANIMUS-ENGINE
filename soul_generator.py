@@ -8,11 +8,12 @@ logger = logging.getLogger(__name__)
 class AnimusSoul:
     """
     The 'Soul' of the Animus Engine.
-    Powered by the new ANIMUS Brain running on CORTEX intelligence with cognitive critique capabilities.
+    Powered by the new ANIMUS Brain running on CORTEX intelligence with cognitive critique capabilities and multi-user tracking.
     """
-    def __init__(self, mission_prompt, critique=None):
+    def __init__(self, mission_prompt, critique=None, user_id=None):
         self.mission = mission_prompt
         self.critique = critique
+        self.user_id = user_id
         self.brain = AnimusBrain()
         self.soul_data = self._ignite_consciousness()
 
@@ -20,9 +21,11 @@ class AnimusSoul:
         logger.info(f"Igniting consciousness for mission: {self.mission[:100]}...")
         if self.critique:
             logger.info(f"Applying self-correction critique feedback: {self.critique[:150]}")
+        if self.user_id:
+            logger.info(f"Loading isolated styling memories for user: {self.user_id}")
         
         # We query the AnimusBrain to generate a bespoke web design configuration
-        brain_data = self.brain.generate_soul_data(self.mission, critique=self.critique)
+        brain_data = self.brain.generate_soul_data(self.mission, critique=self.critique, user_id=self.user_id)
         
         # Extract details with resilient defaults matching the old keys
         project_name = brain_data.get("project_name", "AETHER_PROJ")
