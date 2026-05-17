@@ -1,7 +1,7 @@
 import os
 import json
 import logging
-import time
+import sqlite3
 import google.generativeai as genai
 from dotenv import load_dotenv
 
@@ -13,7 +13,7 @@ load_dotenv()
 
 SYSTEM_PROMPT = """
 You are the ANIMUS Core Web Architect AI.
-Your purpose is to analyze the user's mission prompt and any extracted document context to design a visually stunning, highly premium, custom web architecture.
+Your purpose is to analyze the user's mission prompt, any extracted document context, and adaptive user preferences to design a visually stunning, highly premium, custom web architecture.
 Do NOT use plain or generic styles. Create harmonious, professional, premium color schemes (e.g. HSL tailored, glowing deep dark space, premium glassmorphism, luxury marble gold, deep cyber emerald, soft organic mist, solar copper, obsidian violet).
 
 You will output a JSON object configuring the website's soul.
@@ -97,6 +97,7 @@ class AnimusBrain:
         raw_keys = os.getenv("CORTEX_GEMINI_KEYS") or os.getenv("GEMINI_API_KEY") or ""
         self.keys = [k.strip() for k in raw_keys.split(",") if k.strip()]
         self.current_key_index = 0
+        self.db_path = "/Users/macbook/.gemini/antigravity/scratch/aether_companion/laura_memory.db"
         logger.info(f"ANIMUS Brain initialized with {len(self.keys)} rotating keys from CORTEX environment.")
 
     def _get_next_key(self):
@@ -106,17 +107,42 @@ class AnimusBrain:
         self.current_key_index = (self.current_key_index + 1) % len(self.keys)
         return key
 
-    def generate_soul_data(self, mission_prompt, doc_context=""):
+    def _load_user_preferences(self):
+        """Loads SQLite preferences dynamically to learn user habits (e.g., color choices, CSS preferences)."""
+        if not os.path.exists(self.db_path):
+            return "No custom preferences recorded yet."
+        try:
+            conn = sqlite3.connect(self.db_path)
+            cursor = conn.cursor()
+            cursor.execute("SELECT pref_key, pref_value FROM user_preferences")
+            rows = cursor.fetchall()
+            conn.close()
+            if rows:
+                prefs = [f"- {key}: {val}" for key, val in rows]
+                return "\n".join(prefs)
+        except Exception as e:
+            logger.error(f"Error loading preferences in AnimusBrain: {e}")
+        return "No custom preferences recorded yet."
+
+    def generate_soul_data(self, mission_prompt, doc_context="", critique=""):
         """
-        Queries Gemini with the mission and document context to generate
-        a highly dynamic, styled, and customized website configuration.
+        Queries Gemini with the mission, document context, user preferences,
+        and optional self-correction critiques to generate the site configuration.
         """
+        prefs_text = self._load_user_preferences()
+        
         user_input = f"""
 MISSION: {mission_prompt}
+
+ADAPTIVE USER PREFERENCES (LEARNED HABITS):
+{prefs_text}
 
 EXTRACTED DOCUMENT CONTEXT:
 {doc_context}
 """
+
+        if critique:
+            user_input += f"\n\n### CRITICAL SELF-CORRECTION AUDIT WARNING ###\nYour previous output failed validation. Please fix these layout/UX issues:\n{critique}\nMake sure to return corrected configurations!"
 
         # Choose the best models to try
         models = [

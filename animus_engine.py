@@ -8,22 +8,60 @@ from components import (
     SENTRY_REPORT_TEMPLATE, SOVEREIGN_SEAL_TEMPLATE
 )
 from soul_generator import AnimusSoul
+from animus_sentry import AnimusSentry
 
 class AnimusEngine:
     def __init__(self, output_dir="generated_site"):
         self.output_dir = output_dir
         self.project_name = "Aether Project"
+        self.sentry = AnimusSentry()
         
     def generate_project(self, mission, hero_image=None):
         """
         The 'Master Build' Command.
-        Now integrates the 'Mind's Eye' visual.
+        Now integrates an autonomous Self-Correction Critique Loop.
         """
-        print(f"🚀 IGNITING PROJECT: {mission}")
+        print(f"🚀 IGNITING PROJECT (Generation Phase 1): {mission}")
+        
+        # Iteration 1: Initial Generation
         soul = AnimusSoul(mission)
         soul_data = soul.get_soul()
         self.project_name = soul_data["project_name"]
         
+        generated_files = self._assemble_site_files(soul_data, mission, hero_image)
+        
+        # Heuristic & LLM Design Audit
+        print("🕵️ ANIMUS SENTRY: Initiating layout, contrast, and visual audit...")
+        audit_passed = self.sentry.audit_project(generated_files)
+        
+        if not audit_passed:
+            critiques = "\n".join(self.sentry.issues)
+            print(f"⚠️ AUDIT WARNING: Design flaws detected in Phase 1:\n{critiques}")
+            print("🔄 IGNITING PROJECT (Self-Correction Phase 2): Querying critic layer...")
+            
+            # Iteration 2: Self-Correction Loop
+            corrected_soul = AnimusSoul(mission, critique=critiques)
+            corrected_soul_data = corrected_soul.get_soul()
+            self.project_name = corrected_soul_data["project_name"]
+            
+            # Re-assemble pages with the corrected configuration
+            generated_files = self._assemble_site_files(corrected_soul_data, mission, hero_image)
+            
+            # Re-run Sentry Audit to certify the changes
+            print("🕵️ ANIMUS SENTRY: Re-auditing corrected designs...")
+            second_audit = self.sentry.audit_project(generated_files)
+            if second_audit:
+                print("✅ SELF-CORRECTION SUCCESSFUL: Visual layout errors resolved.")
+            else:
+                print("⚠️ SELF-CORRECTION PARTIAL: Audits completed with minor styling items.")
+                self.sentry.report_issues()
+        else:
+            print("✅ AUDIT PASSED: Visual contrast, template tags, and layer stacks are pristine.")
+            
+        print(f"✅ PROJECT COMPLETE: {len(generated_files)} pages compiled.")
+        return generated_files
+
+    def _assemble_site_files(self, soul_data, mission, hero_image):
         generated_files = []
         for page in soul_data["sitemap"]:
             file_name = page["file"].replace(".html", "")
@@ -31,8 +69,6 @@ class AnimusEngine:
             image = hero_image if file_name == "index" else None
             file_path = self.generate_page(file_name, {"mission": mission}, soul_data=soul_data, hero_image=image)
             generated_files.append(file_path)
-            
-        print(f"✅ PROJECT COMPLETE: {len(generated_files)} pages generated.")
         return generated_files
 
     def generate_page(self, page_name, data, soul_data=None, hero_image=None):
