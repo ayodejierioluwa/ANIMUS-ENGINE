@@ -66,8 +66,8 @@ class AnimusSoul:
             "CYBER_NET": "/static/videos/cyber_net.mp4",
             "ORGANIC_WAVE": "/static/videos/organic_wave.mp4",
             "GOLD_DUST": "/static/videos/organic_wave.mp4",
-            "FIRE_EMBER": "/static/videos/organic_wave.mp4",
-            "DARK_ENERGY": "/static/videos/organic_wave.mp4",
+            "FIRE_EMBER": "/static/videos/cyber_net.mp4",
+            "DARK_ENERGY": "/static/videos/cyber_net.mp4",
             "COSMIC_NEBULA": "/static/videos/organic_wave.mp4"
         }
         
