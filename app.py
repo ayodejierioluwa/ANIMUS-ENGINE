@@ -331,6 +331,35 @@ DASHBOARD_HTML = """
 def index():
     return DASHBOARD_HTML
 
+def extract_file_content(filepath):
+    import os
+    ext = os.path.splitext(filepath)[1].lower()
+    text = ""
+    if ext == '.pdf':
+        try:
+            import pypdf
+            reader = pypdf.PdfReader(filepath)
+            for page in reader.pages:
+                t = page.extract_text()
+                if t:
+                    text += t + "\n"
+        except Exception as e:
+            text = f"[PDF Parse Error: {e}]"
+    elif ext in ['.docx', '.doc']:
+        try:
+            import docx
+            doc = docx.Document(filepath)
+            text = "\n".join([p.text for p in doc.paragraphs])
+        except Exception as e:
+            text = f"[DOCX Parse Error: {e}]"
+    else:
+        try:
+            with open(filepath, 'r', errors='ignore', encoding='utf-8') as f:
+                text = f.read()
+        except Exception as e:
+            text = f"[Text File Parse Error: {e}]"
+    return text
+
 @app.route('/generate', methods=['POST'])
 def generate():
     mission = request.form.get('mission', 'Autonomous Project')
@@ -341,13 +370,10 @@ def generate():
         filename = werkzeug.utils.secure_filename(file.filename)
         filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
         file.save(filepath)
-        try:
-            with open(filepath, 'r', errors='ignore') as f:
-                extracted_text = f.read()
-        except: extracted_text = "File uploaded."
+        extracted_text = extract_file_content(filepath)
 
     total_mission = f"{mission}. Context: {extracted_text}. HTML: {html_injection}"
-    engine.generate_project(total_mission[:500])
+    engine.generate_project(total_mission)
     return jsonify({"status": "success", "url": "/static/projects/index.html"})
 
 @app.route('/api/list_files')
