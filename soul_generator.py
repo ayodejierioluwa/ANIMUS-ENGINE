@@ -90,6 +90,8 @@ class AnimusSoul:
             tokens["glass_bg_token"] = "rgba(0, 0, 0, 0.03)"
             tokens["glass_border_token"] = "rgba(0, 0, 0, 0.07)"
             tokens["vignette_token"] = "radial-gradient(circle, transparent 40%, rgba(0,0,0,0.03) 100%)"
+            tokens["overlay_gradient_token"] = "linear-gradient(to bottom, rgba(255, 255, 255, 0.15) 0%, var(--bg-color) 100%)"
+            tokens["video_opacity_token"] = "0.55"
             # Auto-align contrasting text color if the brain didn't generate one
             if tokens.get("text_color") == "#ffffff":
                 tokens["text_color"] = "#0d0e12"
@@ -98,6 +100,8 @@ class AnimusSoul:
             tokens["glass_bg_token"] = "rgba(255, 255, 255, 0.03)"
             tokens["glass_border_token"] = "rgba(255, 255, 255, 0.1)"
             tokens["vignette_token"] = "radial-gradient(circle, transparent 20%, rgba(0,0,0,0.6) 100%)"
+            tokens["overlay_gradient_token"] = "linear-gradient(to bottom, rgba(0, 0, 0, 0.35) 0%, var(--bg-color) 100%)"
+            tokens["video_opacity_token"] = "0.65"
             # Auto-align contrasting text color if the brain didn't generate one
             if tokens.get("text_color") == "#0d0e12":
                 tokens["text_color"] = "#ffffff"

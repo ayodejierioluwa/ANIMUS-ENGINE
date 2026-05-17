@@ -383,7 +383,8 @@ def generate():
 
     total_mission = f"{mission}. Context: {extracted_text}. HTML: {html_injection}"
     engine.generate_project(total_mission, user_id=user_id)
-    return jsonify({"status": "success", "url": "/static/projects/index.html"})
+    import time
+    return jsonify({"status": "success", "url": f"/static/projects/index.html?t={int(time.time())}"})
 
 @app.route('/api/list_files')
 def list_files():
@@ -406,7 +407,8 @@ def bridge():
     mission = data.get('mission')
     user_id = data.get('user_id', 'telegram_user')
     engine.generate_project(mission, user_id=user_id)
-    return jsonify({"status": "success", "url": "/static/projects/index.html"})
+    import time
+    return jsonify({"status": "success", "url": f"/static/projects/index.html?t={int(time.time())}"})
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=int(os.environ.get('PORT', 5000)))

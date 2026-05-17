@@ -7,7 +7,7 @@ NAV_BAR_TEMPLATE = """
         [[nav_links]]
     </div>
     <div class="nav-cta">
-        <a href="#" style="background: white; color: black; padding: 0.5rem 1.5rem; border-radius: 50px; text-decoration: none; font-size: 0.8rem; font-weight: 700; letter-spacing: 0.05em; transition: transform 0.3s var(--ease-vibe); display: inline-block;">[[cta_text]]</a>
+        <a href="#" style="background: var(--text-color); color: var(--bg-color); padding: 0.5rem 1.5rem; border-radius: 50px; text-decoration: none; font-size: 0.8rem; font-weight: 700; letter-spacing: 0.05em; transition: transform 0.3s var(--ease-vibe); display: inline-block;">[[cta_text]]</a>
     </div>
 </nav>
 <style>
@@ -16,12 +16,12 @@ NAV_BAR_TEMPLATE = """
 """
 
 NAV_LINK_TEMPLATE = """
-<a href="[[link]]" class="nav-item [[active_class]]" style="text-decoration: none; color: white; font-size: 0.8rem; font-weight: 400; letter-spacing: 0.05em; transition: all 0.3s var(--ease-vibe); font-family: var(--font-body); position: relative; padding: 0.5rem 0;">
+<a href="[[link]]" class="nav-item [[active_class]]" style="text-decoration: none; color: var(--text-color); font-size: 0.8rem; font-weight: 400; letter-spacing: 0.05em; transition: all 0.3s var(--ease-vibe); font-family: var(--font-body); position: relative; padding: 0.5rem 0;">
     [[name]]
-    <div class="active-indicator" style="position: absolute; bottom: 0; left: 0; width: 100%; height: 2px; background: white; transition: transform 0.3s var(--ease-vibe); border-radius: 2px; transform: scaleX(0); transform-origin: left;"></div>
+    <div class="active-indicator" style="position: absolute; bottom: 0; left: 0; width: 100%; height: 2px; background: var(--accent-primary); transition: transform 0.3s var(--ease-vibe); border-radius: 2px; transform: scaleX(0); transform-origin: left;"></div>
 </a>
 <style>
-    .nav-item { opacity: 0.5; }
+    .nav-item { opacity: 0.6; }
     .nav-item:hover { opacity: 1; }
     .nav-item.active { opacity: 1; font-weight: 700; }
     .nav-item.active .active-indicator { transform: scaleX(1) !important; }
@@ -57,8 +57,8 @@ IMAGE_HERO_TEMPLATE = """
 
 VIDEO_HERO_TEMPLATE = """
 <section class="hero [[layout_class]]" id="hero" style="background: var(--bg-color) !important; min-height: 100vh; display: flex; align-items: center; justify-content: center; position: relative; overflow: hidden;">
-    <div style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 2; background: linear-gradient(to bottom, rgba(0,0,0,0.5) 0%, var(--bg-color) 100%); pointer-events: none;"></div>
-    <video autoplay loop muted playsinline id="hero-bg-video" style="position: absolute; top: -5%; left: -5%; width: 110%; height: 110%; object-fit: cover; z-index: 1; opacity: 0.35; filter: saturate(0.8) contrast(1.1); pointer-events: none; transform: scale(1.05); transition: transform 0.1s ease-out;">
+    <div style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 2; background: [[overlay_gradient_token]]; pointer-events: none;"></div>
+    <video autoplay loop muted playsinline id="hero-bg-video" style="position: absolute; top: -5%; left: -5%; width: 110%; height: 110%; object-fit: cover; z-index: 1; opacity: [[video_opacity_token]]; filter: saturate(0.8) contrast(1.1); pointer-events: none; transform: scale(1.05); transition: transform 0.1s ease-out;">
         <source src="[[video_url]]" type="video/mp4">
     </video>
     <div id="void-canvas" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; opacity: 0.2; z-index: 3; pointer-events: none;"></div>
@@ -86,17 +86,17 @@ FEATURE_GRID_TEMPLATE = """
 
 FEATURE_ITEM_TEMPLATE = """
 <div class="feature-item" style="background: var(--glass-bg); border: 1px solid var(--glass-border); padding: 4rem; border-radius: var(--grid-radius); backdrop-filter: blur(var(--glass-blur)); transition: all 0.5s cubic-bezier(0.2, 0.8, 0.2, 1); position: relative; overflow: hidden;">
-    <div style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(135deg, rgba(255,255,255,0.05) 0%, transparent 100%); pointer-events: none;"></div>
+    <div style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(135deg, rgba(255,255,255,0.01) 0%, transparent 100%); pointer-events: none;"></div>
     <div class="icon" style="font-size: 2.5rem; margin-bottom: 2rem; filter: drop-shadow(0 0 15px var(--accent-primary));">[[icon]]</div>
-    <h3 style="font-size: 1.75rem; margin-bottom: 1.5rem; color: white; font-weight: 600; letter-spacing: -0.02em;">[[title]]</h3>
-    <p style="opacity: 0.5; line-height: 1.8; font-size: 1.05rem; font-weight: 300;">[[description]]</p>
+    <h3 style="font-size: 1.75rem; margin-bottom: 1.5rem; color: var(--text-color); font-weight: 600; letter-spacing: -0.02em;">[[title]]</h3>
+    <p style="color: var(--text-color); opacity: 0.7; line-height: 1.8; font-size: 1.05rem; font-weight: 300;">[[description]]</p>
 </div>
 <style>
     .feature-item:hover {
         transform: translateY(-15px) scale(1.02);
         border-color: var(--accent-primary);
-        background: rgba(255,255,255,0.06);
-        box-shadow: 0 30px 60px rgba(0,0,0,0.5);
+        background: var(--glass-bg);
+        box-shadow: 0 30px 60px rgba(0,0,0,0.15);
     }
     .btn-primary:hover {
         transform: scale(1.05);
@@ -200,7 +200,7 @@ SOVEREIGN_SEAL_TEMPLATE = """
 """
 
 FOOTER_TEMPLATE = """
-<footer style="padding: 4rem 2rem; text-align: center; color: rgba(255,255,255,0.4); border-top: 1px solid var(--glass-border);">
+<footer style="padding: 4rem 2rem; text-align: center; color: var(--text-color); opacity: 0.6; border-top: 1px solid var(--glass-border);">
     <p>&copy; 2026 AETHER_ANIMUS | Built for {project_name}</p>
 </footer>
 """
