@@ -441,5 +441,16 @@ def bridge():
     import time
     return jsonify({"status": "success", "url": f"/static/projects/index.html?t={int(time.time())}"})
 
+@app.after_request
+def add_header(r):
+    """
+    Add headers to force cache-control = no-cache, no-store for development pages.
+    """
+    if "static/projects" in request.path or request.path.endswith(".html"):
+        r.headers["Cache-Control"] = "no-cache, no-store, must-revalidate, public, max-age=0"
+        r.headers["Pragma"] = "no-cache"
+        r.headers["Expires"] = "0"
+    return r
+
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=int(os.environ.get('PORT', 5000)))

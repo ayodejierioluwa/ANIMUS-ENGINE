@@ -16,15 +16,16 @@ You are the ANIMUS Core Web Architect AI.
 Your purpose is to analyze the user's mission prompt, any extracted document context, and optional user preferences to design a visually stunning, highly premium, custom web architecture.
 
 ### STRICT PROMPT ALIGNMENT RULES (CRITICAL) ###
-1. COLOR FIDELITY: You must strictly honor the user's requested color scheme, brand identity, or theme:
-   - If they ask for a 'light theme', 'clean white', 'luxury cream', 'solar gold', 'soft pastel pink', or 'sky blue', you MUST return a bright, elegant light-themed background (e.g., #f5f6f8, #ffffff, #faf9f6) and contrasting dark text!
+1. COLOR & THEME FIDELITY (MISSION PRECEDENCE):
+   - The current MISSION prompt ALWAYS takes absolute, 100% precedence over any ADAPTIVE USER PREFERENCES.
+   - If the current MISSION requests a 'light theme', 'clean white', 'luxury cream', 'solar gold', 'aura cream', 'skincare', 'bright gold', or any bright layout, you MUST IGNORE any dark-themed user preferences (like '#030307' or '#0a0a0c') and return a bright, elegant light-themed background (e.g., #faf9f6, #ffffff, #f5f6f8) and high-contrast dark text (#0d0e12)!
    - If they specify any custom color (e.g., 'forest green', 'deep space violet', 'coral orange'), craft the primary and accent tokens strictly around those choices.
    - Do NOT force a generic dark/black background if the user explicitly requested a light theme or alternate colors.
 2. SITEMAP & PAGE COUNT COMPLIANCE:
    - You must customize the sitemap count and page names to match the user's prompt exactly. 
    - If they ask for a 'one-page website' or 'single landing page', return exactly one page object in the sitemap array (e.g. index.html).
    - If they ask for specific subpages (e.g. 'a contact form page', 'a vault gallery page', 'a real-time terminal page'), create the exact sitemap files (e.g., contact.html, vault.html, terminal.html) and custom page names.
-3. CONTEXT INTEGRITY: Ensure the hero titles, subtitles, features, and text blocks are highly specific, detailed, and directly relevant to the prompt and uploaded documents. Do not write generic marketing placeholders.
+3. CONTEXT INTEGRITY & DYNAMICS: Ensure the hero titles, subtitles, features, and text blocks are highly specific, detailed, and directly relevant to the prompt and uploaded documents. Do not write generic marketing placeholders.
 
 ### IN-CONTEXT STYLE LEARNING ###
 Analyze the EXTRACTED DOCUMENT CONTEXT. If it contains HTML, CSS, branding guidelines, or style instructions, extract the design style (e.g., color hex codes, font faces, border-radii, spacing) and replicate or adapt them harmoniously into the output JSON configuration.
@@ -122,7 +123,19 @@ class AnimusBrain:
         self.current_key_index = (self.current_key_index + 1) % len(self.keys)
         return key
 
-    def _load_user_preferences(self, user_id=None):
+    def _calculate_hex_luminance(self, hex_color):
+        hex_color = hex_color.strip("#")
+        try:
+            if len(hex_color) == 3:
+                hex_color = "".join([c*2 for c in hex_color])
+            r = int(hex_color[0:2], 16)
+            g = int(hex_color[2:4], 16)
+            b = int(hex_color[4:6], 16)
+            return (0.299 * r + 0.587 * g + 0.114 * b) / 255.0
+        except Exception:
+            return 0.0
+
+    def _load_user_preferences(self, user_id=None, mission_prompt=""):
         """Loads SQLite preferences for a specific user_id if supplied."""
         if not user_id or not os.path.exists(self.db_path):
             return "No custom user-scoped preferences specified."
@@ -143,8 +156,16 @@ class AnimusBrain:
             rows = cursor.fetchall()
             conn.close()
             if rows:
-                prefs = [f"- {key}: {val}" for key, val in rows]
-                return "\n".join(prefs)
+                prefs = []
+                m = mission_prompt.lower()
+                is_light_request = any(w in m for w in ["light", "cream", "white", "gold", "skincare", "aura", "pastel"])
+                for key, val in rows:
+                    # Ignore dark style habits if this is a light-themed generation request
+                    if is_light_request and key in ["preferred_bg_color", "preferred_accent_color"] and val.startswith("#"):
+                        if self._calculate_hex_luminance(val) < 0.4:
+                            continue
+                    prefs.append(f"- {key}: {val}")
+                return "\n".join(prefs) if prefs else "No custom user-scoped preferences specified."
         except Exception as e:
             logger.error(f"Error loading preferences in AnimusBrain: {e}")
         return "No custom user-scoped preferences specified."
@@ -180,7 +201,7 @@ class AnimusBrain:
 
     def generate_soul_data(self, mission_prompt, doc_context="", critique="", user_id=None):
         """Queries Gemini with strict compliance guidelines to generate the site configuration."""
-        prefs_text = self._load_user_preferences(user_id)
+        prefs_text = self._load_user_preferences(user_id, mission_prompt)
         
         user_input = f"""
 MISSION: {mission_prompt}
@@ -245,12 +266,12 @@ EXTRACTED DOCUMENT CONTEXT:
         return self._generate_fallback_soul(mission_prompt, doc_context)
 
     def _generate_fallback_soul(self, mission, doc_context):
-        """Standard beautiful local templates in case of API failure."""
+        """Standard beautiful local templates in case of API failure, heavily customized by prompt NLP parsing."""
         import re
-        m = mission.lower()
+        m = mission.lower().strip()
         
         # Smart dynamic fallback name extraction from prompt
-        project_name = "AURA_CREAM"
+        project_name = "ANIMUS_SOUL"
         patterns = [
             r'(?:named|called|brand|for|website|agency|realm)\s+([a-zA-Z0-9_-]{3,25})',
             r'\b([A-Z]{3,15}_[A-Z]{3,15})\b',
@@ -260,11 +281,37 @@ EXTRACTED DOCUMENT CONTEXT:
             name_match = re.search(pat, mission, re.IGNORECASE)
             if name_match:
                 extracted = name_match.group(1).strip().replace(" ", "_").upper()
-                if extracted not in ["WEBSITE", "BRAND", "AGENCY", "REALM", "SKINCARE"]:
+                if extracted not in ["WEBSITE", "BRAND", "AGENCY", "REALM", "SKINCARE", "LABEL", "THEME"]:
                     project_name = extracted
                     break
-
-        if "light" in m or "white" in m or "cream" in m:
+        
+        # If no pattern matched, let's grab the first capitalized words or use the first word of the prompt
+        if project_name == "ANIMUS_SOUL":
+            words = [w for w in mission.split() if w.isupper() and len(w) > 2]
+            if words:
+                project_name = words[0]
+            else:
+                # Get the first 2 words and make them uppercase
+                clean_words = re.sub(r'[^a-zA-Z0-9\s]', '', mission).split()
+                if len(clean_words) >= 2:
+                    project_name = f"{clean_words[0]}_{clean_words[1]}".upper()
+                elif clean_words:
+                    project_name = clean_words[0].upper()
+                    
+        # Extract features and theme keywords
+        adjectives = re.findall(r'\b(premium|luxury|futuristic|obsidian|gold|serene|pristine|gorgeous|deep|minimal|elegant|organic|cyberpunk|space|stellar|cosmic|neon)\b', m)
+        adjectives = list(set(adjectives))
+        adj_str = ", ".join(adjectives).upper() if adjectives else "PREMIUM"
+        
+        # Dynamic Text Synthesis
+        title = f"THE {project_name} SYSTEM"
+        subtitle = f"A customized {adj_str.lower()} digital environment engineered for sovereign performance."
+        
+        # Check for specific prompt matches
+        # Skincare / Light theme
+        if any(w in m for w in ["skincare", "cream", "aura", "light", "white", "pristine", "organic_wave"]):
+            title = f"{project_name} SKINCARE" if "skincare" in m or "cream" in m else title
+            subtitle = f"Experience luxury skincare through a pristine cream and gold visual architecture." if "skincare" in m or "cream" in m else subtitle
             return {
                 "project_name": project_name,
                 "tokens": {
@@ -283,31 +330,115 @@ EXTRACTED DOCUMENT CONTEXT:
                     "hover_glow": "0 20px 40px rgba(0,0,0,0.05)",
                     "letter_spacing": "-0.01em",
                     "text_transform": "none",
-                    "breathing_anim": "none",
-                    "breathing_anim_hover": "none",
+                    "breathing_anim": "aether-breath",
+                    "breathing_anim_hover": "aether-breath-deep",
                     "video_style": "ORGANIC_WAVE",
                     "video_interactivity": "BREATHING_ZOOM"
                 },
                 "geometry_type": "SPHERE",
-                "sitemap": [
-                    {"name": "Home", "file": "index.html"}
-                ],
+                "sitemap": [{"name": "Home", "file": "index.html"}],
                 "page_contexts": {
                     "index.html": {
-                        "title": "PRISTINE SIMPLICITY",
-                        "subtitle": "Elegant cream and gold visual systems designed dynamically.",
+                        "title": title.upper(),
+                        "subtitle": subtitle,
                         "features": [
-                            {"icon": "✨", "title": "Solar Alignment", "description": "High-fidelity light-themed layout structures built for your natural focus."},
-                            {"icon": "🌾", "title": "Minimal Density", "description": "Zero distraction zones containing pure ambient details."}
+                            {"icon": "✨", "title": "Pristine Waves", "description": "Highly refined visual systems incorporating serene waves and golden accents."},
+                            {"icon": "🌾", "title": "Organic Nourishment", "description": "Designed for maximum visual calm and elegant minimalist details."},
+                            {"icon": "🤍", "title": "Aura Luxury", "description": "Crafted to embody the absolute peak of modern premium aesthetic standards."}
                         ]
                     }
                 },
-                "hero_global": {
-                    "cta": "BEGIN_FLOW"
-                }
+                "hero_global": {"cta": "DISCOVER_AURA"}
             }
-        
-        if "crypto" in m or "tech" in m or "sentry" in m:
+            
+        # Champagne / Luxury / Gold Dust
+        if any(w in m for w in ["champagne", "label", "maison", "gold_dust", "obsidian", "dark_gold"]):
+            title = f"{project_name} CHAMPAGNE" if "champagne" in m else title
+            subtitle = f"Savor the exquisite deep obsidian luxury of a gold-rimmed digital canvas." if "champagne" in m else subtitle
+            return {
+                "project_name": project_name,
+                "tokens": {
+                    "bg_color": "#030307",
+                    "text_color": "#ffffff",
+                    "accent_primary": "#d4af37",
+                    "accent_primary_hex": "0xd4af37",
+                    "glass_blur": "30px",
+                    "grid_radius": "24px",
+                    "btn_radius": "50px",
+                    "void_blur": "80px",
+                    "font_heading": "'Playfair Display'",
+                    "font_body": "'Inter'",
+                    "ease_vibe": "cubic-bezier(0.19, 1, 0.22, 1)",
+                    "duration_vibe": "0.8s",
+                    "hover_glow": "0 0 30px rgba(212, 175, 55, 0.3)",
+                    "letter_spacing": "0.05em",
+                    "text_transform": "uppercase",
+                    "breathing_anim": "none",
+                    "breathing_anim_hover": "none",
+                    "video_style": "GOLD_DUST",
+                    "video_interactivity": "AMBIENT_DRIFT"
+                },
+                "geometry_type": "RING",
+                "sitemap": [{"name": "Home", "file": "index.html"}],
+                "page_contexts": {
+                    "index.html": {
+                        "title": title.upper(),
+                        "subtitle": subtitle,
+                        "features": [
+                            {"icon": "🍾", "title": "Maison Premium", "description": "High-end obsidian dark themes matching the deep aesthetic of luxury vintage labels."},
+                            {"icon": "✨", "title": "Gold Dust Particles", "description": "Mesmerizing looping particle system drifting gracefully in the background."},
+                            {"icon": "🏆", "title": "Obsidian Prestige", "description": "Perfect contrast using gold-rimmed elements and state-of-the-art glassmorphism."}
+                        ]
+                    }
+                },
+                "hero_global": {"cta": "ENTER_MAISON"}
+            }
+
+        # Space / Futuristic / Nebula / Cosmic
+        if any(w in m for w in ["space", "nebula", "voyages", "cosmic", "galaxy", "travel"]):
+            title = f"{project_name} VOYAGES" if "voyages" in m or "travel" in m else title
+            subtitle = f"Futuristic exploration pathways crossing deep space cosmic nebulas." if "space" in m or "cosmic" in m else subtitle
+            return {
+                "project_name": project_name,
+                "tokens": {
+                    "bg_color": "#020205",
+                    "text_color": "#ffffff",
+                    "accent_primary": "#a855f7",
+                    "accent_primary_hex": "0xa855f7",
+                    "glass_blur": "16px",
+                    "grid_radius": "16px",
+                    "btn_radius": "8px",
+                    "void_blur": "100px",
+                    "font_heading": "'Outfit'",
+                    "font_body": "'Inter'",
+                    "ease_vibe": "cubic-bezier(0.2, 0.8, 0.2, 1)",
+                    "duration_vibe": "0.5s",
+                    "hover_glow": "0 0 25px rgba(168, 85, 247, 0.4)",
+                    "letter_spacing": "-0.01em",
+                    "text_transform": "none",
+                    "breathing_anim": "none",
+                    "breathing_anim_hover": "none",
+                    "video_style": "COSMIC_NEBULA",
+                    "video_interactivity": "MAGNETIC_FOLLOW"
+                },
+                "geometry_type": "TORUS",
+                "sitemap": [{"name": "Home", "file": "index.html"}],
+                "page_contexts": {
+                    "index.html": {
+                        "title": title.upper(),
+                        "subtitle": subtitle,
+                        "features": [
+                            {"icon": "🌌", "title": "Cosmic Nebulas", "description": "Deep celestial orbits rendered natively with high-fidelity stars."},
+                            {"icon": "🚀", "title": "Futuristic Transit", "description": "Designed using ultra-fluid GSAP and CSS micro-interactions."},
+                            {"icon": "🔮", "title": "Stellar Control", "description": "Glass panels featuring high contrast elements tailored for stellar travelers."}
+                        ]
+                    }
+                },
+                "hero_global": {"cta": "LAUNCH_DEPARTURE"}
+            }
+
+        # Cyber / Tech / Crypto
+        if any(w in m for w in ["cyber", "tech", "crypto", "terminal", "matrix", "net"]):
             return {
                 "project_name": project_name,
                 "tokens": {
@@ -316,7 +447,7 @@ EXTRACTED DOCUMENT CONTEXT:
                     "accent_primary": "#00ffcc",
                     "accent_primary_hex": "0x00ffcc",
                     "glass_blur": "12px",
-                    "grid_radius": "16px",
+                    "grid_radius": "8px",
                     "btn_radius": "4px",
                     "void_blur": "60px",
                     "font_heading": "'Space Mono'",
@@ -332,33 +463,22 @@ EXTRACTED DOCUMENT CONTEXT:
                     "video_interactivity": "3D_TILT"
                 },
                 "geometry_type": "TORUS",
-                "sitemap": [
-                    {"name": "Home", "file": "index.html"},
-                    {"name": "Terminal", "file": "terminal.html"}
-                ],
+                "sitemap": [{"name": "Home", "file": "index.html"}],
                 "page_contexts": {
                     "index.html": {
-                        "title": "NEURAL OVERRIDE",
-                        "subtitle": "Surgical precision architecture designed dynamically.",
+                        "title": title.upper(),
+                        "subtitle": subtitle,
                         "features": [
-                            {"icon": "⚡", "title": "Latency Zero", "description": "Sub-millisecond data feeds and execution layers."},
-                            {"icon": "📟", "title": "EVM Grid", "description": "Parallel virtual machines operating natively."}
-                        ]
-                    },
-                    "terminal.html": {
-                        "title": "DATA TERMINAL",
-                        "subtitle": "Real-time liquidity bridge and transaction dispatch.",
-                        "features": [
-                            {"icon": "📊", "title": "Stream Metrics", "description": "Live web-socket based telemetry visualization."}
+                            {"icon": "⚡", "title": "Cybernet Grid", "description": "High-speed neon line interfaces running in parallel execution layers."},
+                            {"icon": "📟", "title": "Sovereign Control", "description": "Fully interactive 3D elements responding natively to mouse coordinates."},
+                            {"icon": "🔒", "title": "Quantum Privacy", "description": "Highly secure design paradigms optimized for technical operators."}
                         ]
                     }
                 },
-                "hero_global": {
-                    "cta": "EXECUTE_SEQUENCE"
-                }
+                "hero_global": {"cta": "EXECUTE_PARADIGM"}
             }
-        
-        # Premium Universal Fallback
+            
+        # Universal Smart Fallback (Highly Dynamic)
         return {
             "project_name": project_name,
             "tokens": {
@@ -383,19 +503,17 @@ EXTRACTED DOCUMENT CONTEXT:
                 "video_interactivity": "MAGNETIC_FOLLOW"
             },
             "geometry_type": "OCTA",
-            "sitemap": [
-                {"name": "Home", "file": "index.html"}
-            ],
+            "sitemap": [{"name": "Home", "file": "index.html"}],
             "page_contexts": {
                 "index.html": {
-                    "title": "EXPERIENCE THE ABYSS",
-                    "subtitle": "A premium design crafted to push the limits of modern elegant web architecture.",
+                    "title": title.upper(),
+                    "subtitle": subtitle,
                     "features": [
-                        {"icon": "💎", "title": "Sovereign Build", "description": "Stunning aesthetics, ultra-fluid interactions, bespoke layouts."}
+                        {"icon": "💎", "title": "Bespoke Synthesis", "description": "Beautiful custom design aesthetic matching your target concept."},
+                        {"icon": "🌊", "title": "Fluid Motion", "description": "Stunning interactive overlays creating perfect atmospheric depth."},
+                        {"icon": "✨", "title": "High Contrast", "description": "Ensuring perfect readability and premium luxury user experience."}
                     ]
                 }
             },
-            "hero_global": {
-                "cta": "ENTER_VOID"
-            }
+            "hero_global": {"cta": "ENTER_REALM"}
         }
