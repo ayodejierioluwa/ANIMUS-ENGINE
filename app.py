@@ -59,7 +59,7 @@ DASHBOARD_HTML = """
         ::-webkit-scrollbar-thumb { background: #f2ca50; border-radius: 10px; }
     </style>
 </head>
-<body class="min-h-screen flex flex-col font-body-md text-on-surface overflow-hidden">
+<body class="min-h-screen flex flex-col font-body-md text-on-surface overflow-y-auto overflow-x-hidden">
     <div class="film-grain"></div>
     <div class="custom-cursor" id="cursor"></div>
 
