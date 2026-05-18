@@ -101,11 +101,19 @@ JSON Schema to return:
 
 class AnimusBrain:
     def __init__(self):
-        raw_keys = os.getenv("CORTEX_GEMINI_KEYS") or os.getenv("GEMINI_API_KEY") or ""
-        self.keys = [k.strip() for k in raw_keys.split(",") if k.strip()]
+        raw_cortex = os.getenv("CORTEX_GEMINI_KEYS") or ""
+        raw_gemini = os.getenv("GEMINI_API_KEY") or ""
+        combined_raw = f"{raw_cortex},{raw_gemini}"
+        seen = set()
+        self.keys = []
+        for k in combined_raw.split(","):
+            cleaned = k.strip()
+            if cleaned and cleaned not in seen:
+                seen.add(cleaned)
+                self.keys.append(cleaned)
         self.current_key_index = 0
         self.db_path = "/Users/macbook/.gemini/antigravity/scratch/aether_companion/laura_memory.db"
-        logger.info(f"ANIMUS Brain initialized with {len(self.keys)} rotating keys from CORTEX environment.")
+        logger.info(f"ANIMUS Brain initialized with {len(self.keys)} rotating keys from combined CORTEX and standard environment.")
 
     def _get_next_key(self):
         if not self.keys:
@@ -242,10 +250,19 @@ EXTRACTED DOCUMENT CONTEXT:
         m = mission.lower()
         
         # Smart dynamic fallback name extraction from prompt
-        project_name = "AETHER_CREAM"
-        name_match = re.search(r'(?:named|website named|realms? named|agency named|brand named)\s+([a-zA-Z0-9_\s]{3,20})(?:\.|\b)', mission, re.IGNORECASE)
-        if name_match:
-            project_name = name_match.group(1).strip().upper()
+        project_name = "AURA_CREAM"
+        patterns = [
+            r'(?:named|called|brand|for|website|agency|realm)\s+([a-zA-Z0-9_-]{3,25})',
+            r'\b([A-Z]{3,15}_[A-Z]{3,15})\b',
+            r'\b([a-zA-Z]{3,15}_[a-zA-Z]{3,15})\b'
+        ]
+        for pat in patterns:
+            name_match = re.search(pat, mission, re.IGNORECASE)
+            if name_match:
+                extracted = name_match.group(1).strip().replace(" ", "_").upper()
+                if extracted not in ["WEBSITE", "BRAND", "AGENCY", "REALM", "SKINCARE"]:
+                    project_name = extracted
+                    break
 
         if "light" in m or "white" in m or "cream" in m:
             return {

@@ -88,9 +88,9 @@ DASHBOARD_HTML = """
                 <div class="obsidian-panel p-8 rounded-xl gold-rim-hover transition-all">
                     <div class="flex justify-between items-center mb-4">
                         <span class="text-[10px] uppercase tracking-[0.2em] text-primary/60">Neural Mission Objective</span>
-                        <button onclick="document.getElementById('mission').value=''" class="text-[9px] uppercase tracking-widest text-primary/40 hover:text-primary transition-colors font-bold font-code-ui">Clear</button>
+                        <button onclick="document.getElementById('mission').value=''" class="px-2.5 py-1 bg-white/5 border border-white/10 rounded text-[9px] uppercase tracking-widest text-primary/70 hover:bg-primary/10 hover:text-primary transition-all font-bold font-code-ui flex items-center gap-1.5"><span>Clear</span><span class="opacity-45">[Esc]</span></button>
                     </div>
-                    <textarea id="mission" placeholder="DESCRIBE YOUR DIGITAL REALM..." rows="4" class="w-full bg-white/5 border border-white/10 rounded-lg p-4 text-sm font-code-ui text-white resize-none focus:outline-none focus:border-primary transition-all"></textarea>
+                    <textarea id="mission" placeholder="DESCRIBE YOUR DIGITAL REALM..." rows="8" class="w-full bg-white/5 border border-white/10 rounded-lg p-4 text-sm font-code-ui text-white resize-none focus:outline-none focus:border-primary transition-all"></textarea>
                 </div>
                 <div class="grid grid-cols-2 gap-4">
                     <div class="obsidian-panel p-6 rounded-xl gold-rim-hover transition-all">
@@ -313,6 +313,14 @@ DASHBOARD_HTML = """
             animusUserId = 'user_' + Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
             localStorage.setItem('animus_user_id', animusUserId);
         }
+
+        // Clear textarea on Escape key press
+        document.getElementById('mission').addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                this.value = '';
+                e.preventDefault();
+            }
+        });
 
         async function ignite() {
             const status = document.getElementById('status');
