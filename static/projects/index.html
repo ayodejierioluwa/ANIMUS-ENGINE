@@ -4,30 +4,30 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AURA_GOLD | Index</title>
+    <title>AURUM_FLUIDITY | Index</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&family=Outfit:wght@200;400;700&family=Space+Mono&family=Playfair+Display:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
     <style>
         :root {
-            --bg-color: #faf9f6;
-            --text-color: #0d0e12;
-            --accent-primary: #d4af37;
-            --glass-bg: rgba(0, 0, 0, 0.03);
-            --glass-border: rgba(0, 0, 0, 0.07);
+            --bg-color: #0e0e11;
+            --text-color: #fcfcfc;
+            --accent-primary: #D4AF37;
+            --glass-bg: rgba(255, 255, 255, 0.03);
+            --glass-border: rgba(255, 255, 255, 0.1);
             
             /* Vibe Shift Tokens */
-            --glass-blur: 16px;
+            --glass-blur: 20px;
             --grid-radius: 24px;
-            --btn-radius: 50px;
-            --void-blur: 80px;
+            --btn-radius: 12px;
+            --void-blur: 120px;
             
             /* Atmospheric DNA */
-            --font-heading: Outfit;
+            --font-heading: Playfair Display;
             --font-body: Inter;
-            --ease-vibe: cubic-bezier(0.2, 0.8, 0.2, 1);
-            --duration-vibe: 0.6s;
-            --hover-glow: 0 10px 30px rgba(212, 175, 55, 0.3);
+            --ease-vibe: cubic-bezier(0.19, 1, 0.22, 1);
+            --duration-vibe: 0.8s;
+            --hover-glow: 0 20px 40px rgba(212, 175, 55, 0.3);
             --breathing-anim: aether-breath;
             --breathing-anim-hover: aether-breath-deep;
         }
@@ -41,8 +41,8 @@
         }
         h1, h2, h3 { 
             font-family: var(--font-heading), sans-serif; 
-            letter-spacing: -0.02em;
-            text-transform: none;
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
         }
         .site-wrapper { position: relative; z-index: 10; }
         
@@ -78,7 +78,7 @@
             top: 0; left: 0; width: 100%; height: 100%;
             pointer-events: none;
             z-index: 99998;
-            background: radial-gradient(circle, transparent 40%, rgba(0,0,0,0.03) 100%);
+            background: radial-gradient(circle, transparent 20%, rgba(0,0,0,0.6) 100%);
         }
         @keyframes grain {
             0%, 100% { transform: translate(0, 0); }
@@ -116,7 +116,7 @@
     <div class="site-wrapper">
         
 <nav style="position: fixed; top: 2rem; left: 50%; transform: translateX(-50%); width: auto; min-width: 400px; z-index: 10000; background: var(--glass-bg); border: 1px solid var(--glass-border); backdrop-filter: blur(var(--glass-blur)); border-radius: 100px; padding: 0.75rem 2rem; display: flex; align-items: center; justify-content: space-between; gap: 3rem; transition: all 0.5s var(--ease-vibe);">
-    <div class="logo" style="font-family: var(--font-heading); font-weight: 700; letter-spacing: 0.1em; font-size: 0.9rem; color: var(--accent-primary);">AURA_GOLD</div>
+    <div class="logo" style="font-family: var(--font-heading); font-weight: 700; letter-spacing: 0.1em; font-size: 0.9rem; color: var(--accent-primary);">AURUM_FLUIDITY</div>
     <div class="nav-links" style="display: flex; gap: 2rem; align-items: center;">
         
 <a href="index.html" class="nav-item active" style="text-decoration: none; color: var(--text-color); font-size: 0.8rem; font-weight: 400; letter-spacing: 0.05em; transition: all 0.3s var(--ease-vibe); font-family: var(--font-body); position: relative; padding: 0.5rem 0;">
@@ -132,7 +132,7 @@
 
     </div>
     <div class="nav-cta">
-        <a href="#" style="background: var(--text-color); color: var(--bg-color); padding: 0.5rem 1.5rem; border-radius: 50px; text-decoration: none; font-size: 0.8rem; font-weight: 700; letter-spacing: 0.05em; transition: transform 0.3s var(--ease-vibe); display: inline-block;">Discover Your Radiance</a>
+        <a href="#" style="background: var(--text-color); color: var(--bg-color); padding: 0.5rem 1.5rem; border-radius: 50px; text-decoration: none; font-size: 0.8rem; font-weight: 700; letter-spacing: 0.05em; transition: transform 0.3s var(--ease-vibe); display: inline-block;">Taste the Legacy</a>
     </div>
 </nav>
 <style>
@@ -140,16 +140,16 @@
 </style>
 
 <section class="hero full-layout" id="hero" style="background: var(--bg-color) !important; min-height: 100vh; display: flex; align-items: center; justify-content: center; position: relative; overflow: hidden;">
-    <div style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 2; background: linear-gradient(to bottom, rgba(255, 255, 255, 0.15) 0%, var(--bg-color) 100%); pointer-events: none;"></div>
-    <video autoplay loop muted playsinline id="hero-bg-video" style="position: absolute; top: -5%; left: -5%; width: 110%; height: 110%; object-fit: cover; z-index: 1; opacity: 0.55; filter: saturate(0.8) contrast(1.1); pointer-events: none; transform: scale(1.05); transition: transform 0.1s ease-out;">
+    <div style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 2; background: linear-gradient(to bottom, rgba(0, 0, 0, 0.35) 0%, var(--bg-color) 100%); pointer-events: none;"></div>
+    <video autoplay loop muted playsinline id="hero-bg-video" style="position: absolute; top: -5%; left: -5%; width: 110%; height: 110%; object-fit: cover; z-index: 1; opacity: 0.65; filter: saturate(0.8) contrast(1.1); pointer-events: none; transform: scale(1.05); transition: transform 0.1s ease-out;">
         <source src="/static/videos/organic_wave.mp4" type="video/mp4">
     </video>
     <div id="void-canvas" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; opacity: 0.2; z-index: 3; pointer-events: none;"></div>
     <div class="hero-content" style="position: relative; z-index: 10; text-align: center;">
-        <h1 class="reveal" style="font-size: clamp(3rem, 10vw, 6rem); letter-spacing: -0.04em; line-height: 0.95; font-weight: 700;">AURA_CREAM: Luminous Elixirs for Timeless Radiance</h1>
-        <p class="reveal" style="font-size: 1.25rem; opacity: 0.6; margin-top: 2rem; max-width: 650px; margin-left: auto; margin-right: auto; line-height: 1.6; font-weight: 300;">Experience the sublime blend of science and nature, meticulously crafted to unveil your skin's intrinsic glow and youthful vitality.</p>
+        <h1 class="reveal" style="font-size: clamp(3rem, 10vw, 6rem); letter-spacing: -0.04em; line-height: 0.95; font-weight: 700;">MAISON_GOLD: The Art of Timeless Celebration</h1>
+        <p class="reveal" style="font-size: 1.25rem; opacity: 0.6; margin-top: 2rem; max-width: 650px; margin-left: auto; margin-right: auto; line-height: 1.6; font-weight: 300;">Experience the unparalleled prestige of our deep obsidian vintages, each bottle a symphony of tradition and sparkling innovation, crafted for the most exquisite palates.</p>
         <div class="reveal" style="margin-top: 4rem;">
-            <a href="#" class="btn-primary" style="padding: 1.25rem 3.5rem; font-size: 1rem; border-radius: var(--btn-radius); background: white; color: black; text-decoration: none; font-weight: 700; letter-spacing: 0.1em; transition: all 0.4s cubic-bezier(0.2, 0.8, 0.2, 1); box-shadow: 0 20px 40px rgba(0,0,0,0.4);">Discover Your Radiance</a>
+            <a href="#" class="btn-primary" style="padding: 1.25rem 3.5rem; font-size: 1rem; border-radius: var(--btn-radius); background: white; color: black; text-decoration: none; font-weight: 700; letter-spacing: 0.1em; transition: all 0.4s cubic-bezier(0.2, 0.8, 0.2, 1); box-shadow: 0 20px 40px rgba(0,0,0,0.4);">Taste the Legacy</a>
         </div>
     </div>
 </section>
@@ -161,9 +161,28 @@
             
 <div class="feature-item" style="background: var(--glass-bg); border: 1px solid var(--glass-border); padding: 4rem; border-radius: var(--grid-radius); backdrop-filter: blur(var(--glass-blur)); transition: all 0.5s cubic-bezier(0.2, 0.8, 0.2, 1); position: relative; overflow: hidden;">
     <div style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(135deg, rgba(255,255,255,0.01) 0%, transparent 100%); pointer-events: none;"></div>
+    <div class="icon" style="font-size: 2.5rem; margin-bottom: 2rem; filter: drop-shadow(0 0 15px var(--accent-primary));">🍾</div>
+    <h3 style="font-size: 1.75rem; margin-bottom: 1.5rem; color: var(--text-color); font-weight: 600; letter-spacing: -0.02em;">Obsidian Grandeur</h3>
+    <p style="color: var(--text-color); opacity: 0.7; line-height: 1.8; font-size: 1.05rem; font-weight: 300;">Indulge in the profound depth and character of our signature obsidian-hued champagne, meticulously aged to perfection in clandestine cellars.</p>
+</div>
+<style>
+    .feature-item:hover {
+        transform: translateY(-15px) scale(1.02);
+        border-color: var(--accent-primary);
+        background: var(--glass-bg);
+        box-shadow: 0 30px 60px rgba(0,0,0,0.15);
+    }
+    .btn-primary:hover {
+        transform: scale(1.05);
+        box-shadow: 0 0 30px var(--accent-primary);
+    }
+</style>
+
+<div class="feature-item" style="background: var(--glass-bg); border: 1px solid var(--glass-border); padding: 4rem; border-radius: var(--grid-radius); backdrop-filter: blur(var(--glass-blur)); transition: all 0.5s cubic-bezier(0.2, 0.8, 0.2, 1); position: relative; overflow: hidden;">
+    <div style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(135deg, rgba(255,255,255,0.01) 0%, transparent 100%); pointer-events: none;"></div>
     <div class="icon" style="font-size: 2.5rem; margin-bottom: 2rem; filter: drop-shadow(0 0 15px var(--accent-primary));">✨</div>
-    <h3 style="font-size: 1.75rem; margin-bottom: 1.5rem; color: var(--text-color); font-weight: 600; letter-spacing: -0.02em;">Golden Elixir Infusion</h3>
-    <p style="color: var(--text-color); opacity: 0.7; line-height: 1.8; font-size: 1.05rem; font-weight: 300;">Enriched with rare botanical extracts and opulent gold particles, our creams deeply nourish, rejuvenate, and restore your skin's natural brilliance.</p>
+    <h3 style="font-size: 1.75rem; margin-bottom: 1.5rem; color: var(--text-color); font-weight: 600; letter-spacing: -0.02em;">Golden Effervescence</h3>
+    <p style="color: var(--text-color); opacity: 0.7; line-height: 1.8; font-size: 1.05rem; font-weight: 300;">Witness the mesmerising dance of golden bubbles, a testament to the purity and vibrant spirit within every bottle of MAISON_GOLD.</p>
 </div>
 <style>
     .feature-item:hover {
@@ -180,28 +199,9 @@
 
 <div class="feature-item" style="background: var(--glass-bg); border: 1px solid var(--glass-border); padding: 4rem; border-radius: var(--grid-radius); backdrop-filter: blur(var(--glass-blur)); transition: all 0.5s cubic-bezier(0.2, 0.8, 0.2, 1); position: relative; overflow: hidden;">
     <div style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(135deg, rgba(255,255,255,0.01) 0%, transparent 100%); pointer-events: none;"></div>
-    <div class="icon" style="font-size: 2.5rem; margin-bottom: 2rem; filter: drop-shadow(0 0 15px var(--accent-primary));">💧</div>
-    <h3 style="font-size: 1.75rem; margin-bottom: 1.5rem; color: var(--text-color); font-weight: 600; letter-spacing: -0.02em;">Harmonic Hydration System</h3>
-    <p style="color: var(--text-color); opacity: 0.7; line-height: 1.8; font-size: 1.05rem; font-weight: 300;">Advanced bio-mimetic technology ensures profound moisture retention, creating a supple, dewy complexion that lasts throughout the day.</p>
-</div>
-<style>
-    .feature-item:hover {
-        transform: translateY(-15px) scale(1.02);
-        border-color: var(--accent-primary);
-        background: var(--glass-bg);
-        box-shadow: 0 30px 60px rgba(0,0,0,0.15);
-    }
-    .btn-primary:hover {
-        transform: scale(1.05);
-        box-shadow: 0 0 30px var(--accent-primary);
-    }
-</style>
-
-<div class="feature-item" style="background: var(--glass-bg); border: 1px solid var(--glass-border); padding: 4rem; border-radius: var(--grid-radius); backdrop-filter: blur(var(--glass-blur)); transition: all 0.5s cubic-bezier(0.2, 0.8, 0.2, 1); position: relative; overflow: hidden;">
-    <div style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(135deg, rgba(255,255,255,0.01) 0%, transparent 100%); pointer-events: none;"></div>
-    <div class="icon" style="font-size: 2.5rem; margin-bottom: 2rem; filter: drop-shadow(0 0 15px var(--accent-primary));">🌿</div>
-    <h3 style="font-size: 1.75rem; margin-bottom: 1.5rem; color: var(--text-color); font-weight: 600; letter-spacing: -0.02em;">Cellular Rejuvenation Complex</h3>
-    <p style="color: var(--text-color); opacity: 0.7; line-height: 1.8; font-size: 1.05rem; font-weight: 300;">Targeted peptides and antioxidants work in synergy to diminish fine lines, improve elasticity, and promote a visibly firmer, more refined skin texture.</p>
+    <div class="icon" style="font-size: 2.5rem; margin-bottom: 2rem; filter: drop-shadow(0 0 15px var(--accent-primary));">👑</div>
+    <h3 style="font-size: 1.75rem; margin-bottom: 1.5rem; color: var(--text-color); font-weight: 600; letter-spacing: -0.02em;">Heritage & Craft</h3>
+    <p style="color: var(--text-color); opacity: 0.7; line-height: 1.8; font-size: 1.05rem; font-weight: 300;">Upholding generations of winemaking mastery, our master blenders meticulously craft each vintage, embodying a legacy of uncompromising luxury.</p>
 </div>
 <style>
     .feature-item:hover {
@@ -221,7 +221,7 @@
 </section>
 
 <footer style="padding: 4rem 2rem; text-align: center; color: var(--text-color); opacity: 0.6; border-top: 1px solid var(--glass-border);">
-    <p>&copy; 2026 AETHER_ANIMUS | Built for AURA_GOLD</p>
+    <p>&copy; 2026 AETHER_ANIMUS | Built for AURUM_FLUIDITY</p>
 </footer>
 
 <div id="sentry-report" style="position: fixed; bottom: 2rem; left: 2rem; z-index: 10005; background: rgba(0,255,204,0.1); border: 1px solid rgba(0,255,204,0.3); padding: 1rem 1.5rem; border-radius: 12px; backdrop-filter: blur(10px); display: flex; align-items: center; gap: 1rem; cursor: pointer; transition: all 0.3s var(--ease-vibe);">
@@ -283,15 +283,15 @@
             "OCTA": new THREE.OctahedronGeometry(2, 0),
             "RING": new THREE.TorusGeometry(2, 0.5, 16, 100)
         };
-        const geoType = "SPHERE";
+        const geoType = "RING";
         const geometry = geometries[geoType] || geometries["SPHERE"];
         
         const material = new THREE.MeshPhongMaterial({
-            color: "0xd4af37",
+            color: "0xD4AF37",
             wireframe: true,
             transparent: true,
             opacity: 0.9,
-            emissive: "0xd4af37",
+            emissive: "0xD4AF37",
             emissiveIntensity: 0.6
         });
         const sphere = new THREE.Mesh(geometry, material);
