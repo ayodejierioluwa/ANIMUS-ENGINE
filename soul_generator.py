@@ -63,12 +63,12 @@ class AnimusSoul:
 
         # Dynamic high-fidelity video loop streams matching the AI-prompted video_style archetype
         video_libraries = {
-            "CYBER_NET": "https://assets.mixkit.co/videos/preview/mixkit-digital-animation-of-glowing-neon-lines-moving-4813-large.mp4",
-            "ORGANIC_WAVE": "https://assets.mixkit.co/videos/preview/mixkit-waves-in-the-ocean-near-the-shore-1427-large.mp4",
-            "GOLD_DUST": "https://assets.mixkit.co/videos/preview/mixkit-gold-dust-particles-glittering-in-the-light-4993-large.mp4",
-            "FIRE_EMBER": "https://assets.mixkit.co/videos/preview/mixkit-fire-in-a-fireplace-close-up-of-embers-flowing-4048-large.mp4",
-            "DARK_ENERGY": "https://assets.mixkit.co/videos/preview/mixkit-abstract-glowing-particles-in-slow-motion-4822-large.mp4",
-            "COSMIC_NEBULA": "https://assets.mixkit.co/videos/preview/mixkit-stars-in-the-night-sky-flowing-slowly-3665-large.mp4"
+            "CYBER_NET": "/static/videos/cyber_net.mp4",
+            "ORGANIC_WAVE": "/static/videos/organic_wave.mp4",
+            "GOLD_DUST": "/static/videos/organic_wave.mp4",
+            "FIRE_EMBER": "/static/videos/cyber_net.mp4",
+            "DARK_ENERGY": "/static/videos/cyber_net.mp4",
+            "COSMIC_NEBULA": "/static/videos/cyber_net.mp4"
         }
         
         style_key = tokens.get("video_style", "COSMIC_NEBULA").upper()

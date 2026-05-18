@@ -122,8 +122,8 @@ class AnimusSentry:
         # Video Backdrop Integrity Check
         if '<video' in html:
             src_match = re.search(r'<source\s+src="([^"]*)"', html)
-            if not src_match or not src_match.group(1).startswith("http"):
-                self.issues.append(f"VIDEO FAULT in {file_path}: Video element lacks a valid public streaming video source URL.")
+            if not src_match or not (src_match.group(1).startswith("http") or src_match.group(1).startswith("/static/") or src_match.group(1).startswith("./") or src_match.group(1).startswith("../")):
+                self.issues.append(f"VIDEO FAULT in {file_path}: Video element lacks a valid public streaming or local video source URL.")
 
     def audit_project_cognitively(self, generated_files):
         """Utilizes Gemini to inspect compiled HTML, rotating resiliently through all API keys on failures."""

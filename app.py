@@ -2,6 +2,7 @@ from flask import Flask, render_template, request, jsonify, send_from_directory
 from animus_engine import AnimusEngine
 import os
 import werkzeug
+import sqlite3
 
 app = Flask(__name__)
 UPLOAD_FOLDER = 'uploads'
