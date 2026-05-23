@@ -423,7 +423,8 @@ def serve_project(path):
             db_path = "laura_memory.db"
             
         try:
-            conn = sqlite3.connect(db_path)
+            conn = sqlite3.connect(db_path, timeout=30.0)
+            conn.execute("PRAGMA journal_mode=WAL;")
             cursor = conn.cursor()
             cursor.execute("SELECT html_content FROM generated_pages WHERE page_name = ?", (page_name,))
             row = cursor.fetchone()

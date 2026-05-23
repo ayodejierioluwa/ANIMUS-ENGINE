@@ -139,12 +139,17 @@ class AnimusBrain:
         except Exception:
             return 0.0
 
+    def _get_db_connection(self):
+        conn = sqlite3.connect(self.db_path, timeout=30.0)
+        conn.execute("PRAGMA journal_mode=WAL;")
+        return conn
+
     def _load_user_preferences(self, user_id=None, mission_prompt=""):
         """Loads SQLite preferences for a specific user_id if supplied."""
         if not user_id or not os.path.exists(self.db_path):
             return "No custom user-scoped preferences specified."
         try:
-            conn = sqlite3.connect(self.db_path)
+            conn = self._get_db_connection()
             cursor = conn.cursor()
             cursor.execute('''
                 CREATE TABLE IF NOT EXISTS user_preferences_multi (
@@ -180,7 +185,7 @@ class AnimusBrain:
             return
         try:
             import datetime
-            conn = sqlite3.connect(self.db_path)
+            conn = self._get_db_connection()
             cursor = conn.cursor()
             cursor.execute('''
                 CREATE TABLE IF NOT EXISTS user_preferences_multi (

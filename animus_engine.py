@@ -176,7 +176,8 @@ class AnimusEngine:
             db_path = "laura_memory.db"
         try:
             import sqlite3
-            conn = sqlite3.connect(db_path)
+            conn = sqlite3.connect(db_path, timeout=30.0)
+            conn.execute("PRAGMA journal_mode=WAL;")
             cursor = conn.cursor()
             cursor.execute('''
                 CREATE TABLE IF NOT EXISTS generated_pages (
