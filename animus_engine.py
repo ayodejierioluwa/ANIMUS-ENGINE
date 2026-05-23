@@ -167,7 +167,11 @@ class AnimusEngine:
         return file_path
 
     def _write_page_to_db(self, page_name, html_content):
-        db_path = "/Users/macbook/.gemini/antigravity/scratch/aether_companion/laura_memory.db"
+        persistent_dir = os.getenv("PERSISTENT_DATA_DIR")
+        if persistent_dir:
+            db_path = os.path.join(persistent_dir, "laura_memory.db")
+        else:
+            db_path = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))), "laura_memory.db")
         if not os.path.exists(db_path):
             db_path = "laura_memory.db"
         try:
@@ -193,7 +197,11 @@ class AnimusEngine:
 
     def _sync_to_github(self):
         import subprocess
-        db_path = "/Users/macbook/.gemini/antigravity/scratch/aether_companion/laura_memory.db"
+        persistent_dir = os.getenv("PERSISTENT_DATA_DIR")
+        if persistent_dir:
+            db_path = os.path.join(persistent_dir, "laura_memory.db")
+        else:
+            db_path = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))), "laura_memory.db")
         if os.path.exists(db_path):
             print("📤 GIT SYNC: Local Mac detected. Auto-syncing generated work to GitHub...")
             try:

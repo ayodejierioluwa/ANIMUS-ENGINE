@@ -414,7 +414,11 @@ def serve_project(path):
     # Verify if it's an HTML page first
     if path.endswith('.html') or '.' not in path:
         page_name = path if path.endswith('.html') else f"{path}.html"
-        db_path = "/Users/macbook/.gemini/antigravity/scratch/aether_companion/laura_memory.db"
+        persistent_dir = os.getenv("PERSISTENT_DATA_DIR")
+        if persistent_dir:
+            db_path = os.path.join(persistent_dir, "laura_memory.db")
+        else:
+            db_path = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))), "laura_memory.db")
         if not os.path.exists(db_path):
             db_path = "laura_memory.db"
             

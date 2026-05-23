@@ -113,7 +113,11 @@ class AnimusBrain:
                 seen.add(cleaned)
                 self.keys.append(cleaned)
         self.current_key_index = 0
-        self.db_path = "/Users/macbook/.gemini/antigravity/scratch/aether_companion/laura_memory.db"
+        persistent_dir = os.getenv("PERSISTENT_DATA_DIR")
+        if persistent_dir:
+            self.db_path = os.path.join(persistent_dir, "laura_memory.db")
+        else:
+            self.db_path = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))), "laura_memory.db")
         logger.info(f"ANIMUS Brain initialized with {len(self.keys)} rotating keys from combined CORTEX and standard environment.")
 
     def _get_next_key(self):
